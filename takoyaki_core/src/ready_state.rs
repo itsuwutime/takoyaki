@@ -1,12 +1,18 @@
 use reqwest::RequestBuilder;
 
-
 pub struct ReadyState {
     response: Option<String>,
     pending: Option<RequestBuilder>
 }
 
 impl ReadyState {
+    pub fn from_cache(cache: String) -> Self {
+        Self {
+            response: Some(cache),
+            pending: None
+        }
+    }
+
     pub fn from_reqwest(client: RequestBuilder) -> Self {
         Self {
             response: None,
@@ -18,12 +24,19 @@ impl ReadyState {
     where
         T: Default + for<'de> serde::Deserialize<'de>
     {
-        if let Some(client) = &self.pending {
-            let resp = client.try_clone().unwrap().header("User-Agent", "takoyaki");
-
-            resp.send().await?.json::<T>().await
-        } else {
-            Ok(T::default())
+        match &self.pending {
+            Some(client) => {
+                Ok(client.try_clone().expect("Error while creating a clone of the `RequestBuilder`")
+                    .header("User-Agent" , "takoyaki") // Requests may need a User-Agent
+                    .send()
+                    .await?
+                    .json::<T>()
+                    .await?
+                )
+            },
+            None => {
+                Ok(serde_json::from_str(self.response.as_ref().unwrap().as_ref()).unwrap())
+            }
         }
     }
 }

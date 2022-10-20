@@ -5,49 +5,55 @@ pub mod ready_state;
 #[cfg(test)]
 mod tests {
     use serde::Deserialize;
+    use crate::{plugin::Plugin, ready_state::ReadyState, takoyaki};
 
-    use crate::{plugin::Plugin, ready_state::ReadyState};
+    #[derive(Deserialize , Default , Debug)]
+    pub struct Sample {
+        #[serde(rename = "id")]
+        _id: u64
+    }
 
-    use super::*;
+    pub struct SamplePlugin {
+
+    }
+
+    impl<'a> Plugin<'a , Sample> for SamplePlugin {
+        fn new() -> Self {
+            Self {
+
+            }
+        }
+
+        fn name(&self) -> &'a str {
+            "sample_plugin"
+        } 
+
+        fn ready(&self) -> ReadyState {
+            ReadyState::from_reqwest(reqwest::Client::new().get("https://jsonplaceholder.typicode.com/todos/1"))
+        }
+
+        fn execute(&self , data: Sample) {
+            println!("{:?}" , data);
+        }
+    }
+
 
     #[tokio::test]
-    async fn main_test() {
-        #[derive(Deserialize , Default , Debug)]
-        pub struct Sample {
-            id: u64
-        }
+    #[should_panic]
+    async fn start_without_plug() {
+        let takoyaki = takoyaki::Takoyaki::<'static , Sample>::new();
 
-        pub struct GitHubSamplePlugin {
+        takoyaki.start().await.unwrap(); // Would panic!
+    } 
 
-        }
+    #[tokio::test]
+    async fn start_with_plug() {
+        let mut takoyaki = takoyaki::Takoyaki::<Sample>::new();
+        let plugin = SamplePlugin::new();
 
-        impl<'a> Plugin<'a , Sample> for GitHubSamplePlugin {
-            fn new() -> Self {
-                Self {
+        takoyaki.plug(&plugin);
 
-                }
-            }
-
-            fn name(&self) -> &'a str {
-                "github"
-            } 
-
-            fn ready(&self) -> ReadyState {
-                ReadyState::from_reqwest(reqwest::Client::new().get("https://jsonplaceholder.typicode.com/todos/1"))
-            }
-
-            fn execute(&self , data: Sample) {
-                println!("{:?}" , data);
-            }
-        }
-
-        let mut takoyaki = takoyaki::Takoyaki::<'static , Sample>::new();
-
-        takoyaki.plug(Box::new(GitHubSamplePlugin::new()));
-
-
-        println!("HAHAHAH" );
-
-        takoyaki.start().await;
+        takoyaki.start().await.unwrap(); // Would not panic =)
     }
 }
+

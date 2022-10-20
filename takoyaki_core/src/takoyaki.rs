@@ -1,12 +1,11 @@
 use serde::Deserialize;
-
 use crate::plugin::Plugin;
 
 pub struct Takoyaki<'a , T>
 where 
     T: for<'de> Deserialize<'de> + Default
 {
-    plugin: Option<Box<dyn Plugin<'a , T>>>
+    plugin: Option<&'a dyn Plugin<'a , T>>
 }
 
 impl<'a , T> Takoyaki<'a , T>
@@ -19,18 +18,20 @@ where
         }
     }
 
-    pub fn plug(&mut self , plugin: Box<dyn Plugin<'a , T>>) {
+    pub fn plug(&mut self , plugin: &'a dyn Plugin<'a , T>) {
         self.plugin = Some(plugin)
     }
 
-    pub async fn start(&self) {
+    pub async fn start(&self) -> Result<() , reqwest::Error> {
         if self.plugin.is_none() {
-            panic!("Must set a plugin before executing! Call the `plug` method to add in a plugin")
+            panic!("Must set a plugin before executing! Call the `plug()` method to add in a plugin")
         }
 
-        let data = self.plugin.as_ref().unwrap().as_ref().ready().resolve::<T>().await.unwrap(); // Get ready
+        let plugin = self.plugin.as_ref().expect("Cannot create a clone of the plugin!");
+
+        let data = plugin.ready().resolve::<T>().await?; // Get ready
         
-        self.plugin.as_ref().unwrap().as_ref().execute(data)
+        Ok(plugin.execute(data))
     }
 }
 

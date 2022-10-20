@@ -29,7 +29,7 @@ mod tests {
             }
 
             fn name(&self) -> &'a str {
-                return "github"
+                "github"
             } 
 
             fn ready(&self) -> ReadyState {
@@ -46,7 +46,7 @@ mod tests {
         takoyaki.plug(Box::new(GitHubSamplePlugin::new()));
 
 
-        println!("{}" , "HAHAHAH");
+        println!("HAHAHAH" );
 
         takoyaki.start().await;
     }

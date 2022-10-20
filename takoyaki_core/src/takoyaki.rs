@@ -24,7 +24,7 @@ where
     }
 
     pub async fn start(&self) {
-        if let None = self.plugin {
+        if self.plugin.is_none() {
             panic!("Must set a plugin before executing! Call the `plug` method to add in a plugin")
         }
 

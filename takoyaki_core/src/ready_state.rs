@@ -1,5 +1,5 @@
 use reqwest::RequestBuilder;
-use serde::Deserialize;
+
 
 pub struct ReadyState {
     response: Option<String>,

@@ -12,7 +12,7 @@ mod tests {
 
     #[tokio::test]
     async fn main_test() {
-        #[derive(Deserialize , Default)]
+        #[derive(Deserialize , Default , Debug)]
         pub struct Sample {
             id: u64
         }

@@ -26,13 +26,24 @@ impl ReadyState {
     {
         match &self.pending {
             Some(client) => {
-                Ok(client.try_clone().expect("Error while creating a clone of the `RequestBuilder`")
+                // Ok(client.try_clone().expect("Error while creating a clone of the `RequestBuilder`")
+                //     .header("User-Agent" , "takoyaki") // Requests may need a User-Agent
+                //     .send()
+                //     .await?
+                //     .json::<T>()
+                //     .await?
+                // )
+                let resp = client.try_clone().expect("Error while creating a clone of the `RequestBuilder`")
                     .header("User-Agent" , "takoyaki") // Requests may need a User-Agent
                     .send()
                     .await?
-                    .json::<T>()
+                    .text()
                     .await?
-                )
+                ;
+
+                println!("{:?}" , resp);
+
+                Ok(T::default())
             },
             None => {
                 Ok(serde_json::from_str(self.response.as_ref().unwrap().as_ref()).unwrap())

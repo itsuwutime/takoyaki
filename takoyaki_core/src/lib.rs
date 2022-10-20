@@ -1,6 +1,7 @@
 pub mod plugin;
 pub mod takoyaki;
 pub mod ready_state;
+pub use reqwest;
 
 #[cfg(test)]
 mod tests {
@@ -32,8 +33,8 @@ mod tests {
             ReadyState::from_reqwest(reqwest::Client::new().get("https://jsonplaceholder.typicode.com/todos/1"))
         }
 
-        fn execute(&self , data: Sample) {
-            println!("{:?}" , data);
+        fn execute(&self , _data: Sample) {
+
         }
     }
 

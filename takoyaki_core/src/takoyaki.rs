@@ -31,7 +31,7 @@ where
 
         let data = plugin.ready().resolve::<T>().await?; // Get ready
         
-        Ok(plugin.execute(data))
+        Ok(plugin.execute(data).pretty_print())
     }
 }
 

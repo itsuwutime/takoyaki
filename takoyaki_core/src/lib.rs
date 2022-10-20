@@ -1,12 +1,13 @@
 pub mod plugin;
 pub mod takoyaki;
 pub mod ready_state;
+pub mod printable_grid;
 pub use reqwest;
 
 #[cfg(test)]
 mod tests {
     use serde::Deserialize;
-    use crate::{plugin::Plugin, ready_state::ReadyState, takoyaki};
+    use crate::{plugin::Plugin, ready_state::ReadyState, takoyaki , printable_grid::PrintableGrid};
 
     #[derive(Deserialize , Default , Debug)]
     pub struct Sample {
@@ -33,8 +34,8 @@ mod tests {
             ReadyState::from_reqwest(reqwest::Client::new().get("https://jsonplaceholder.typicode.com/todos/1"))
         }
 
-        fn execute(&self , _data: Sample) {
-
+        fn execute(&self , _data: Sample) -> PrintableGrid {
+            PrintableGrid::new()
         }
     }
 

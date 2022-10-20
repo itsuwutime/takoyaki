@@ -1,0 +1,23 @@
+use reqwest::RequestBuilder;
+
+pub struct ReadyState<'a> {
+    response: Option<&'a str>,
+    pending: Option<RequestBuilder>
+}
+
+impl<'a> ReadyState<'a> {
+    pub fn from_reqwest(client: RequestBuilder) -> Self {
+        Self {
+            response: None,
+            pending: Some(client)
+        }
+    }
+
+    pub async fn resolve(&mut self) {
+        match self.pending {
+            Some(client) => {
+                self.response = Some(client.header("User-Agent", "takoyaki"))
+            }
+        }
+    }
+}

@@ -1,4 +1,5 @@
 mod initer;
+mod use_plugin;
 mod plug;
 
 use clap::{Command, Arg};
@@ -39,6 +40,18 @@ async fn main() {
                 )
                 .arg_required_else_help(true)
         )
+        .subcommand(
+            Command::new("use")
+                .about("Uses a plugin")
+                .arg(
+                    Arg::new("plugin")
+                        .required(true)
+                        .short('p')
+                        .long("plugin")
+                        .help("The name of the plugin to use")
+                )
+                .arg_required_else_help(true)
+        )
     ;
 
     let matches = command.get_matches();
@@ -53,6 +66,9 @@ async fn main() {
                 sub_matches.get_one::<String>("branch").unwrap(),
                 sub_matches.get_one::<String>("path").unwrap()
             ).await
+        },
+        Some(("use" , sub_matches)) => {
+            use_plugin::use_plugin(sub_matches.get_one::<String>("plugin").unwrap());
         },
         _ => {
 

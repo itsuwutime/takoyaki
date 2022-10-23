@@ -35,6 +35,20 @@ impl Config {
         Ok(())
     }
 
+    pub fn parse_from_name<T>(name: &str) -> Result<T , serde_json::Error> 
+    where
+        T: for <'de> Deserialize<'de>
+    {
+        let content = std::fs::read_to_string(dirs::config_dir().expect("Cannot get your config directory").join("takoyaki").join("plugins").join(name).join("config.toml"));
+
+        if let Err(_) = content {
+            panic!("{}" , "No config found! Make sure you have the plugin installed".red());
+        }
+
+        // It is safe to unwrap `content` from here!
+        Ok(toml::from_str(&content.unwrap()).unwrap())
+    }
+
     pub fn get(&self) -> &ConfigType {
         match &self.config {
             Some(config) => {

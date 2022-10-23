@@ -1,9 +1,9 @@
-use serde::Deserialize;
-use crate::{plugin::Plugin, config::Config};
+use serde::{Deserialize, Serialize};
+use crate::{plugin::Plugin, config::Config, cache::Cache};
 
 pub struct Takoyaki<'a , T , U>
 where 
-    T: for<'de> Deserialize<'de> + Default,
+    T: for<'de> Deserialize<'de> + Default + Serialize,
     U: for <'de> Deserialize<'de>
 {
     plugin: Option<&'a dyn Plugin<'a , T , U>>
@@ -11,7 +11,7 @@ where
 
 impl<'a , T , U> Takoyaki<'a , T , U>
 where 
-    T: for<'de> Deserialize<'de> + Default,
+    T: for<'de> Deserialize<'de> + Default + Serialize,
     U: for <'de> Deserialize<'de>
 {
     pub fn new() -> Self {
@@ -36,8 +36,9 @@ where
         let plugin = self.plugin.as_ref().expect("Cannot create a reference of the plugin");
 
         let name = plugin.name();
+        let cache = Cache::new(name.clone().to_string());
 
-        let data = plugin.ready(Config::parse_from_name(name).unwrap()).resolve::<T>().await?; // Get ready
+        let data = plugin.ready(Config::parse_from_name(name).unwrap() , cache.clone()).resolve::<T>(cache).await?; // Get ready
         
         Ok(plugin.execute(data).pretty_print(config))
     }

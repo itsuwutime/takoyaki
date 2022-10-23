@@ -1,4 +1,5 @@
 pub mod config;
+pub mod cache;
 pub mod plugin;
 pub mod takoyaki;
 pub mod ready_state;

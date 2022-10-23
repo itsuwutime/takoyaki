@@ -1,6 +1,6 @@
 use colored::*;
 
-use crate::config::Config;
+use crate::config::{Config, ConfigType};
 
 #[derive(Debug)]
 pub struct Printable {
@@ -33,7 +33,7 @@ impl PrintableGrid {
 
         for row in self.grid.iter() {
             for col in row {
-                let raw_color = self.get_color(col.count , &config);
+                let raw_color = self.get_color(col.count , prefs , col.color.clone());
 
                 let color = colorsys::Rgb::from_hex_str(raw_color.as_ref()).unwrap();
 
@@ -48,12 +48,25 @@ impl PrintableGrid {
         }
     }
 
-    pub fn get_color(&self , count: usize , config: &Config) -> String {
-        let prefs = config.get();
+    pub fn get_color(&self , count: usize , config: &ConfigType , fallback: String) -> String {
+        // Get all the colors as a HashMap
+        let colors = config.colors.as_table().unwrap();
 
-        println!("{}" , prefs.colors.as_table().unwrap().get("1_contribution").unwrap().as_str().unwrap());
+        // Get the specific color for the contribution count
+        let color = colors.get(&format!("{}_contribution" , count));
 
-        String::new()
+        // Check color
+        match color {
+            // The color for the number of contributions exists!
+            Some(hex) => {
+                // Return that color
+                return hex.as_str().expect(format!("Invalid color for `{}_contributions!`" , count).as_ref()).to_string()
+            },
+            None => {
+                // Use `any_contributions` color or fallback to the original color
+                return colors.get("any_contributions").unwrap_or(&toml::Value::String(fallback)).as_str().unwrap().to_string()
+            }
+        }
     }
 }
 

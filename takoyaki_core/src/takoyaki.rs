@@ -1,14 +1,14 @@
 use serde::Deserialize;
 use crate::{plugin::Plugin, config::Config};
 
-pub struct YashNibbaHai<'a , T>
+pub struct Takoyaki<'a , T>
 where 
     T: for<'de> Deserialize<'de> + Default
 {
     plugin: Option<&'a dyn Plugin<'a , T>>
 }
 
-impl<'a , T> YashNibbaHai<'a , T>
+impl<'a , T> Takoyaki<'a , T>
 where 
     T: for<'de> Deserialize<'de> + Default
 {

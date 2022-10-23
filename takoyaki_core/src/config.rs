@@ -1,3 +1,4 @@
+use colored::*;
 use serde::Deserialize;
 use toml::Value;
 
@@ -23,7 +24,7 @@ impl Config {
         let content = std::fs::read_to_string(dirs::config_dir().expect("Cannot get your config directory").join("takoyaki").join("config.toml"));
 
         if let Err(_) = content {
-            println!("No config found! Make sure you have ran `takoyaki init`");
+            println!("{}" , "No config found! Make sure you have ran `takoyaki init`".red());
 
             return Ok(())
         }

@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use serde::Deserialize;
-use takoyaki_core::{plugin::Plugin, ready_state::ReadyState , reqwest , printable_grid::{PrintableGrid, Printable}};
+use takoyaki_core::{plugin::Plugin, ready_state::ReadyState , reqwest , printable_grid::{PrintableGrid, Printable} , cache::Cache};
 
 use crate::types::Root;
 
@@ -26,7 +26,11 @@ impl<'a> Plugin<'a , Root , Config> for GithubPlugin {
         "github"
     }
 
-    fn ready(&self , config: Config) -> takoyaki_core::ready_state::ReadyState {
+    fn ready(&self , config: Config , cache: Cache) -> takoyaki_core::ready_state::ReadyState {
+        if cache.exists() {
+            return ReadyState::from_cache(cache)
+        }
+
         let mut body = HashMap::new();
 
         body.insert("query", format!(r#"query {{

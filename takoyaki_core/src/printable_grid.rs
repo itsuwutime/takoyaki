@@ -1,24 +1,29 @@
+// Colored library to colorize the outputs
 use colored::*;
 
+// Use in built modules
 use crate::config::{Config, ConfigType};
 
+// Printable struct
 #[derive(Debug)]
 pub struct Printable {
     pub color: String,
     pub count: usize
 }
 
+// Main grid
 #[derive(Debug , Default)]
 pub struct PrintableGrid {
     grid: Vec<Vec<Printable>>
 }
 
-
+// Functions 
 impl PrintableGrid {
     pub fn new() -> Self {
         Self::default()
     }
 
+    // Inserts a printable at `x` and `y` coords
     pub fn insert(&mut self , x: usize, _y: usize , item: Printable) {
         if self.grid.len() == x {
             self.grid.push(vec![])

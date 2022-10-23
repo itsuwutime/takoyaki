@@ -1,4 +1,5 @@
 mod initer;
+mod unplug;
 mod use_plugin;
 mod plug;
 
@@ -52,6 +53,18 @@ async fn main() {
                 )
                 .arg_required_else_help(true)
         )
+        .subcommand(
+            Command::new("unplug")
+                .about("Uninstalls a plugin")
+                .arg(
+                    Arg::new("plugin")
+                        .required(true)
+                        .short('p')
+                        .long("plugin")
+                        .help("The name of the plugin to uninstall")
+                )
+                .arg_required_else_help(true)
+        )
     ;
 
     let matches = command.get_matches();
@@ -69,6 +82,9 @@ async fn main() {
         },
         Some(("use" , sub_matches)) => {
             use_plugin::use_plugin(sub_matches.get_one::<String>("plugin").unwrap());
+        },
+        Some(("unplug" , sub_matches)) => {
+            unplug::unplug(sub_matches.get_one::<String>("plugin").unwrap());
         },
         _ => {
 

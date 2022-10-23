@@ -1,6 +1,3 @@
-![Demo for takoyaki](https://user-images.githubusercontent.com/115910279/197386883-cca681cd-3b89-43e3-89e4-817efa70dfbe.png)
-
-
 # Takoyaki
 
 Blazingly fast git contribution graph in your terminal 
@@ -52,15 +49,7 @@ takoyaki timeout <time_in_seconds>
 
 # Plugin development guides
 
-Currently, there is no docs for understanding how to build plugin, but soon there will be a comprehensive guide!
-
-You add takoyaki's SDK by adding it as a dependency in your `Cargo.toml`
-
-```toml
-takoyaki = "1.0.1"
-```
-
-If you are brave enough, you can reference using the [github](https://github.com/kyeboard/takoyaki/tree/main/plugins/github) plugin or read the [generated docs](https://docs.rs/takoyaki/latest/takoyaki/)
+Currently, there is no docs for understanding how to build plugin, but soon there will be a comprehensive guide! If you are brave enough, you can reference using the [github](https://github.com/kyeboard/takoyaki/tree/main/plugins/github) plugin or read the [generated docs](https://docs.rs/takoyaki/latest/takoyaki/)
 
 # Contribution
 I would love to have contributions to improve this tool even more ^-^

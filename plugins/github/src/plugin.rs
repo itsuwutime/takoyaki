@@ -1,15 +1,12 @@
 use std::collections::HashMap;
-
 use serde::Deserialize;
-use takoyaki_core::{plugin::Plugin, ready_state::ReadyState , reqwest , printable_grid::{PrintableGrid, Printable} , cache::Cache};
+use takoyaki::{plugin::Plugin, ready_state::ReadyState , reqwest , printable_grid::{PrintableGrid, Printable} , cache::Cache};
 
 use crate::types::Root;
 
-pub struct GithubPlugin {
+pub struct GithubPlugin;
 
-}
-
-#[derive(Deserialize , Debug)]
+#[derive(Deserialize , Debug , Default)]
 pub struct Config {
     username: String,
     token: String
@@ -26,7 +23,7 @@ impl<'a> Plugin<'a , Root , Config> for GithubPlugin {
         "github"
     }
 
-    fn ready(&self , config: Config , cache: Cache) -> takoyaki_core::ready_state::ReadyState {
+    fn ready(&self , config: Config , cache: Cache) -> ReadyState {
         if cache.exists() {
             return ReadyState::from_cache(cache)
         }
@@ -81,3 +78,4 @@ impl<'a> Plugin<'a , Root , Config> for GithubPlugin {
         grid
     }
 }
+

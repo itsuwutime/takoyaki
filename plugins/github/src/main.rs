@@ -2,8 +2,8 @@ mod types;
 mod plugin;
 
 use plugin::{GithubPlugin, Config};
-use takoyaki_core::takoyaki::Takoyaki;
-use takoyaki_core::plugin::Plugin;
+use takoyaki::takoyaki::Takoyaki;
+use takoyaki::plugin::Plugin;
 
 #[tokio::main]
 async fn main() {

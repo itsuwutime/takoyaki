@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use serde::Deserialize;
 use takoyaki_core::{plugin::Plugin, ready_state::ReadyState , reqwest , printable_grid::{PrintableGrid, Printable}};
 
 use crate::types::Root;
@@ -8,7 +9,13 @@ pub struct GithubPlugin {
 
 }
 
-impl<'a> Plugin<'a , Root> for GithubPlugin {
+#[derive(Deserialize , Debug)]
+pub struct Config {
+    username: String,
+    token: String
+}
+
+impl<'a> Plugin<'a , Root , Config> for GithubPlugin {
     fn new() -> Self {
         Self {
 
@@ -19,34 +26,34 @@ impl<'a> Plugin<'a , Root> for GithubPlugin {
         "github"
     }
 
-    fn ready(&self) -> takoyaki_core::ready_state::ReadyState {
+    fn ready(&self , config: Config) -> takoyaki_core::ready_state::ReadyState {
         let mut body = HashMap::new();
 
-        body.insert("query", r#"query {
-            user(login: "VoidCupboard") {
+        body.insert("query", format!(r#"query {{
+            user(login: "{}") {{
                 name
-                contributionsCollection {
-                    contributionCalendar {
+                contributionsCollection {{
+                    contributionCalendar {{
                         colors
                         totalContributions
-                        weeks {
-                            contributionDays {
+                        weeks {{
+                            contributionDays {{
                                 color
                                 contributionCount
                                 date
                                 weekday
-                            }
+                            }}
                             firstDay
-                        }
-                    }
-                }
-            }
-        }"#);
+                        }}
+                    }}
+                }}
+            }}
+        }}"# , config.username));
 
         ReadyState::from_reqwest(
             reqwest::Client::new()
                 .post("https://api.github.com/graphql")
-                .header("Authorization", "Bearer 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")
+                .header("Authorization", format!("Bearer {}" , config.token))
                 .body(serde_json::to_string(&body).unwrap())
         )
     }

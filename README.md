@@ -1,5 +1,3 @@
-![Demo for takoyaki](https://user-images.githubusercontent.com/115910279/197396120-73487515-eac6-4d3c-ab48-7e158310a0ef.png)
-
 # Takoyaki
 
 Blazingly fast git contribution graph in your terminal 

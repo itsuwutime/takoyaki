@@ -91,6 +91,9 @@ pub async fn plug(repository: &String , branch: &String , path: &String) {
     
     file.write_all(toml::to_string(&config).unwrap().as_bytes()).expect("Error while writing to cache!");
 
+    // Create cache folder
+    std::fs::create_dir_all(dirs::config_dir().unwrap().join("takoyaki").join("cache").join(&plugin_meta.name)).expect("Unable to create directory");
+
     println!("{} {}" , "==>".green() , format!("Successfully installed the plugin. You can now use it by running `takoyaki use {}`" , plugin_meta.name).white());
 }
 

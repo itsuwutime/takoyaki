@@ -52,7 +52,7 @@ impl Config {
     pub fn get(&self) -> &ConfigType {
         match &self.config {
             Some(config) => {
-                return config
+                config
             },
             None => {
                 panic!("Must load the config before accessing it! Call `load()` methjod to load the config")

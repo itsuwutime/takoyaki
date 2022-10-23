@@ -60,7 +60,7 @@ impl PrintableGrid {
             // The color for the number of contributions exists!
             Some(hex) => {
                 // Return that color
-                return hex.as_str().expect(format!("Invalid color for `{}_contributions!`" , count).as_ref()).to_string()
+                return hex.as_str().unwrap_or_else(|| panic!("Invalid color for `{}_contributions!`" , count)).to_string()
             },
             None => {
                 // Use `any_contributions` color or fallback to the original color

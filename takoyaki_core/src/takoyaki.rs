@@ -40,7 +40,8 @@ where
 
         let data = plugin.ready(Config::parse_from_name(name).unwrap() , cache.clone()).resolve::<T>(cache).await?; // Get ready
         
-        Ok(plugin.execute(data).pretty_print(config))
+        plugin.execute(data).pretty_print(config);
+        Ok(())
     }
 }
 

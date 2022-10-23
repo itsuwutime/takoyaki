@@ -5,13 +5,13 @@
 
 [unicode]
 # The unicode to use while printing cells of the graph
-unicode = "  "
+unicode = "ඞ "
 
 # Add the color to the background or the foreground
 # Background: Will use the color to change the background of the cell.
 # Foreground: Will use the color to change the color of the unicode
 # Specify `bg` to colorize the background and `fg` to colorize the unicode
-paint = "bg"
+paint = "fg"
 
 [colors]
 # Specify the colors that you want to use for a specific amount of contributions you did. 
@@ -20,13 +20,15 @@ paint = "bg"
 # 5_contributions = "#88C0D0"
 # It is gonna colorize the output with #88C0D0.
 # Or if you dont want to use the default colors and override the other contribution count color, use `any_contributions = <your_color>`
-1_contribution = "#8FBCBB"
-2_contribution = "#91BCB6"
-3_contribution = "#93BCB2"
-4_contribution = "#95BDAD"
-5_contribution = "#97BDA8"
-6_contribution = "#99BDA4"
-7_contribution = "#9BBD9F"
-8_contribution = "#9FBE95"
-9_contribution = "#A1BE91"
-any_contributions = "#A3BE8C"
+0_contribution = "#4C566A"
+# 1_contribution = "#8FBCBB"
+# 2_contribution = "#91BCB6"
+# 3_contribution = "#93BCB2"
+# 4_contribution = "#95BDAD"
+# 5_contribution = "#97BDA8"
+# 6_contribution = "#99BDA4"
+# 7_contribution = "#9BBD9F"
+# 8_contribution = "#9FBE95"
+# 9_contribution = "#A1BE91"
+# any_contributions = "#A3BE8C"
+

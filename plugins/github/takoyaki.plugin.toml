@@ -1,0 +1,4 @@
+name = "github"
+binary = "https://raw.githubusercontent.com/kyeboard/takoyaki/main/plugins/github/bin/github"
+requires = ["username" , "token"]
+

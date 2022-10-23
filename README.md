@@ -14,7 +14,7 @@ Blazingly fast git contribution graph in your terminal
 To install, run the following script:
 
 ```bash
-curl https://usetakoyaki.vercel.app | sh
+curl https://usetakoyaki.vercel.app/install.sh | sh
 ```
 
 # Usage 

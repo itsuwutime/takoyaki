@@ -1,3 +1,5 @@
+<img src="https://img.shields.io/badge/Rust-2E3440?style=for-the-badge&logo=rust&logoColor=white"> <img src="https://img.shields.io/crates/d/takoyaki?style=for-the-badge"> <img src="https://img.shields.io/github/issues/kyeboard/takoyaki?style=for-the-badge" > <img src="https://img.shields.io/crates/l/takoyaki?style=for-the-badge"> <img src="https://img.shields.io/crates/v/takoyaki?style=for-the-badge" />
+
 # Takoyaki
 
 Blazingly fast git contribution graph in your terminal 
@@ -9,16 +11,10 @@ Blazingly fast git contribution graph in your terminal
 
 # Installation 
 
-1. To install, run the following script:
+To install, run the following script:
 
 ```bash
-curl https://takoyaki.vercel.app/install | sh
-```
-
-2. If you are on a Arch based distro, you can install `takoyaki` using `yay`
-
-```bash
-yay -S takoyaki
+curl https://usetakoyaki.vercel.app | sh
 ```
 
 # Usage 
@@ -41,11 +37,8 @@ takoyaki unplug <name>
 takoyaki use <name>
 ```
 
-4. To set a timeout for cache update, run:
-
-```
-takoyaki timeout <time_in_seconds>
-```
+# Notes
+Fetching everytime might take your terminal to open super late, which sucks. So, Tokayaki uses caching to cache the response so that you get a blazingly fast response on opening your terminal. This cache is updated every hour using the service or if you wanna force update it, run `takoyaki clean`
 
 # Plugin development guides
 

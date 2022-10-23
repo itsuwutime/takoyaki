@@ -35,7 +35,7 @@ impl Cache {
     {
         let mut file = std::fs::File::create(&self.cache_endpoint)?;
 
-        file.write(serde_json::to_string(&cache).unwrap().as_bytes())?;
+        file.write_all(serde_json::to_string(&cache).unwrap().as_bytes())?;
 
         Ok(())
     }

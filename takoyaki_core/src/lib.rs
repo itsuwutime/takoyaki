@@ -9,16 +9,12 @@ pub use reqwest;
 #[cfg(test)]
 mod tests {
     use serde::Deserialize;
-    use crate::{plugin::Plugin, ready_state::ReadyState, takoyaki , printable_grid::PrintableGrid};
+    
 
     #[derive(Deserialize , Default , Debug)]
     pub struct Sample {
         #[serde(rename = "id")]
         _id: u64
-    }
-
-    pub struct SamplePlugin {
-
     }
 }
 

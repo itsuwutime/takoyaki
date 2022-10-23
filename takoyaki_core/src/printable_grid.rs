@@ -8,16 +8,15 @@ pub struct Printable {
     pub count: usize
 }
 
-#[derive(Debug)]
+#[derive(Debug , Default)]
 pub struct PrintableGrid {
     grid: Vec<Vec<Printable>>
 }
 
+
 impl PrintableGrid {
     pub fn new() -> Self {
-        Self {
-            grid: vec![]
-        }
+        Self::default()
     }
 
     pub fn insert(&mut self , x: usize, _y: usize , item: Printable) {

@@ -23,7 +23,7 @@ impl Config {
     pub fn load(&mut self) -> Result<() , serde_json::Error> {
         let content = std::fs::read_to_string(dirs::config_dir().expect("Cannot get your config directory").join("takoyaki").join("config.toml"));
 
-        if let Err(_) = content {
+        if content.is_err() {
             println!("{}" , "No config found! Make sure you have ran `takoyaki init`".red());
 
             return Ok(())
@@ -41,7 +41,7 @@ impl Config {
     {
         let content = std::fs::read_to_string(dirs::config_dir().expect("Cannot get your config directory").join("takoyaki").join("plugins").join(name).join("config.toml"));
 
-        if let Err(_) = content {
+        if content.is_err() {
             panic!("{}" , "No config found! Make sure you have the plugin installed".red());
         }
 

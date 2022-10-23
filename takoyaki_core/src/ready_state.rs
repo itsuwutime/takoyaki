@@ -4,7 +4,7 @@ use serde::Serialize;
 use crate::cache::Cache;
 
 pub enum Pending {
-    Reqwest(RequestBuilder),
+    Reqwest(Box<RequestBuilder>),
     Cache(Cache)
 }
 
@@ -24,7 +24,7 @@ impl ReadyState {
     pub fn from_reqwest(client: RequestBuilder) -> Self {
         Self {
             response: None,
-            pending: Some(Pending::Reqwest(client))
+            pending: Some(Pending::Reqwest(Box::new(client)))
         }
     }
 
@@ -43,7 +43,7 @@ impl ReadyState {
                             .json::<T>()
                             .await?;
 
-                        cache.populate(&res);
+                        cache.populate(&res).expect("Error while writing to cache!");
 
                         Ok(res)
                     },

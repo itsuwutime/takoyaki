@@ -46,7 +46,7 @@ impl<'a> Plugin<'a , Root> for GithubPlugin {
         ReadyState::from_reqwest(
             reqwest::Client::new()
                 .post("https://api.github.com/graphql")
-                .header("Authorization", "Bearer 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")
+                .header("Authorization", "Bearer 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")
                 .body(serde_json::to_string(&body).unwrap())
         )
     }
@@ -58,7 +58,7 @@ impl<'a> Plugin<'a , Root> for GithubPlugin {
 
         for week in data.data.user.contributions_collection.contribution_calendar.weeks {
             for day in week.contribution_days {
-                grid.insert(y as usize, x as usize, Printable { color: day.color });
+                grid.insert(y as usize, x as usize, Printable { color: day.color , count: day.contribution_count as usize });
 
                 y += 1;
             }

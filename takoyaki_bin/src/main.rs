@@ -65,6 +65,10 @@ async fn main() {
                 )
                 .arg_required_else_help(true)
         )
+        .subcommand(
+            Command::new("clean")
+                .about("Removes all the cache so that on the next run plugins can synx with the new data")
+        )
     ;
 
     let matches = command.get_matches();
@@ -84,6 +88,9 @@ async fn main() {
             use_plugin::use_plugin(sub_matches.get_one::<String>("plugin").unwrap());
         },
         Some(("unplug" , sub_matches)) => {
+            unplug::unplug(sub_matches.get_one::<String>("plugin").unwrap());
+        },
+        Some(("" , sub_matches)) => {
             unplug::unplug(sub_matches.get_one::<String>("plugin").unwrap());
         },
         _ => {

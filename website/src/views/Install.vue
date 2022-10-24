@@ -4,19 +4,19 @@
     <div class="text-overlay1 font-semibold mt-2">Select your daily driver</div>
     <div class="flex text-text mt-4 gap-x-4">
         <div class="os bg-surface0/40 p-3 w-56 px-4 rounded-xl arch flex items-center justify-center font-bold" @click="select('arch')">
-            <i class="nf nf-linux-archlinux text-2xl mr-3" /> Arch Linux
+            <i class="fl-archlinux text-2xl mr-2" /> Arch Linux
         </div>
         <div class="os bg-surface0/40 p-3 w-56 px-4 rounded-xl ubuntu flex items-center justify-center font-bold" @click="select('ubuntu')">
-            <i class="nf nf-linux-ubuntu text-2xl mr-3" /> Ubuntu
+            <i class="fl-ubuntu text-2xl mr-3" /> Ubuntu
         </div>
         <div class="os bg-surface0/40 p-3 w-56 px-4 rounded-xl macos flex items-center justify-center font-bold" @click="select('macos')">
-            <i class="nf nf-linux-apple text-2xl mr-3" /> MacOS
+            <i class="fl-apple text-2xl mr-3" /> MacOS
         </div>
         <div class="os bg-surface0/40 p-3 w-56 px-4 rounded-xl termux flex items-center justify-center font-bold" @click="select('termux')">
-            <i class="nf nf-mdi-android_head text-3xl mr-3" /> Termux
+            <i class="fa-brands fa-android text-2xl mr-3" /> Termux
         </div>
         <div class="os bg-surface0/40 p-3 w-56 px-4 rounded-xl flex windows items-center justify-center font-bold" @click="select('windows')">
-            <i class="nf nf-fa-windows text-2xl mr-3" /> Windows
+            <i class="fa-brands fa-windows text-2xl mr-3" /> Windows
         </div>
     </div>
     <div class="guide mt-10 text-text">

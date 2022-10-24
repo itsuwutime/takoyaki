@@ -1,20 +1,23 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
-import { Client } from "appwrite"
+import { Client } from "appwrite";
+import VueFeather from 'vue-feather';
 
 import "./assets/main.sass";
 
 const appwrite = new Client();
 
 appwrite
-    .setProject("6355ff83c65adf66a6b1")
-    .setEndpoint("https://okasa.centralindia.cloudapp.azure.com/v1")
+    .setProject("63567282258749c8b86e")
+    .setEndpoint("https://okasa.centralindia.cloudapp.azure.com/v1");
 
 const app = createApp(App);
 
 app.use(router);
 
-app.provide("appwrite", appwrite)
+app.component(VueFeather.name, VueFeather);
+
+app.provide("appwrite", appwrite);
 
 app.mount("#app");

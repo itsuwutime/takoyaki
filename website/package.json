@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "appwrite": "^10.1.0",
-    "vue": "^3.2.37",
+    "feather-icons": "4",
+    "vue": "3",
+    "vue-feather": "2",
     "vue-router": "^4.1.2"
   },
   "devDependencies": {

@@ -1,13 +1,28 @@
 <script setup lang="ts">
-import {inject} from 'vue';
-import { Account , Client } from "appwrite"
-
-const appwrite = inject("appwrite") as Client;
-const account = new Account(appwrite);
-
-account.createOAuth2Session("google")
+import SideBar from "../components/SideBar.vue"
 </script>
 
 <template>
-<div class="w-screen h-screen bg-black"></div>
+<SideBar />
+<div class="w-screen h-screen bg-base flex items-center justify-center text-text pl-44 pr-10">
+    <div class="info w-1/2 mr-20">
+        <div class="text-5xl font-bold leading-[60px]">Blazingly fast git contribution graph in your terminal</div>
+        <div class="text-overlay1 font-semibold mt-4">Takoyaki is a blazingly fast CLI tool that prints your git contributions in your terminal elegantly. It is highly customizable with support of bunch of popular cloud based git repository providers.</div>
+        <div class="features mt-8 flex flex-col gap-y-4 font-semibold">
+            <div class="flex items-center">  
+                <vue-feather type="check-circle" size="19" class="mr-3 text-blue" /> Blazingly fast
+            </div>
+            <div class="flex items-center">  
+                <vue-feather type="check-circle" size="19" class="mr-3 text-blue" /> Highly customizable
+            </div>
+            <div class="flex items-center">  
+                <vue-feather type="check-circle" size="19" class="mr-3 text-blue" /> Open source
+            </div>
+            <div class="flex items-center">  
+                <vue-feather type="check-circle" size="19" class="mr-3 text-blue" /> Plugins that support famous providers
+            </div>
+        </div>
+    </div>
+    <img src="/banner.png" class="w-1/2 ml-auto" />
+</div>
 </template>

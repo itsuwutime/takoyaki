@@ -7,7 +7,6 @@ import SideBar from "../components/SideBar.vue"
 <div class="w-screen h-screen bg-base flex items-center justify-center text-text pl-44 pr-10">
     <div class="info w-1/2 mr-20">
         <div class="text-5xl font-bold leading-[60px]">Blazingly fast git contribution graph in your terminal.</div>
-Blazingly fast git contribution graph in your terminal.
         <div class="text-overlay1 font-semibold mt-4">Takoyaki is a blazingly fast CLI tool that prints your git contributions in your terminal elegantly. It is highly customizable with support of bunch of popular cloud based git repository providers.</div>
         <div class="features mt-8 flex flex-col gap-y-4 font-semibold">
             <div class="flex items-center">  

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Marketplace from "../views/Marketplace.vue"
 import HomeView from "../views/HomeView.vue";
 import Install from "../views/Install.vue";
+import NewPlugin from "../views/NewPlugin.vue"
 import Me from "../views/Me.vue";
 
 const router = createRouter({
@@ -23,6 +24,10 @@ const router = createRouter({
         {
             path: "/marketplace",
             component: Marketplace,
+        },
+        {
+            path: "/marketplace/new",
+            component: NewPlugin,
         },
     ],
 });

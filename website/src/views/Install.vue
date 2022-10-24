@@ -24,13 +24,13 @@
         <div class="text-overlay1 mt-2 font-semibold">Make sure to follow all the instructions properly</div>
 
         <div class="mt-6 font-bold text-text">Open up your terminal and run the following commands</div>
-        <div class="code p-3 px-4 rounded-xl bg-surface0/40 mt-2 text-overlay2 tracking-wide font-semibold">
+        <div class="code p-4 px-6 rounded-xl bg-surface0/40 mt-2 text-overlay2 tracking-wide font-semibold">
             <!-- $ curl https://usetakoyaki.kyeboard.xyz | sh -->
             $ {{command}}
         </div>
 
         <div class="mt-6 font-bold text-text">Once installed, you can now start using takoyaki!</div>
-        <div class="code p-3 px-4 rounded-xl bg-surface0/40 mt-2 text-overlay2 tracking-wide font-semibold">
+        <div class="code p-4 px-6 rounded-xl bg-surface0/40 mt-2 text-overlay2 tracking-wide font-semibold">
             $ takoyaki --help
         </div>
     </div>

@@ -2,10 +2,13 @@
 @import "tailwindcss/components"
 @import "tailwindcss/utilities"
 @import "https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500;600;700;800;900;1000&display=swap"
-@import "https://raw.githubusercontent.com/ryanoasis/nerd-fonts/master/css/nerd-fonts-generated.min.css"
+
+@font-face 
+    font-family: "NerdFonts"
+    src: url(../../fonts/Nerd_Fonts.ttf)
 
 html, body
-    font-family: "Nunito", sans-serif
+    font-family: "Nunito", sans-serif , NerdFonts
 
 @layer components 
     .os 

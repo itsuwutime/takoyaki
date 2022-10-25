@@ -10,9 +10,12 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@types/dompurify": "^2.3.4",
     "@types/marked": "^4.0.7",
     "appwrite": "^10.1.0",
+    "dompurify": "^2.4.0",
     "feather-icons": "4",
+    "markdown-it": "^13.0.1",
     "marked": "^4.1.1",
     "vue": "3",
     "vue-feather": "2",

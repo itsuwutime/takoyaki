@@ -2,7 +2,7 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import { Client } from "appwrite";
-import VueFeather from 'vue-feather';
+import VueFeather from "vue-feather";
 
 import "./assets/main.sass";
 

@@ -16,6 +16,9 @@ import SideBar from "../components/SideBar.vue"
                 <vue-feather type="check-circle" size="19" class="mr-3 text-blue" /> Highly customizable
             </div>
             <div class="flex items-center">  
+                <vue-feather type="check-circle" size="19" class="mr-3 text-blue" /> Cross platform support
+            </div>
+            <div class="flex items-center">  
                 <vue-feather type="check-circle" size="19" class="mr-3 text-blue" /> Open source
             </div>
             <div class="flex items-center">  

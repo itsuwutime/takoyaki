@@ -1,0 +1,48 @@
+{
+    "docs": [
+        {
+            "name": "Getting started",
+            "file": "installation.md"
+        },
+        {
+            "name": "Creating your first plugin",
+            "file": "installation.md"
+        },
+        {
+            "name": "Setting up types",
+            "file": "installation.md"
+        },
+        {
+            "name": "Understanding the ready function",
+            "file": "installation.md"
+        },
+        {
+            "name": "Cache",
+            "file": "installation.md"
+        },
+        {
+            "name": "Reqwest",
+            "file": "installation.md"
+        },
+        {
+            "name": "Creating a PrintableGrid",
+            "file": "installation.md"
+        },
+        {
+            "name": "Adding items to the grid",
+            "file": "installation.md"
+        },
+        {
+            "name": "Testing the plugin",
+            "file": "installation.md"
+        },
+        {
+            "name": "Packing the plugin",
+            "file": "installation.md"
+        }, 
+        {
+            "name": "Publishing to marketplace",
+            "file": "installation.md"
+        }
+    ]
+}

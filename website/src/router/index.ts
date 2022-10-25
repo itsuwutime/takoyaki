@@ -5,6 +5,7 @@ import Install from "../views/Install.vue";
 import NewPlugin from "../views/NewPlugin.vue";
 import Me from "../views/Me.vue";
 import Documentation from "../views/Documentation.vue";
+import DocumentationEmpty from "../views/Documentation_Empty.vue"
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,6 +34,10 @@ const router = createRouter({
         {
             path: "/documentation/:id",
             component: Documentation,
+        },
+        {
+            path: "/documentation",
+            component: DocumentationEmpty,
         },
     ],
 });

@@ -8,6 +8,37 @@
 html, body
     font-family: "Nunito", sans-serif
 
+.no-scrollbar::-webkit-scrollbar    
+    display: none
+
 @layer components 
     .os 
         @apply cursor-pointer
+
+    h1 
+        @apply text-3xl
+        @apply font-bold
+        @apply py-3
+        @apply my-5
+        @apply border-b-surface0
+        @apply border-b-2
+
+    h2 
+        @apply text-4xl
+        @apply font-bold
+        @apply py-3
+        @apply my-5
+        @apply border-b-surface0
+        @apply border-b-2 
+
+    p 
+        @apply text-overlay2
+        @apply font-semibold
+        @apply leading-7
+        @apply tracking-wide
+
+    pre 
+        @apply bg-surface0/40
+        @apply p-4
+        @apply my-3
+        @apply rounded-md

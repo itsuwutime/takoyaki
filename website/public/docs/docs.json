@@ -2,7 +2,11 @@
     "docs": [
         {
             "name": "Getting started",
-            "file": "installation.md"
+            "file": "getting-started.md"
+        },
+        {
+            "name": "Initializing a new Takoyaki instance",
+            "file": "initializing-takoyaki.md"
         },
         {
             "name": "Creating your first plugin",

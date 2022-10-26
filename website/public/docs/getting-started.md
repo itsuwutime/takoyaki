@@ -2,13 +2,13 @@
 
 Hi, welcome to Takoyaki's docs! Here you will find a comprehensive guide towards building your own plugin for Takoyaki! With that, you will also learn how to publish your awesome plugin to marketplace so that others can use your plugin.
 
-Alright, so lets get started!
+In this tutorial, we are gonna be building a GitHub plugin from scratch so that you get the ropes!
 
 # Creating a Rust project
 
 First of all, initialize a new Rust project using the following command:
 
-```bash
+```shell
 $ cargo init <name>
 ```
 

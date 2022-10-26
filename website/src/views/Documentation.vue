@@ -7,6 +7,7 @@
                 class="content hover:text-text transition-all cursor-pointer"
                 v-for="doc in docs.docs"
                 :key="doc.name"
+                @click="redirect(doc.short)"
             >
                 {{ doc.name }}<br />
             </div>
@@ -19,7 +20,7 @@
 import { ref } from "vue";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import hljs from "highlight.js";
 import "highlight.js/styles/nord.css"
 
@@ -41,6 +42,7 @@ interface Docs {
 const docs = ref<Root>({ docs: [] });
 const route = useRoute();
 const html_doc = ref<string>("");
+const router = useRouter();
 
 (async () => {
     docs.value = await (await fetch("/docs/docs.json")).json();
@@ -51,4 +53,8 @@ const html_doc = ref<string>("");
         )
     );
 })();
+
+const redirect = (name: string) => {
+    router.push({ path: "/documentation/" + name })
+}
 </script>

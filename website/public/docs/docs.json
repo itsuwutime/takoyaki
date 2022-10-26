@@ -2,51 +2,51 @@
     "docs": [
         {
             "name": "Getting started",
-            "file": "getting-started.md"
+            "short": "getting-started"
         },
         {
             "name": "Initializing a new Takoyaki instance",
-            "file": "initializing-takoyaki.md"
+            "short": "initializing-takoyaki"
         },
         {
             "name": "Creating your first plugin",
-            "file": "installation.md"
+            "short": "creating-plugin"
         },
         {
             "name": "Setting up types",
-            "file": "installation.md"
+            "short": "installation.md"
         },
         {
             "name": "Understanding the ready function",
-            "file": "installation.md"
+            "short": "installation.md"
         },
         {
             "name": "Cache",
-            "file": "installation.md"
+            "short": "installation.md"
         },
         {
             "name": "Reqwest",
-            "file": "installation.md"
+            "short": "installation.md"
         },
         {
             "name": "Creating a PrintableGrid",
-            "file": "installation.md"
+            "short": "installation.md"
         },
         {
             "name": "Adding items to the grid",
-            "file": "installation.md"
+            "short": "installation.md"
         },
         {
             "name": "Testing the plugin",
-            "file": "installation.md"
+            "short": "installation.md"
         },
         {
             "name": "Packing the plugin",
-            "file": "installation.md"
+            "short": "installation.md"
         }, 
         {
             "name": "Publishing to marketplace",
-            "file": "installation.md"
+            "short": "installation.md"
         }
     ]
 }

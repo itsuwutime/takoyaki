@@ -3,14 +3,14 @@
         <div
             class="flex w-fit pr-8 border-r border-r-surface0 flex-col justify-center gap-y-6 h-full font-semibold text-overlay1"
         >
-            <div
+            <a
                 class="content hover:text-text transition-all cursor-pointer"
                 v-for="doc in docs.docs"
                 :key="doc.name"
-                @click="redirect(doc.short)"
+                :href="'/documentation/' + doc.short"
             >
                 {{ doc.name }}<br />
-            </div>
+            </a>
         </div>
         <div class="w-full pb-10 content ml-8 overflow-scroll h-full no-scrollbar" v-html="html_doc" />
     </div>
@@ -53,8 +53,4 @@ const router = useRouter();
         )
     );
 })();
-
-const redirect = (name: string) => {
-    router.push({ path: "/documentation/" + name })
-}
 </script>

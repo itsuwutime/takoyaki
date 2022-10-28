@@ -10,7 +10,7 @@ struct GitHubPlugin {
 }
 ```
 
-Next, we are gonna implement the `Plugin` trait. Before that, at the top, import the trait
+We are gonna implement the `Plugin` trait. Before that, at the top, import the trait
 
 ```rs
 use takoyaki::Plugin;
@@ -51,4 +51,6 @@ Each plugin has four function that they handle. They are:
 3. `ready()` - This function returns the data that will be printed. It allows you to retrieve data in two ways, by `cache` and `reqwest`
 4. `execute()` - This function will get the data as the type of `T` and return a `PrintableGrid` that will be futher printed by `takoyaki`
 
+<br>
 
+In the next chapters you are gonna learn more about each of the plugins and their importance

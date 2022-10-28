@@ -13,16 +13,12 @@
             "short": "creating-plugin"
         },
         {
-            "name": "Setting up types",
-            "short": "installation.md"
-        },
-        {
             "name": "Understanding the ready function",
-            "short": "installation.md"
+            "short": "ready-function"
         },
         {
             "name": "Cache",
-            "short": "installation.md"
+            "short": "cache"
         },
         {
             "name": "Reqwest",

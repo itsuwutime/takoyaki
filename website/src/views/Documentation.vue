@@ -36,7 +36,7 @@ interface Root {
 
 interface Docs {
     name: string;
-    file: string;
+    short: string;
 }
 
 const docs = ref<Root>({ docs: [] });

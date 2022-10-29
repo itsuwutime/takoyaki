@@ -1,4 +1,4 @@
-use crate::{ready_state::ReadyState, printable_grid::PrintableGrid, cache::Cache};
+use crate::{ReadyState, PrintableGrid, Cache};
 
 pub trait Plugin<'a , T , U> {
     fn new() -> Self where Self: Sized;

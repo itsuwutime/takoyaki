@@ -2,6 +2,8 @@
 use colored::*;
 use serde::Deserialize;
 use toml::Value;
+use crate::get_config_directory;
+use anyhow::Result;
 
 // Unicode config
 #[derive(Deserialize)]
@@ -26,14 +28,12 @@ pub struct Config {
 // Functions
 impl Config {
     // Loads in app config (main)
-    pub fn load(&mut self) -> Result<() , serde_json::Error> {
+    pub fn load(&mut self) -> Result<()> {
         // Read the content
         let content = std::fs::read_to_string(
-            dirs::config_dir()
-                .expect("Cannot get your config directory")
-                .join("takoyaki")
+            get_config_directory()?
                 .join("config.toml")
-            );
+        );
 
         // Check if it is not a bomb
         if content.is_err() {
@@ -41,26 +41,27 @@ impl Config {
         }
 
         // It is safe to unwrap `content` from here!
-        self.config = Some(toml::from_str(&content.unwrap()).unwrap());
+        self.config = Some(toml::from_str(&content?)?);
 
         // OK!
         Ok(())
     }
 
     // Get config for a specific plugin
-    pub fn parse_from_name<T>(name: &str) -> Result<T , serde_json::Error> 
+    pub fn parse_from_name<T>(name: &str) -> Result<T> 
     where
         T: for <'de> Deserialize<'de>
     {
+        // Get config dir
+        let mut config = get_config_directory()?;
+
+        // Beautifulllll
+        config.extend(&["plugins" , name , "config.toml"]);
+
         // Get the file content
         let content = std::fs::read_to_string(
-            dirs::config_dir()
-                .expect("Cannot get your config directory")
-                .join("takoyaki")
-                .join("plugins")
-                .join(name)
-                .join("config.toml")
-            );
+            config
+        );
 
         // Check if it is not a bomb
         if content.is_err() {
@@ -68,7 +69,7 @@ impl Config {
         }
 
         // It is safe to unwrap `content` from here!
-        Ok(toml::from_str(&content.unwrap()).unwrap())
+        Ok(toml::from_str(&content?)?)
     }
 
     pub fn get(&self) -> &ConfigType {
@@ -77,7 +78,7 @@ impl Config {
                 config
             },
             None => {
-                panic!("Must load the config before accessing it! Call `load()` methjod to load the config")
+                panic!("Must load the config before accessing it! Call `load()` method to load the config")
             }
         }
     }

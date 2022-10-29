@@ -1,14 +1,29 @@
 // Colored library to colorize the outputs
+use anyhow::Result;
 use colored::*;
+use colorsys::Rgb;
 
 // Use in built modules
 use crate::config::{Config, ConfigType};
 
+#[derive(Debug , Clone)]
+pub enum State {
+    Empty,
+    Some
+}
+
+impl Default for State {
+    fn default() -> Self {
+        Self::Empty
+    }
+}
+
 // Printable struct
-#[derive(Debug)]
+#[derive(Debug , Default , Clone)]
 pub struct Printable {
     pub color: String,
-    pub count: usize
+    pub count: usize,
+    pub state: State
 }
 
 // Main grid
@@ -24,35 +39,58 @@ impl PrintableGrid {
     }
 
     // Inserts a printable at `x` and `y` coords
-    pub fn insert(&mut self , x: usize, _y: usize , item: Printable) {
-        if self.grid.len() == x {
-            self.grid.push(vec![])
-        }
+    pub fn insert(&mut self , x: usize, y: usize , item: Printable) {
+        // Resize the grid till `x` on x axis
+        self.grid.resize(x , vec![]);
 
-        self.grid[x].push(item)
+        // Resize the grid till `y` ony axis
+        self.grid[x].resize(y , Printable::default());
+
+        // Insert the printable
+        self.grid[x].insert(y , item);
     }
 
-    pub fn pretty_print(&self , config: Config) {
+    pub fn pretty_print(&self , config: Config) -> Result<()> {
+        // Get parsed config
         let prefs = config.get();
 
+        // Iterate through all the rows
         for row in self.grid.iter() {
+            // Iterate through all the columns
             for col in row {
-                let raw_color = self.get_color(col.count , prefs , col.color.clone());
+                // Get the color to be used
+                let raw_color = self.get_color(&col.count , prefs , &col.color);
 
-                let color = colorsys::Rgb::from_hex_str(raw_color.as_ref()).unwrap();
+                // Split hex to rgb
+                let color = Rgb::from_hex_str(raw_color.as_ref())?;
 
+                // Print according to the preference
                 if prefs.unicode.paint == "bg" {
-                    print!("{}" , prefs.unicode.unicode.on_truecolor(color.red() as u8 , color.green() as u8 , color.blue() as u8))
-                } else {
-                    print!("{}" , prefs.unicode.unicode.truecolor(color.red() as u8 , color.green() as u8 , color.blue() as u8))
+                    print!(
+                        "{}" , prefs.unicode.unicode.on_truecolor(
+                            color.red() as u8,
+                            color.green() as u8,
+                            color.blue() as u8
+                        )
+                    )
+                } else { 
+                    print!(
+                        "{}" , prefs.unicode.unicode.truecolor(
+                            color.red() as u8,
+                            color.green() as u8,
+                            color.blue() as u8
+                        )
+                    )
                 }
 
             }
             println!()
         }
+
+        Ok(())
     }
 
-    pub fn get_color(&self , count: usize , config: &ConfigType , fallback: String) -> String {
+    pub fn get_color(&self , count: &usize , config: &ConfigType , fallback: &String) -> String {
         // Get all the colors as a HashMap
         let colors = config.colors.as_table().unwrap();
 
@@ -68,7 +106,7 @@ impl PrintableGrid {
             },
             None => {
                 // Use `any_contributions` color or fallback to the original color
-                return colors.get("any_contributions").unwrap_or(&toml::Value::String(fallback)).as_str().unwrap().to_string()
+                return colors.get("any_contributions").unwrap_or(&toml::Value::String(fallback.to_owned())).as_str().unwrap().to_string()
             }
         }
     }

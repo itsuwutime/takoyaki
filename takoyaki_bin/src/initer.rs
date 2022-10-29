@@ -1,9 +1,13 @@
 use std::{fs::File, io};
-
 use colored::*;
 
+use crate::{logger::Logger, helpers::get_config_directory};
+
 pub async fn initialize_instance() {
-    let config_dir = dirs::config_dir().unwrap().join("takoyaki");
+    let logger = Logger::new();
+    let config = get_config_directory();
+
+    let config_dir = config.join("takoyaki");
     let config_path = config_dir.join("config.toml");
 
     std::fs::create_dir_all(&config_dir).expect("Error while creating a new directory");

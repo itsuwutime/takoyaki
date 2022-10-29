@@ -15,7 +15,7 @@ Blazingly fast git contribution graph in your terminal
 
 # Installation 
 
-You can find the installation guide for your OS here - https://takoyaki.keyboard.me/install
+You can find the installation guide for your OS here - https://takoyaki.kyeboard.me/install
 
 # Usage 
 

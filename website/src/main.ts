@@ -10,7 +10,7 @@ const appwrite = new Client();
 
 appwrite
     .setProject("63567282258749c8b86e")
-    .setEndpoint("https://okasa.centralindia.cloudapp.azure.com/v1");
+    .setEndpoint("http://appwrite.kyeboard.me/v1");
 
 const app = createApp(App);
 

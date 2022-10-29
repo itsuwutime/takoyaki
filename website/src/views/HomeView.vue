@@ -32,7 +32,7 @@ import SideBar from "../components/SideBar.vue";
                         size="19"
                         class="mr-3 text-blue"
                     />
-                    Highly customizable
+                    Customizable
                 </div>
                 <div class="flex items-center">
                     <vue-feather
@@ -60,6 +60,6 @@ import SideBar from "../components/SideBar.vue";
                 </div>
             </div>
         </div>
-        <img src="/banner.png" class="md:w-1/2 ml-auto" />
+        <img src="/banner.png" class="md:w-[45%] ml-auto" />
     </div>
 </template>

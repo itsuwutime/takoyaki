@@ -6,9 +6,10 @@ mod use_plugin;
 mod plug;
 
 use clap::{Command, Arg, ArgAction};
+use anyhow::Result;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<()> {
     let command = Command::new("takoyaki")
         .arg_required_else_help(true)
         .about("takoyaki - Get your git contribution graph in your terminal")
@@ -60,7 +61,7 @@ async fn main() {
 
     match matches.subcommand() {
         Some(("init" , _)) => {
-            initer::initialize_instance().await;
+            initer::initialize_instance().await?
         },
         // Some(("plug" , sub_matches)) => {
         //     // plug::plug(
@@ -81,6 +82,8 @@ async fn main() {
         _ => {
 
         }
-    };
+    }
+
+    Ok(())
 }
 

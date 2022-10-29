@@ -8,7 +8,7 @@ mod plugin;
 mod path;
 mod printable_grid;
 mod ready_state;
-mod takoyaki;
+mod takoyaki_core;
 
 // Export everything from every module
 pub use cache::*;
@@ -19,7 +19,7 @@ pub use plugin::*;
 pub use path::*;
 pub use printable_grid::*;
 pub use ready_state::*;
-pub use takoyaki::*;
+pub use takoyaki_core::*;
 
 // Making reqwest public just in case someone needs to use it
 pub use reqwest;

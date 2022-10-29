@@ -8,49 +8,48 @@
         </div>
         <div class="flex text-text mt-4 gap-x-4">
             <div
-                class="os bg-surface0/40 p-3 w-56 px-4 rounded-xl arch flex items-center justify-center font-bold"
+                class="os bg-surface0/20 p-3 w-56 px-4 pb-5 rounded-xl arch flex flex-col items-center justify-center font-bold"
                 @click="select('arch')"
             >
-                <i class="fl-archlinux text-2xl mr-2" /> Arch Linux
+                <i class="fl-archlinux text-4xl m-2 mb-2 text-blue" /> Arch Linux 
             </div>
             <div
-                class="os bg-surface0/40 p-3 w-56 px-4 rounded-xl ubuntu flex items-center justify-center font-bold"
+                class="os bg-surface0/20 p-3 w-56 px-4 pb-5 rounded-xl ubuntu flex flex-col items-center justify-center font-bold"
                 @click="select('ubuntu')"
             >
-                <i class="fl-ubuntu text-2xl mr-3" /> Ubuntu
+                <i class="fl-ubuntu text-4xl mr-3 m-2 text-peach" /> Ubuntu
             </div>
             <div
-                class="os bg-surface0/40 p-3 w-56 px-4 rounded-xl macos flex items-center justify-center font-bold"
+                class="os bg-surface0/20 p-3 w-56 px-4 pb-5 rounded-xl macos flex flex-col items-center justify-center font-bold"
                 @click="select('macos')"
             >
-                <i class="fl-apple text-2xl mr-3" /> MacOS
+                <i class="fl-apple text-3xl mr-3 m-2 text-text" /> MacOS
             </div>
             <div
-                class="os bg-surface0/40 p-3 w-56 px-4 rounded-xl termux flex items-center justify-center font-bold"
+                class="os bg-surface0/20 p-3 w-56 px-4 pb-5 rounded-xl termux flex flex-col items-center justify-center font-bold"
                 @click="select('termux')"
             >
-                <i class="fa-brands fa-android text-2xl mr-3" /> Termux
+                <i class="fa-brands fa-android text-4xl mr-3 mb-1 mx-2 text-green" /> Termux
             </div>
             <div
-                class="os bg-surface0/40 p-3 w-56 px-4 rounded-xl flex windows items-center justify-center font-bold"
+                class="os bg-surface0/40 p-3 w-56 px-4 pb-5 rounded-xl flex windows flex-col items-center justify-center font-bold"
                 @click="select('windows')"
             >
-                <i class="fa-brands fa-windows text-2xl mr-3" /> Windows
+                <i class="fa-brands fa-windows text-4xl mr-3 m-2 text-sky" /> Windows
             </div>
         </div>
         <div class="guide mt-10 text-text">
             <div class="text-2xl font-bold">Installation guide</div>
             <div class="text-overlay1 mt-2 font-semibold">
-                Make sure to follow all the instructions properly
+                Make sure to copy all the commands carefully!
             </div>
 
             <div class="mt-6 font-bold text-text">
                 Open up your terminal and run the following commands
             </div>
             <div
-                class="code p-4 px-6 rounded-xl bg-surface0/40 mt-2 text-overlay2 tracking-wide font-semibold"
+                class="code p-4 px-6 rounded-xl bg-surface0/20 mt-4 text-text tracking-wide font-semibold"
             >
-                <!-- $ curl https://usetakoyaki.kyeboard.xyz | sh -->
                 $ {{ command }}
             </div>
 
@@ -58,7 +57,7 @@
                 Once installed, you can now start using takoyaki!
             </div>
             <div
-                class="code p-4 px-6 rounded-xl bg-surface0/40 mt-2 text-overlay2 tracking-wide font-semibold"
+                class="code p-4 px-6 rounded-xl bg-surface0/20 mt-4 text-text tracking-wide font-semibold"
             >
                 $ takoyaki --help
             </div>
@@ -78,16 +77,16 @@ const select = (name: string) => {
 
 watch(current_os, (new_val) => {
     document.querySelectorAll(".os").forEach((x) => {
-        x.classList.remove(...["bg-blue/100", "text-base"]);
-        x.classList.add(...["bg-surface0/40", "text-text"]);
+        x.classList.remove(...["bg-surface0/40"]);
+        x.classList.add(...["bg-surface0/20"]);
     });
 
     document
         .querySelector("." + new_val)
-        ?.classList.remove(...["bg-surface0/40", "text-text"]);
+        ?.classList.remove(...["bg-surface0/20"]);
     document
         .querySelector("." + new_val)
-        ?.classList.add(...["bg-blue/100", "text-base"]);
+        ?.classList.add(...["bg-surface0/40"]);
 
     switch (new_val) {
         case "arch":

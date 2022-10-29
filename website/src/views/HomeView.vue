@@ -5,7 +5,7 @@ import SideBar from "../components/SideBar.vue";
 <template>
     <SideBar />
     <div
-        class="w-screen h-screen bg-base flex-col-reverse md:flex-row flex items-center justify-center text-text md:pl-44 md:pr-10 px-[5%]"
+        class="w-screen h-screen pt-44 md:pt-0 bg-base flex-col-reverse md:flex-row flex items-center justify-center text-text md:pl-44 md:pr-10 px-[5%]"
     >
         <div class="info md:w-1/2 mr-20 mt-10 md:mt-0">
             <div class="text-5xl font-bold leading-[60px]">

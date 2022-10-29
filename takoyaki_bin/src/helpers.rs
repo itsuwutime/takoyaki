@@ -1,15 +1,16 @@
 use std::{path::PathBuf, fs::create_dir_all};
 use crate::logger::Logger;
+use anyhow::{Context , Result};
 
-pub fn get_config_directory() -> PathBuf {
+pub fn get_config_directory() -> Result<PathBuf> {
     // Get config directory using dirs crate
     let config = dirs::config_dir();
     let logger = Logger::new();
 
     // Check if the directory is available, or rollback to $HOME/.config (For Android)
-    match config {
+    let endpoint = match config {
         Some(config_directory) => {
-            return config_directory
+            config_directory.join("takoyaki")
         },
         None => {
             // Get home directory
@@ -24,12 +25,20 @@ pub fn get_config_directory() -> PathBuf {
             }
 
             // Build endpoint
-            let config_directory = home.unwrap().join(".config");
+            let config_directory = home.unwrap().join(".config");  // It is safe to unwrap here!
 
             // Create directory if not available
-            logger.error(create_dir_all(&config_directory).expect_err("Error while creating directory!").to_string().as_ref());
-
-            return config_directory // It is safe to unwrap here!
+            create_dir_all(&config_directory)
+                .with_context(|| "Error while creating a new directory!")
+            ;
+            
+            config_directory.join("takoyaki")
         }
-    }
+    };
+
+    create_dir_all(&endpoint)
+        .with_context(|| "Error while creating a new directory!")
+    ;
+
+    Ok(endpoint)
 }

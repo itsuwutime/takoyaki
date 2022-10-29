@@ -60,27 +60,27 @@ async fn main() {
 
     match matches.subcommand() {
         Some(("init" , _)) => {
-            initer::initialize_instance().await
+            initer::initialize_instance().await;
         },
-        Some(("plug" , sub_matches)) => {
-            plug::plug(
-                sub_matches.get_one::<String>("repo").unwrap(),
-                sub_matches.get_one::<String>("branch").unwrap(),
-                sub_matches.get_one::<String>("path").unwrap()
-            ).await
-        },
-        Some(("use" , sub_matches)) => {
-            use_plugin::use_plugin(sub_matches.get_one::<String>("plugin").unwrap());
-        },
-        Some(("unplug" , sub_matches)) => {
-            unplug::unplug(sub_matches.get_one::<String>("plugin").unwrap());
-        },
-        Some(("" , sub_matches)) => {
-            unplug::unplug(sub_matches.get_one::<String>("plugin").unwrap());
-        },
+        // Some(("plug" , sub_matches)) => {
+        //     // plug::plug(
+        //     //     sub_matches.get_one::<String>("repo").unwrap(),
+        //     //     sub_matches.get_one::<String>("branch").unwrap(),
+        //     //     sub_matches.get_one::<String>("path").unwrap()
+        //     // ).await
+        // },
+        // Some(("use" , sub_matches)) => {
+        //     use_plugin::use_plugin(sub_matches.get_one::<String>("plugin").unwrap());
+        // },
+        // Some(("unplug" , sub_matches)) => {
+        //     unplug::unplug(sub_matches.get_one::<String>("plugin").unwrap());
+        // },
+        // Some(("" , sub_matches)) => {
+        //     unplug::unplug(sub_matches.get_one::<String>("plugin").unwrap());
+        // },
         _ => {
 
         }
-    }
+    };
 }
 

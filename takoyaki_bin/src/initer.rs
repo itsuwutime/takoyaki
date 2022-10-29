@@ -1,32 +1,34 @@
 use std::{fs::File, io};
-use colored::*;
+use anyhow::{Context , Result}; 
 
 use crate::{logger::Logger, helpers::get_config_directory};
 
-pub async fn initialize_instance() {
+pub async fn initialize_instance() -> Result<()> {
     let logger = Logger::new();
-    let config = get_config_directory();
+    let config = get_config_directory()?;
 
-    let config_dir = config.join("takoyaki");
-    let config_path = config_dir.join("config.toml");
+    let config_path = config.join("config.toml");
 
-    std::fs::create_dir_all(&config_dir).expect("Error while creating a new directory");
-
-    println!("{} {}" , "==>".green() , "Initializing a new instace of takoyaki...".white());
-    println!("{} {} {}..." , "==>".green() , "Populating default config for takoyaki at".white() , config_path.display().to_string().bold());
-
+    logger.success("Initializing a new instance of takoyaki...");
+    logger.success(format!("Populating default config for takoyaki at {}" , config_path.display()).as_ref());
+    
     // Download file
-    let req = reqwest::get("https://raw.githubusercontent.com/kyeboard/takoyaki/main/default.toml").await.expect("Error while making a request").bytes().await.expect("Error while parsing the response!");
+    let req = reqwest::get("https://raw.githubusercontent.com/kyeboard/takoyaki/main/default.toml").await
+        .with_context(|| "Cannot fetch data, make sure you have an active internet connection!")?
+        .bytes()
+        .await
+        .with_context(|| "Error while parsing the context of the response!")?;
+    
+    // Create confog file
+    let mut out = File::create(config_path)
+        .with_context(|| "Error while creating a new file!")?
+    ;
 
-    let mut out = File::create(config_path).expect("Error file creating the config file!");
-
+    // Copy over the contents
     io::copy(&mut req.as_ref(), &mut out).expect("Error while writing to file!");
 
-    println!("{} {}" , "==>".green() , "Successfully populated default config!".white());
-    println!("{} {}" , "==>".green() , "Adding touches...".white());
+    logger.success("Successfully populated default config!");
+    logger.success("Done!");
 
-    // Create all the directory 
-    std::fs::create_dir_all(&config_dir.join("plugins")).expect("Error while creating a directory");
-
-    println!("{} {}" , "==>".green() , "Done!".white());
+    Ok(())
 }

@@ -1,15 +1,25 @@
 // Gonna add comments so that I don't end up forgetting in the future
 
-// Make every module public
-pub mod cache;
-pub mod config;
-pub mod helpers;
-pub mod logger;
-pub mod plugin;
-pub mod path;
-pub mod printable_grid;
-pub mod ready_state;
-pub mod takoyaki;
+mod cache;
+mod config;
+mod helpers;
+mod logger;
+mod plugin;
+mod path;
+mod printable_grid;
+mod ready_state;
+mod takoyaki;
+
+// Export everything from every module
+pub use cache::*;
+pub use config::*;
+pub use helpers::*;
+pub use logger::*;
+pub use plugin::*;
+pub use path::*;
+pub use printable_grid::*;
+pub use ready_state::*;
+pub use takoyaki::*;
 
 // Making reqwest public just in case someone needs to use it
 pub use reqwest;

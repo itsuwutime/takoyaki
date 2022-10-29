@@ -2,7 +2,7 @@
 use serde::{Deserialize, Serialize};
 
 // Import in built modules
-use crate::{plugin::Plugin, config::Config, cache::Cache};
+use crate::{Plugin, Config, Cache};
 
 // Main tokayaki entrypoint
 #[derive(Default)]
@@ -57,7 +57,7 @@ where
         ).resolve::<T>(cache).await?; 
         
         // Get the `PrintableGraph` struct and pretty print it
-        plugin.execute(data).pretty_print(config);
+        plugin.execute(data).pretty_print(config).unwrap();
 
         // OK!
         Ok(())

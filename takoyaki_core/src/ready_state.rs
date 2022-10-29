@@ -3,7 +3,7 @@ use reqwest::RequestBuilder;
 use serde::Serialize;
 
 // Import inbuilt modules
-use crate::cache::Cache;
+use crate::Cache;
 
 // Pendind state types - Either its gonna make request or use existing cache
 pub enum Pending {

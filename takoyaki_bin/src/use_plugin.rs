@@ -19,7 +19,9 @@ pub fn use_plugin(name: &String) -> Result<()> {
         .arg("-c")
         .arg(executable)
         .spawn()
-        .expect("Error while running the plugin!");
+        .expect("Error while running the plugin!")
+        .wait()?
+    ;
 
     Ok(())
 }

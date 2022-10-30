@@ -2,6 +2,7 @@ mod initer;
 mod unplug;
 mod logger;
 mod helpers;
+mod metadata;
 mod use_plugin;
 mod plug;
 
@@ -63,13 +64,11 @@ async fn main() -> Result<()> {
         Some(("init" , _)) => {
             initer::initialize_instance().await?
         },
-        // Some(("plug" , sub_matches)) => {
-        //     // plug::plug(
-        //     //     sub_matches.get_one::<String>("repo").unwrap(),
-        //     //     sub_matches.get_one::<String>("branch").unwrap(),
-        //     //     sub_matches.get_one::<String>("path").unwrap()
-        //     // ).await
-        // },
+        Some(("plug" , sub_matches)) => {
+            plug::plug(
+                sub_matches.get_one::<String>("name").unwrap().to_owned() // It is required so it should contain something
+            ).await
+        },
         // Some(("use" , sub_matches)) => {
         //     use_plugin::use_plugin(sub_matches.get_one::<String>("plugin").unwrap());
         // },

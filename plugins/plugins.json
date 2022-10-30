@@ -6,19 +6,8 @@
             "description": "GitHub is a code hosting platform for version control and collaboration. It lets you and others work together on projects from anywhere.",
             "developer_url": "https://www.github.com/kyeboard",
             "image": "https://cdn-icons-png.flaticon.com/512/5968/5968866.png",
-            "branch": "main",
-            "path": "/plugins/github/",
-            "home_page": "https://www.github.com"
-        },
-        {
-            "name": "GitLab",
-            "description": "GitLab helps you automate the builds, integration, and verification of your code.",
-            "developer_url": "https://www.github.com/kyeboard",
-            "image": "https://cdn4.iconfinder.com/data/icons/logos-and-brands/512/144_Gitlab_logo_logos-512.png",
-            "repository": "https://www.github.com/kyeboard/takoyaki",
-            "branch": "main",
-            "path": "/plugins/gitlab/",
-            "home_page": "https://www.gitlab.com"
+            "home_page": "https://www.github.com",
+            "config_url": "https://github.com/kyeboard/takoyaki/blob/main/plugins/github/takoyaki.plugin.toml"
         }
     ]
 }

@@ -41,7 +41,9 @@ impl PrintableGrid {
     // Inserts a printable at `x` and `y` coords
     pub fn insert(&mut self , x: usize, y: usize , item: Printable) {
         // Resize the grid till `x` on x axis
-        self.grid.resize(x , vec![]);
+        if self.grid.len() <= x {
+            self.grid.resize(x + 1, vec![]);
+        }
 
         // Resize the grid till `y` ony axis
         self.grid[x].resize(y , Printable::default());

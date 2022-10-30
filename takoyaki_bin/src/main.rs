@@ -2,6 +2,7 @@ mod initer;
 mod refresh;
 mod unplug;
 mod logger;
+mod daemon;
 mod helpers;
 mod metadata;
 mod use_plugin;
@@ -55,7 +56,11 @@ async fn main() -> Result<()> {
         )
         .subcommand(
             Command::new("refresh")
-                .about("Updates the cache to get the latest information (Used by service to update cache every hour)")
+                .about("Updates the cache to get the latest information")
+        )
+        .subcommand(
+            Command::new("daemon")
+                .about("Starts a daemon that updates the cache every hour to get updated graph")
         )
     ;
 
@@ -78,6 +83,9 @@ async fn main() -> Result<()> {
         },
         Some(("refresh" , _)) => {
             refresh::refresh_plugins()?;
+        },
+        Some(("daemon" , _)) => {
+            daemon::start_daemon()?;
         },
         _ => {
 

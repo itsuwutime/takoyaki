@@ -7,7 +7,7 @@
             "developer_url": "https://www.github.com/kyeboard",
             "image": "https://cdn-icons-png.flaticon.com/512/5968/5968866.png",
             "home_page": "https://www.github.com",
-            "config_url": "https://github.com/kyeboard/takoyaki/blob/main/plugins/github/takoyaki.plugin.toml"
+            "config_url": "https://raw.githubusercontent.com/kyeboard/takoyaki/main/plugins/github/takoyaki.plugin.toml"
         }
     ]
 }

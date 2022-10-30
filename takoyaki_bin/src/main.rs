@@ -1,4 +1,5 @@
 mod initer;
+mod refresh;
 mod unplug;
 mod logger;
 mod helpers;
@@ -53,8 +54,8 @@ async fn main() -> Result<()> {
                 .arg_required_else_help(true)
         )
         .subcommand(
-            Command::new("clean")
-                .about("Cleans up the cache (warning: It might take a bit for the plugins to run for the first time after clean)")
+            Command::new("refresh")
+                .about("Updates the cache to get the latest information (Used by service to update cache every hour)")
         )
     ;
 
@@ -74,6 +75,9 @@ async fn main() -> Result<()> {
         },
         Some(("unplug" , sub_matches)) => {
             unplug::unplug(sub_matches.get_one::<String>("plugin").unwrap())?;
+        },
+        Some(("refresh" , _)) => {
+            refresh::refresh_plugins()?;
         },
         _ => {
 

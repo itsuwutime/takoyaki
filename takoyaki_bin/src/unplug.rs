@@ -22,6 +22,12 @@ pub fn unplug(name: &String) -> Result<()> {
     // Remove directory
     fs::remove_dir_all(plugin_dir).expect("Error while deleting the plugin!");
 
+    // Remove cache
+    let mut cache_dir = get_config_directory()?;
+    cache_dir.extend(&["cache" , name]);
+
+    fs::remove_dir_all(cache_dir).expect("Error while deleting the plugin!");
+
     logger.success("Successfully deleted the plugin!");
     
     Ok(())

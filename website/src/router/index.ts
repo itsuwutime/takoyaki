@@ -4,6 +4,7 @@ import HomeView from "../views/HomeView.vue";
 import Install from "../views/Install.vue";
 import NewPlugin from "../views/NewPlugin.vue";
 import Documentation from "../views/Documentation.vue"
+import Plugin from "../views/Plugin.vue"
 import DocumentationEmpty from "../views/Documentation_Empty.vue"
 
 const router = createRouter({
@@ -11,7 +12,6 @@ const router = createRouter({
     routes: [
         {
             path: "/",
-            name: "home",
             component: HomeView,
         },
         {
@@ -33,6 +33,10 @@ const router = createRouter({
         {
             path: "/documentation",
             component: DocumentationEmpty,
+        },
+        {
+            path: "/plugin/:id",
+            component: Plugin,
         },
     ],
 });

@@ -3,7 +3,7 @@
         <div class="text-3xl font-bold">Plugins</div>
         <div class="text-overlay1 font-semibold mt-2">Awesome plugins built by awesome developers</div>
         <div class="mt-10 flex gap-x-12 flex-wrap gap-y-6">
-            <a class="plugin bg-surface0/20 p-6 rounded-lg w-96" v-for="plugin in plugins.plugins" :key="plugin.name" :href="'/plugin/' + plugin.name.toLowerCase()">
+            <a class="plugin bg-surface0/20 p-8 rounded-lg w-[500px]" v-for="plugin in plugins.plugins" :key="plugin.name" :href="'/plugin/' + plugin.name.toLowerCase()">
                 <div class="flex flex-col h-full">
                     <img :src="plugin.image" class="w-[70px] mr-4 float-left" />
                     <div class="info mt-5 mb-4">
@@ -28,8 +28,6 @@ const plugins = ref<Array<any>>([]);
     const res = await fetch("https://raw.githubusercontent.com/kyeboard/takoyaki/main/plugins/plugins.json");
 
     plugins.value = await res.json();
-
-    console.log(plugins.value)
 })()
 </script>
 

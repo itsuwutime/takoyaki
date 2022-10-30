@@ -1,7 +1,7 @@
 use reqwest::Result;
 use serde::{Deserialize , Serialize};
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Metadata {
     pub name: String,
     pub repository: String,
@@ -21,7 +21,7 @@ pub async fn get_metadata(name: &str) -> Result<Option<Metadata>> {
     let plugins: Response = reqwest::get("https://raw.githubusercontent.com/kyeboard/takoyaki/main/plugins/plugins.json").await?.json().await?;
 
     for plugin in plugins.plugins.iter() {
-        if plugin.name.to_lowercase() == name.to_string() {
+        if plugin.name.to_lowercase() == *name {
             return Ok(Some(plugin.clone()))
         }
     };

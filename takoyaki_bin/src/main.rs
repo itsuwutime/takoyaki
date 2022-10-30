@@ -69,15 +69,12 @@ async fn main() -> Result<()> {
                 sub_matches.get_one::<String>("name").unwrap().to_owned() // It is required so it should contain something
             ).await?
         },
-        // Some(("use" , sub_matches)) => {
-        //     use_plugin::use_plugin(sub_matches.get_one::<String>("plugin").unwrap());
-        // },
-        // Some(("unplug" , sub_matches)) => {
-        //     unplug::unplug(sub_matches.get_one::<String>("plugin").unwrap());
-        // },
-        // Some(("" , sub_matches)) => {
-        //     unplug::unplug(sub_matches.get_one::<String>("plugin").unwrap());
-        // },
+        Some(("use" , sub_matches)) => {
+            use_plugin::use_plugin(sub_matches.get_one::<String>("plugin").unwrap())?;
+        },
+        Some(("unplug" , sub_matches)) => {
+            unplug::unplug(sub_matches.get_one::<String>("plugin").unwrap())?;
+        },
         _ => {
 
         }

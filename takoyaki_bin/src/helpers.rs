@@ -29,7 +29,7 @@ pub fn get_config_directory() -> Result<PathBuf> {
 
             // Create directory if not available
             create_dir_all(&config_directory)
-                .with_context(|| "Error while creating a new directory!")
+                .with_context(|| "Error while creating a new directory!")?
             ;
             
             config_directory.join("takoyaki")
@@ -37,7 +37,7 @@ pub fn get_config_directory() -> Result<PathBuf> {
     };
 
     create_dir_all(&endpoint)
-        .with_context(|| "Error while creating a new directory!")
+        .with_context(|| "Error while creating a new directory!")?
     ;
 
     Ok(endpoint)

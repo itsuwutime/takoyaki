@@ -3,16 +3,19 @@ use std::{io::{Cursor, Write}, fs::Permissions, os::unix::prelude::PermissionsEx
 use inquire::Text;
 use reqwest::StatusCode;
 use serde::Deserialize;
-use crate::logger::Logger;
-use throbber::Throbber;
-use anyhow::Context;
+use crate::{logger::Logger , helpers::get_config_directory};
 use reqwest::Result;
 
 #[derive(Deserialize , Debug)]
-pub struct PlugConfig {
+pub struct PlugConfigData {
     pub name: String,
-    pub binary: String,
+    pub bin_url: String,
     pub requires: Vec<String>
+}
+
+#[derive(Deserialize , Debug)]
+pub struct PlugConfig {
+    description: PlugConfigData
 }
 
 pub async fn plug(name: String) -> Result<()> {
@@ -60,69 +63,89 @@ pub async fn plug(name: String) -> Result<()> {
     }
     
     logger.success("Parsing metadata...");
-
-    println!("{:?}" , metadata.config_url.clone());
     
     // Parse 
     let parsed = toml::from_str::<PlugConfig>(content.text().await?.as_ref()).unwrap(); // Since the config will be reviewed by me, there is relatively low chance of plugin's config bugged.
     
     // Notify users about downloading the plugin
-    logger.success("Downloading the plugin...");
+    logger.success("Downloading the plugin... (it may take a while)");
     
-    println!("{:?}" , parsed);
+    // Build path for plugin directory
+    let mut plugin_dir = get_config_directory().unwrap();
 
-    // let mut throbber = Throbber::new()
-    //     .message("Downloading plugin...".to_string());
+    // Extend till the endpoint
+    plugin_dir.extend(&["plugins" , parsed.description.name.as_ref()]);
+        
+    // Download plugin
+    let plugin = reqwest::get(parsed.description.bin_url).await;
     
-    // throbber.start();
+    if plugin.is_err() {
+        logger.error("Error while making the request! Either you don't have an active internet connection or the plugin is bugged. You should report this error!");
+
+        std::process::exit(0);
+    }
     
-    // let plugin_meta = parsed.unwrap();
+    // Create directory for that plugin
+    std::fs::create_dir_all(&plugin_dir).expect("Error while creating a directory!");
     
-    // // Build path for plugin directory
-    // let plugin_dir = dirs::config_dir().unwrap().join("takoyaki").join("plugins").join(&plugin_meta.name);
+    // Create a new file for the executable
+    let mut file = std::fs::File::create(plugin_dir.join("start")).unwrap();
     
-    // // Download plugin
-    // let plugin = reqwest::get(plugin_meta.binary.clone()).await.unwrap();
+    // Set executable permissions
+    let perm_res = file.set_permissions(Permissions::from_mode(0o711));
+
+    if perm_res.is_err() {
+        logger.error("Error while setting up executable permissions for the binary!");
+
+        std::process::exit(0)
+    }
     
-    // // Create directory for that plugin
-    // std::fs::create_dir_all(&plugin_dir).expect("Error while creating a directory!");
+    // Create a new cursor
+    let mut cursor = Cursor::new(plugin?.bytes().await.unwrap());
     
-    // // Create a new file for the executable
-    // let mut file = std::fs::File::create(plugin_dir.join("start")).unwrap();
+    // Download the file
+    let copy_res = std::io::copy(&mut cursor , &mut file);
+
+    if copy_res.is_err() {
+        logger.error("Error while downloading the binary!")
+    }
     
-    // // Set executable permissions
-    // file.set_permissions(Permissions::from_mode(0o711)).expect("Error while setting up executable permissions for the binary");
+    logger.success("Successfully downloaded the binary!");
+    logger.success("Setting up config for the plugin...");
     
-    // // Create a new cursor
-    // let mut cursor = Cursor::new(plugin.bytes().await.unwrap());
+    let mut config: HashMap<String , String> = HashMap::new();
+    
+    // Iterate through all the required configs
+    for option in parsed.description.requires.iter() {
+        let value = Text::new(format!("Enter {}:" , option).as_ref()).prompt();
+
+        if value.is_err() {
+            logger.error("Exiting...");
+
+            std::process::exit(0);
+        }
+    
+        config.insert(option.to_owned() , value.unwrap());
+    }
+    
+    let file = std::fs::File::create(plugin_dir.join("config.toml"));
+
+    if file.is_err() {
+        logger.error("Error while creating a new file!")
+    }
+
     //
-    // // Download the file
-    // std::io::copy(&mut cursor , &mut file).expect("Error while writing to file");
-    //
-    // throbber.success("Downloaded the plugin".to_string());
-    //
-    // throbber.end();
-    //
-    // // Take input of the config
-    // println!("{} {}" , "==>".green() , "Setting up config for the plugin...".white());
-    //
-    // let mut config: HashMap<String , String> = HashMap::new();
-    //
-    // // Iterate through all the required configs
-    // for option in plugin_meta.requires.iter() {
-    //     let value = Text::new(format!("Enter {}:" , option).as_ref()).prompt().unwrap();
-    //
-    //     config.insert(option.to_owned() , value);
-    // }
-    //
-    // let mut file = std::fs::File::create(plugin_dir.join("config.toml")).unwrap();
-    //
-    // file.write_all(toml::to_string(&config).unwrap().as_bytes()).expect("Error while writing to cache!");
-    //
-    // // Create cache folder
-    // std::fs::create_dir_all(dirs::config_dir().unwrap().join("takoyaki").join("cache").join(&plugin_meta.name)).expect("Unable to create directory");
-    //
-    // println!("{} {}" , "==>".green() , format!("Successfully installed the plugin. You can now use it by running `takoyaki use {}`" , plugin_meta.name).white());
+    let write_res = file.unwrap().write_all(
+    toml::to_string(&config)
+        .unwrap()
+        .as_bytes()
+    );
+
+    if write_res.is_err() {
+        logger.error("Error while writing to file!")
+    }
+
+    logger.success( format!("Successfully installed the plugin! You can now use it by running `takoyaki use {}`" , parsed.description.name).as_ref());
 
     Ok(())
 }

@@ -11,7 +11,12 @@ pub fn refresh_plugins() -> Result<()> {
         let file_name = name?.file_name();
 
         // Remove the cache first
-        std::fs::remove_dir_all(config_directory.join("cache").join(&file_name))?;
+        let res = std::fs::remove_dir_all(config_directory.join("cache").join(&file_name));
+
+        // Nothing
+        if res.is_err() {
+
+        }
 
         // Use the plugin to fill up the new cache
         crate::use_plugin::use_plugin(&file_name.to_str().unwrap().to_string())?;

@@ -1,4 +1,4 @@
 [description]
 name = "github"
-bin_url = ""
+bin_url = "https://raw.githubusercontent.com/kyeboard/takoyaki/main/plugins/github/bin/github"
 requires = ["username" , "token"]

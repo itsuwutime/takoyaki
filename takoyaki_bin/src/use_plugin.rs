@@ -1,13 +1,18 @@
-use colored::*;
 use std::process::Command;
+use anyhow::Result;
+use crate::helpers::get_config_directory;
+use crate::logger::Logger;
 
-pub fn use_plugin(name: &String) {
-    let mut executable = dirs::config_dir().unwrap();
+pub fn use_plugin(name: &String) -> Result<()> {
+    let mut executable = get_config_directory()?;
+    let logger = Logger::new();
 
-    executable.extend(&["takoyaki" , "plugins" , name.as_ref() , "start"]);
+    executable.extend(&["plugins" , name.as_ref() , "start"]);
 
     if !executable.exists() {
-        return println!("{}" , format!("Plugin {} does not exists!" , name).red());
+        logger.error("The plugin does not exist!");
+
+        std::process::exit(0)
     }
 
     Command::new("sh")
@@ -15,5 +20,7 @@ pub fn use_plugin(name: &String) {
         .arg(executable)
         .spawn()
         .expect("Error while running the plugin!");
+
+    Ok(())
 }
 

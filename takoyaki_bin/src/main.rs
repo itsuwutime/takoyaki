@@ -1,43 +1,32 @@
 mod initer;
 mod unplug;
+mod logger;
+mod helpers;
+mod metadata;
 mod use_plugin;
 mod plug;
 
-use clap::{Command, Arg};
+use clap::{Command, Arg, ArgAction};
+use anyhow::Result;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<()> {
     let command = Command::new("takoyaki")
         .arg_required_else_help(true)
-        .about("takoyaki - Get your git contribution gaph in your terminal")
+        .about("takoyaki - Get your git contribution graph in your terminal")
         .version(option_env!("CARGO_PKG_VERSION").unwrap_or("unknown"))
         .subcommand(
             Command::new("init")
-                .about("Initializes a new instance of takoyaki to get started")
+                .about("Initialize an instance of takoyaki")
         )
         .subcommand(
             Command::new("plug")
                 .about("Installs a new plugin")
                 .arg(
-                    Arg::new("branch")
-                        .default_value("main")
-                        .short('b')
-                        .long("branch")
-                        .help("Use a custom branch")
-                )
-                .arg(
-                    Arg::new("path")
-                        .default_value("/")
-                        .short('p')
-                        .long("path")
-                        .help("Use a specific directory")
-                )
-                .arg(
-                    Arg::new("repo")
+                    Arg::new("name")
                         .required(true)
-                        .short('r')
-                        .long("repo")
-                        .help("Repository name [Only add the username and the repo name, example: kyeboard/takoyaki] ")
+                        .action(ArgAction::Set)
+                        .help("Name of the plugin to install")
                 )
                 .arg_required_else_help(true)
         )
@@ -47,8 +36,7 @@ async fn main() {
                 .arg(
                     Arg::new("plugin")
                         .required(true)
-                        .short('p')
-                        .long("plugin")
+                        .action(ArgAction::Set)
                         .help("The name of the plugin to use")
                 )
                 .arg_required_else_help(true)
@@ -59,15 +47,14 @@ async fn main() {
                 .arg(
                     Arg::new("plugin")
                         .required(true)
-                        .short('p')
-                        .long("plugin")
+                        .action(ArgAction::Set)
                         .help("The name of the plugin to uninstall")
                 )
                 .arg_required_else_help(true)
         )
         .subcommand(
             Command::new("clean")
-                .about("Removes all the cache so that on the next run plugins can synx with the new data")
+                .about("Cleans up the cache (warning: It might take a bit for the plugins to run for the first time after clean)")
         )
     ;
 
@@ -75,27 +62,24 @@ async fn main() {
 
     match matches.subcommand() {
         Some(("init" , _)) => {
-            initer::initialize_instance().await
+            initer::initialize_instance().await?
         },
         Some(("plug" , sub_matches)) => {
             plug::plug(
-                sub_matches.get_one::<String>("repo").unwrap(),
-                sub_matches.get_one::<String>("branch").unwrap(),
-                sub_matches.get_one::<String>("path").unwrap()
-            ).await
+                sub_matches.get_one::<String>("name").unwrap().to_owned() // It is required so it should contain something
+            ).await?
         },
         Some(("use" , sub_matches)) => {
-            use_plugin::use_plugin(sub_matches.get_one::<String>("plugin").unwrap());
+            use_plugin::use_plugin(sub_matches.get_one::<String>("plugin").unwrap())?;
         },
         Some(("unplug" , sub_matches)) => {
-            unplug::unplug(sub_matches.get_one::<String>("plugin").unwrap());
-        },
-        Some(("" , sub_matches)) => {
-            unplug::unplug(sub_matches.get_one::<String>("plugin").unwrap());
+            unplug::unplug(sub_matches.get_one::<String>("plugin").unwrap())?;
         },
         _ => {
 
         }
     }
+
+    Ok(())
 }
 

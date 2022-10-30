@@ -3,8 +3,7 @@ import Marketplace from "../views/Marketplace.vue";
 import HomeView from "../views/HomeView.vue";
 import Install from "../views/Install.vue";
 import NewPlugin from "../views/NewPlugin.vue";
-import Me from "../views/Me.vue";
-import Documentation from "../views/Documentation.vue";
+import Documentation from "../views/Documentation.vue"
 import DocumentationEmpty from "../views/Documentation_Empty.vue"
 
 const router = createRouter({
@@ -18,10 +17,6 @@ const router = createRouter({
         {
             path: "/install",
             component: Install,
-        },
-        {
-            path: "/me",
-            component: Me,
         },
         {
             path: "/marketplace",

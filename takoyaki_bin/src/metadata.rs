@@ -8,9 +8,8 @@ pub struct Metadata {
     pub description: String,
     pub developer_url: String,
     pub image: String,
-    pub branch: String,
-    pub path: String,
     pub home_page: String,
+    pub config_url: String
 }
 
 #[derive(Deserialize)]

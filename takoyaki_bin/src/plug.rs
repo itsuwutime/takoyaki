@@ -5,15 +5,17 @@ use reqwest::StatusCode;
 use serde::Deserialize;
 use crate::logger::Logger;
 use throbber::Throbber;
+use anyhow::Context;
+use reqwest::Result;
 
-#[derive(Deserialize)]
+#[derive(Deserialize , Debug)]
 pub struct PlugConfig {
     pub name: String,
     pub binary: String,
     pub requires: Vec<String>
 }
 
-pub async fn plug(name: String) {
+pub async fn plug(name: String) -> Result<()> {
     let logger = Logger::new();
 
     logger.success("Fetching metadata for the plugin...");
@@ -46,56 +48,51 @@ pub async fn plug(name: String) {
     // Final unwrap
     let metadata = metadata.unwrap();
 
-    // Build the end path
-    let path = format!("{} // {} // {}" , metadata.repository , metadata.branch, metadata.path);
+    // Make request
+    let content = reqwest::get(&metadata.config_url).await?;
+    
+    // Check if the response succeeded
+    if content.status() != StatusCode::OK {
+        // Notify users that they have either provide wrong args or the plugin is bugged
+        logger.error("Invalid config url found! Make sure you have an active internet connection or report this issue");
 
-    println!("{:?}" , path);
+        std::process::exit(0)
+    }
+    
+    logger.success("Parsing metadata...");
 
-    // // Make request
-    // let content = reqwest::get(path).await.unwrap();
-    //
-    // // Check if the response succeeded
-    // if content.status() != StatusCode::OK {
-    //     // Notify users that they have either provide wrong args or the plugin is bugged
-    //     return println!("{} {}" , "==>".red() , "Cannot find the plugin at the specific path! Make sure the path does not start and end with `/` or check if the repo exists".white());
-    // }
-    //
-    // // Notify users that metadata has been successfully retrived
-    // println!("{} {}" , "==>".green() , "Parsing metadata...".white());
-    //
-    // // Parse 
-    // let parsed = toml::from_str::<PlugConfig>(content.text().await.unwrap().as_ref());
-    //
-    // // Check if the parsing was success
-    // if parsed.is_err() {
-    //     // Erroring out means that there were some issues with the toml file
-    //     println!("{} {}" , "==>".red() , "Invalid configuration! Make sure that it is a valid toml. You must report this issue to the developer of the plugin!".white());
-    // }
-    //
-    // // Notify users about downloading the plugin
-    // // println!("{} {}" , "==>".green() , "Downloading plugin...".white());
+    println!("{:?}" , metadata.config_url.clone());
+    
+    // Parse 
+    let parsed = toml::from_str::<PlugConfig>(content.text().await?.as_ref()).unwrap(); // Since the config will be reviewed by me, there is relatively low chance of plugin's config bugged.
+    
+    // Notify users about downloading the plugin
+    logger.success("Downloading the plugin...");
+    
+    println!("{:?}" , parsed);
+
     // let mut throbber = Throbber::new()
     //     .message("Downloading plugin...".to_string());
-    //
+    
     // throbber.start();
-    //
+    
     // let plugin_meta = parsed.unwrap();
-    //
+    
     // // Build path for plugin directory
     // let plugin_dir = dirs::config_dir().unwrap().join("takoyaki").join("plugins").join(&plugin_meta.name);
-    //
+    
     // // Download plugin
     // let plugin = reqwest::get(plugin_meta.binary.clone()).await.unwrap();
-    //
+    
     // // Create directory for that plugin
     // std::fs::create_dir_all(&plugin_dir).expect("Error while creating a directory!");
-    //
+    
     // // Create a new file for the executable
     // let mut file = std::fs::File::create(plugin_dir.join("start")).unwrap();
-    //
+    
     // // Set executable permissions
     // file.set_permissions(Permissions::from_mode(0o711)).expect("Error while setting up executable permissions for the binary");
-    //
+    
     // // Create a new cursor
     // let mut cursor = Cursor::new(plugin.bytes().await.unwrap());
     //
@@ -126,5 +123,7 @@ pub async fn plug(name: String) {
     // std::fs::create_dir_all(dirs::config_dir().unwrap().join("takoyaki").join("cache").join(&plugin_meta.name)).expect("Unable to create directory");
     //
     // println!("{} {}" , "==>".green() , format!("Successfully installed the plugin. You can now use it by running `takoyaki use {}`" , plugin_meta.name).white());
+
+    Ok(())
 }
 

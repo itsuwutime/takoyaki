@@ -67,7 +67,7 @@ async fn main() -> Result<()> {
         Some(("plug" , sub_matches)) => {
             plug::plug(
                 sub_matches.get_one::<String>("name").unwrap().to_owned() // It is required so it should contain something
-            ).await
+            ).await?
         },
         // Some(("use" , sub_matches)) => {
         //     use_plugin::use_plugin(sub_matches.get_one::<String>("plugin").unwrap());

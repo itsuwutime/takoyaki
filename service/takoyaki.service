@@ -1,0 +1,8 @@
+[Unit]
+Description=Updates cache every hour to prevent delay on openin1g terminal
+
+[Service]
+ExecStart=bash -c "takoyaki daemon"
+
+[Install]
+WantedBy=multi-user.target

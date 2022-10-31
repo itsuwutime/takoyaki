@@ -21,6 +21,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useMeta } from "vue-meta";
+
+useMeta({
+    title: "Plugins - Marketplace - takoyaki"
+})
 
 interface PluginType {
     name: string,

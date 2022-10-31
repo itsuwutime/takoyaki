@@ -20,6 +20,7 @@
 import { ref } from "vue";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
+import { useMeta } from "vue-meta";
 import { useRoute, useRouter } from "vue-router";
 import hljs from "highlight.js";
 import "highlight.js/styles/nord.css"
@@ -29,6 +30,7 @@ marked.setOptions({
         return hljs.highlight(lang, code).value;
     }
 });
+
 
 interface Root {
     docs: Array<Docs>;
@@ -53,4 +55,17 @@ const router = useRouter();
         )
     );
 })();
+
+
+const format = (raw: string): string => {
+    const split = raw.split("-");
+
+    return split.map((v) => {
+        return v.charAt(0).toUpperCase() + v.slice(1);
+    }).join(" ")
+}
+
+useMeta({
+    title: `${format(route.params.id as string)} - Documentation - takoyaki`
+})
 </script>

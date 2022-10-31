@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import SideBar from "../components/SideBar.vue";
+import { useMeta } from "vue-meta";
+
+useMeta({
+    title: "Welcome to takoyaki - Blazingly fast git contribution in your terminal"
+})
 </script>
 
 <template>
@@ -63,3 +68,4 @@ import SideBar from "../components/SideBar.vue";
         <img src="/banner.png" class="md:w-[45%] ml-auto" />
     </div>
 </template>
+

@@ -67,6 +67,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
+import { useMeta } from "vue-meta";
 
 const current_os = ref<string>("");
 const command = ref<string>("yay -S takoyaki");
@@ -74,6 +75,10 @@ const command = ref<string>("yay -S takoyaki");
 const select = (name: string) => {
     current_os.value = name;
 };
+
+useMeta({
+    title: "Install takoyaki - blazingly fast!"
+})
 
 watch(current_os, (new_val) => {
     document.querySelectorAll(".os").forEach((x) => {

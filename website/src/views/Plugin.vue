@@ -28,8 +28,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import {useRoute, useRouter} from 'vue-router';
+import { useMeta } from 'vue-meta';
 
 const _plugin = ref<any>(null);
 const route = useRoute();
@@ -49,7 +50,10 @@ const router = useRouter();
     if(!_plugin.value) {
         return router.push({ path: "/marketplace" })
     }
-
-    console.log(_plugin.value)
 })()
+
+useMeta({
+    title: `Install plugin - takoyaki`
+})
+
 </script>

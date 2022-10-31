@@ -28,8 +28,8 @@ impl<'a> Command<'a> {
         return format!("   {}{}" , original , " ".repeat(req));
     }
 
-    pub fn add_command(&mut self , command: CommandInfo<'a>) {
-        self.commands.push(command);
+    pub fn add_commands(&mut self , commands: Vec<CommandInfo<'a>>) {
+        self.commands.extend(commands);
     }
 
     pub fn render(&self) {

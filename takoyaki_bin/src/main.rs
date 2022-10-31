@@ -1,3 +1,4 @@
+// Modules
 mod initer;
 mod refresh;
 mod unplug;
@@ -8,6 +9,7 @@ mod metadata;
 mod use_plugin;
 mod plug;
 
+// Deps
 use clap::{Command, Arg, ArgAction};
 use anyhow::Result;
 
@@ -72,7 +74,7 @@ async fn main() -> Result<()> {
         },
         Some(("plug" , sub_matches)) => {
             plug::plug(
-                sub_matches.get_one::<String>("name").unwrap().to_owned() // It is required so it should contain something
+                sub_matches.get_one::<String>("name").unwrap().to_owned()  
             ).await?
         },
         Some(("use" , sub_matches)) => {

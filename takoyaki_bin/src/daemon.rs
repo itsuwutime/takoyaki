@@ -1,7 +1,4 @@
-use std::thread;
-
 use anyhow::Result;
-
 use crate::logger::Logger;
 
 pub fn start_daemon() -> Result<()> {
@@ -19,6 +16,6 @@ pub fn start_daemon() -> Result<()> {
         logger.success("Finished refreshing... Sleeping for an hour...");
 
         // Sleep for an hour to prevent update on every second (thats mad)
-        thread::sleep(std::time::Duration::from_secs(3600));
+        std::thread::sleep(std::time::Duration::from_secs(3600));
     }
 }

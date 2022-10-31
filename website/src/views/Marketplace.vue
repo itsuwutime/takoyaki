@@ -22,7 +22,18 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-const plugins = ref<Array<any>>([]);
+interface PluginType {
+    name: string,
+    home_page: string,
+    description: string,
+    image: string
+}
+
+interface Plugins {
+    plugins: Array<PluginType> 
+}
+
+const plugins = ref<Plugins>({ plugins: [] });
 
 (async () => {
     const res = await fetch("https://raw.githubusercontent.com/kyeboard/takoyaki/main/plugins/plugins.json");

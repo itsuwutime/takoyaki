@@ -7,7 +7,7 @@
                 <div class="flex flex-col h-full">
                     <img :src="plugin.image" class="w-[70px] mr-4 float-left" />
                     <div class="info mt-5 mb-4">
-                        <div class="title text-xl font-bold">{{plugin.name}}</div>
+                        <div class="title text-xl font-bold flex items-center">{{plugin.name}} <i class="fa-duotone ml-3 text-blue fa-badge-check" /></div>
                         <div class="title text-overlay2 font-semibold mt-2 leading-7">{{plugin.description}}</div>
                     </div>
                     <div class="mt-auto flex items-center font-semibold text-blue">

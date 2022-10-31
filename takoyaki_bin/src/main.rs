@@ -1,4 +1,5 @@
 // Modules
+mod utils;
 mod initer;
 mod refresh;
 mod unplug;
@@ -10,89 +11,51 @@ mod use_plugin;
 mod plug;
 
 // Deps
-use clap::{Command, Arg, ArgAction};
+use crate::utils::Command;
 use anyhow::Result;
+use utils::CommandInfo;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let command = Command::new("takoyaki")
-        .arg_required_else_help(true)
-        .about("takoyaki - Get your git contribution graph in your terminal")
-        .version(option_env!("CARGO_PKG_VERSION").unwrap_or("unknown"))
-        .subcommand(
-            Command::new("init")
-                .about("Initialize an instance of takoyaki")
-        )
-        .subcommand(
-            Command::new("plug")
-                .about("Installs a new plugin")
-                .arg(
-                    Arg::new("name")
-                        .required(true)
-                        .action(ArgAction::Set)
-                        .help("Name of the plugin to install")
-                )
-                .arg_required_else_help(true)
-        )
-        .subcommand(
-            Command::new("use")
-                .about("Uses a plugin")
-                .arg(
-                    Arg::new("plugin")
-                        .required(true)
-                        .action(ArgAction::Set)
-                        .help("The name of the plugin to use")
-                )
-                .arg_required_else_help(true)
-        )
-        .subcommand(
-            Command::new("unplug")
-                .about("Uninstalls a plugin")
-                .arg(
-                    Arg::new("plugin")
-                        .required(true)
-                        .action(ArgAction::Set)
-                        .help("The name of the plugin to uninstall")
-                )
-                .arg_required_else_help(true)
-        )
-        .subcommand(
-            Command::new("refresh")
-                .about("Updates the cache to get the latest information")
-        )
-        .subcommand(
-            Command::new("daemon")
-                .about("Starts a daemon that updates the cache every hour to get updated graph")
-        )
-    ;
+    let mut command = Command::new();
 
-    let matches = command.get_matches();
+    command.add_command(CommandInfo { 
+        name: "init", 
+        description: "Initializes a new instance of takoyaki", 
+        callback: Box::new(|args: Vec<&str>| {  })
+    });
 
-    match matches.subcommand() {
-        Some(("init" , _)) => {
-            initer::initialize_instance().await?
-        },
-        Some(("plug" , sub_matches)) => {
-            plug::plug(
-                sub_matches.get_one::<String>("name").unwrap().to_owned()  
-            ).await?
-        },
-        Some(("use" , sub_matches)) => {
-            use_plugin::use_plugin(sub_matches.get_one::<String>("plugin").unwrap())?;
-        },
-        Some(("unplug" , sub_matches)) => {
-            unplug::unplug(sub_matches.get_one::<String>("plugin").unwrap())?;
-        },
-        Some(("refresh" , _)) => {
-            refresh::refresh_plugins()?;
-        },
-        Some(("daemon" , _)) => {
-            daemon::start_daemon()?;
-        },
-        _ => {
+    command.add_command(CommandInfo { 
+        name: "plug", 
+        description: "Install a new plugin", 
+        callback: Box::new(|args: Vec<&str>| {  })
+    });
 
-        }
-    }
+    command.add_command(CommandInfo { 
+        name: "run", 
+        description: "Execute a specific plugin", 
+        callback: Box::new(|args: Vec<&str>| {  })
+    });
+
+    command.add_command(CommandInfo { 
+        name: "unplug", 
+        description: "Uninstalls a plugin", 
+        callback: Box::new(|args: Vec<&str>| {  })
+    });
+
+    command.add_command(CommandInfo { 
+        name: "daemon", 
+        description: "Runs the daemon that updates the cache every hour", 
+        callback: Box::new(|args: Vec<&str>| {  })
+    });
+
+    command.add_command(CommandInfo { 
+        name: "help", 
+        description: "Display this help message", 
+        callback: Box::new(|args: Vec<&str>| {  })
+    });
+
+    command.render();
 
     Ok(())
 }

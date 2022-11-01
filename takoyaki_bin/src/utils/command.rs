@@ -2,6 +2,7 @@ use colored::*;
 
 pub struct CommandInfo<'a> {
     pub name: &'a str,
+    pub requires_arg: bool,
     pub description: &'a str,
     pub callback: Box<dyn Fn(Vec<&'a str>)>
 }
@@ -50,7 +51,24 @@ impl<'a> Command<'a> {
 
         // Print all the commands
         for subcommand in self.commands.iter() {
-            println!("{} {}" , self.resize_character(subcommand.name, 12) , subcommand.description);
+            println!("{} {}" , self.resize_character(subcommand.name, 12).green() , subcommand.description);
+        }
+    }
+
+    pub fn send_calls(&self , args: Vec<String>) {
+
+    }
+
+    pub fn parse(&self) {
+        let args: Vec<String> = std::env::args().collect();
+
+        match args.len() {
+            1 => { // 0 is just impossible
+                self.render();
+            },
+            _ => {
+                self.send_calls(args)
+            }
         }
     }
 }

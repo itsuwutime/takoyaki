@@ -23,36 +23,42 @@ async fn main() -> Result<()> {
         CommandInfo { 
             name: "init", 
             description: "Initializes a new instance of takoyaki", 
+            requires_arg: false,
             callback: Box::new(|args: Vec<&str>| {  })
         },
         CommandInfo { 
             name: "plug", 
             description: "Install a new plugin", 
+            requires_arg: true,
             callback: Box::new(|args: Vec<&str>| {  })
         },
         CommandInfo { 
             name: "run", 
             description: "Execute a specific plugin", 
+            requires_arg: true,
             callback: Box::new(|args: Vec<&str>| {  })
         },
         CommandInfo { 
             name: "unplug", 
             description: "Uninstalls a plugin", 
+            requires_arg: true,
             callback: Box::new(|args: Vec<&str>| {  })
         },
         CommandInfo { 
             name: "daemon", 
             description: "Runs the daemon that updates the cache every hour", 
+            requires_arg: false,
             callback: Box::new(|args: Vec<&str>| {  })
         },
         CommandInfo { 
             name: "help", 
             description: "Display this help message", 
+            requires_arg: false,
             callback: Box::new(|args: Vec<&str>| {  })
         }
     ]);
 
-    command.render();
+    command.parse();
 
     Ok(())
 }

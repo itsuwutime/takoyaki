@@ -2,24 +2,23 @@
 mod utils;
 mod commands;
 
-mod refresh;
-mod unplug;
-mod logger;
-mod daemon;
-mod helpers;
-mod metadata;
-mod use_plugin;
-mod plug;
+// mod refresh;
+// mod unplug;
+// mod logger;
+// mod daemon;
+// mod helpers;
+// mod metadata;
+// mod use_plugin;
+// mod plug;
 
 // Deps
 use crate::utils::Command;
-use anyhow::Result;
 use std::rc::Rc;
 use utils::CommandInfo;
 
 #[tokio::main]
-async fn main() -> Result<()> {
-    let mut command = Box::leak(Box::new(Command::<'static>::new()));
+async fn main() {
+    let command = Box::leak(Box::new(Command::<'static>::new()));
 
     command.add_commands(vec![
         CommandInfo { 
@@ -67,7 +66,5 @@ async fn main() -> Result<()> {
     ]);
 
     command.parse();
-
-    Ok(())
 }
 

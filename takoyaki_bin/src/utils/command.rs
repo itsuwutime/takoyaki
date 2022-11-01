@@ -1,10 +1,13 @@
 use colored::*;
+use std::rc::Rc;
+use anyhow::Result;
 
+#[derive(Clone)]
 pub struct CommandInfo<'a> {
     pub name: &'a str,
     pub requires_arg: bool,
     pub description: &'a str,
-    pub callback: Box<dyn Fn(Vec<&'a str>)>
+    pub callback: Rc<dyn Fn(Option<&String>)>
 }
 
 pub struct Command<'a> {
@@ -23,10 +26,10 @@ impl<'a> Command<'a> {
         let len = original.len();
 
         // Get the extra number of characters if needs
-        let req = size - len - 3; // 2 is mandatory space on left side
-        
+        let req = size - len - 4; // 2 is mandatory space on left side
+
         // Get the new string
-        return format!("   {}{}" , original , " ".repeat(req));
+        return format!("    {}{}" , original , " ".repeat(req));
     }
 
     pub fn add_commands(&mut self , commands: Vec<CommandInfo<'a>>) {
@@ -51,15 +54,42 @@ impl<'a> Command<'a> {
 
         // Print all the commands
         for subcommand in self.commands.iter() {
-            println!("{} {}" , self.resize_character(subcommand.name, 12).green() , subcommand.description);
+            println!("{} {}" , self.resize_character(subcommand.name, 14).green() , subcommand.description);
         }
     }
 
-    pub fn send_calls(&self , args: Vec<String>) {
+    fn get_command_with_name(&'a self , subcommand: &String) -> Option<CommandInfo> {
+        let matches: Vec<CommandInfo<'a>> = self.commands.clone().into_iter().filter(|x| { 
+            x.name == subcommand
+        }).collect();
 
+        matches.into_iter().nth(0)
     }
 
-    pub fn parse(&self) {
+    fn exists(&'a self , subcommand: &String) -> bool {
+        let command = self.get_command_with_name(subcommand);
+
+        command.is_some()
+    }
+
+    pub fn send_calls(&'a self , args: Vec<String>) {
+        let subcommand = args.iter().nth(1).unwrap(); // It is sure that it is gonna contain something at 1st position
+
+        if !self.exists(subcommand) {
+            println!("{}: Found argument '{}' which wasn't expected, or is not valid in this context" , "error".red().bold() , subcommand.yellow());
+            println!("\nFor more information try {}" , "--help".green());
+
+            std::process::exit(1)
+        }
+
+        // Get the command 
+        let command = self.get_command_with_name(subcommand).unwrap();
+
+        // Run the callback
+        command.callback.as_ref()(args.iter().nth(2));
+    }
+
+    pub fn parse(&'a self) {
         let args: Vec<String> = std::env::args().collect();
 
         match args.len() {
@@ -72,3 +102,4 @@ impl<'a> Command<'a> {
         }
     }
 }
+

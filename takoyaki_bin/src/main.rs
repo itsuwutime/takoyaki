@@ -27,12 +27,12 @@ async fn main() {
             requires_arg: false,
             callback: Rc::new(|_| { commands::initialize_instance(); })
         },
-        // CommandInfo { 
-        //     name: "plug", 
-        //     description: "Install a new plugin", 
-        //     requires_arg: true,
-        //     callback: Rc::new(|args: Vec<&str>| {  })
-        // },
+        CommandInfo { 
+            name: "plug", 
+            description: "Install a new plugin", 
+            requires_arg: true,
+            callback: Rc::new(|plug: Option<&String>| {  })
+        },
         // CommandInfo { 
         //     name: "run", 
         //     description: "Execute a specific plugin", 

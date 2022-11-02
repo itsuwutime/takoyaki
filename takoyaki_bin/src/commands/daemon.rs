@@ -1,17 +1,14 @@
-use anyhow::Result;
-use crate::logger::Logger;
+use crate::utils::Logger;
 
-pub fn start_daemon() -> Result<()> {
+pub fn start_daemon() {
     let logger = Logger::new();
 
     logger.success("Starting daemon");
 
     // Infinite loop
     loop {
-        logger.success("Refreshing cache...");
-
         // Refresh plugins
-        crate::refresh::refresh_plugins()?;
+        crate::commands::refresh();
 
         logger.success("Finished refreshing... Sleeping for an hour...");
 

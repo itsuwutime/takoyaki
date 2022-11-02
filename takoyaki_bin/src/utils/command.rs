@@ -1,10 +1,8 @@
 use colored::*;
-use std::{rc::Rc, future::Future};
 
 #[derive(Clone)]
 pub struct CommandInfo<'a> {
     pub name: &'a str,
-    pub requires_arg: bool,
     pub description: &'a str,
 }
 

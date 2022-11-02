@@ -14,43 +14,31 @@ async fn main() {
         CommandInfo { 
             name: "init", 
             description: "Initializes a new instance of takoyaki", 
-            requires_arg: false,
         },
         CommandInfo { 
             name: "plug", 
             description: "Install a new plugin", 
-            requires_arg: true,
         },
-        // CommandInfo { 
-        //     name: "run", 
-        //     description: "Execute a specific plugin", 
-        //     requires_arg: true,
-        //     callback: Rc::new(|args: Vec<&str>| {  })
-        // },
-        // CommandInfo { 
-        //     name: "refresh", 
-        //     description: "Refreshes the cache for the plugins", 
-        //     requires_arg: true,
-        //     callback: Rc::new(|args: Vec<&str>| {  })
-        // },
-        // CommandInfo { 
-        //     name: "unplug", 
-        //     description: "Uninstalls a plugin", 
-        //     requires_arg: true,
-        //     callback: Rc::new(|args: Vec<&str>| {  })
-        // },
-        // CommandInfo { 
-        //     name: "daemon", 
-        //     description: "Runs the daemon that updates the cache every hour", 
-        //     requires_arg: false,
-        //     callback: Rc::new(|args: Vec<&str>| {  })
-        // },
-        // CommandInfo { 
-        //     name: "help", 
-        //     description: "Display this help message", 
-        //     requires_arg: false,
-        //     callback: Rc::new(|args: Vec<&str>| {  })
-        // }
+        CommandInfo { 
+            name: "run", 
+            description: "Execute a specific plugin", 
+        },
+        CommandInfo { 
+            name: "refresh", 
+            description: "Refreshes the cache for the plugins", 
+        },
+        CommandInfo { 
+            name: "unplug", 
+            description: "Uninstalls a plugin", 
+        },
+        CommandInfo { 
+            name: "daemon", 
+            description: "Runs the daemon that updates the cache every hour", 
+        },
+        CommandInfo { 
+            name: "help", 
+            description: "Display this help message", 
+        }
     ]);
 
     let parsed = command.parse();
@@ -61,6 +49,21 @@ async fn main() {
         },
         Some(("plug" , name)) => {
             commands::plug(name.unwrap()).await;
+        },
+        Some(("run" , name)) => {
+            commands::run(&name.unwrap() , false);
+        },
+        Some(("refresh" , _)) => {
+            commands::refresh();
+        },
+        Some(("unplug" , name)) => {
+            commands::unplug(&name.unwrap());
+        },
+        Some(("daemon" , _)) => {
+            commands::start_daemon();
+        },
+        Some(("help" , _)) => {
+            command.render();
         },
         _ => {
 

@@ -4,7 +4,6 @@ use inquire::Text;
 use reqwest::StatusCode;
 use serde::Deserialize;
 use crate::utils::{Logger , get_config_directory};
-use reqwest::Result;
 
 #[derive(Deserialize , Debug)]
 pub struct PlugConfigData {

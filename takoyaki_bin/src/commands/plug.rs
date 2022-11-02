@@ -15,7 +15,7 @@ pub struct PlugConfigData {
 
 #[derive(Deserialize , Debug)]
 pub struct PlugConfig {
-    description: PlugConfigData
+    pub description: PlugConfigData
 }
 
 fn no_internet_connection(logger: &Logger) -> ! {
@@ -47,7 +47,7 @@ pub async fn plug(name: String) -> Result<()> {
     ;
 
     // Make request
-    let content = reqwest::get(&metadata.config_url).await?;
+    let content = reqwest::get(&metadata.config_url).await.unwrap_or_else(|_| no_internet_connection(&logger));
 
     // Check if the response succeeded
     if content.status() != StatusCode::OK {
@@ -70,15 +70,13 @@ pub async fn plug(name: String) -> Result<()> {
     plugin_dir.extend(&["plugins" , parsed.description.name.as_ref()]);
 
     // Download plugin
-    let plugin = reqwest::get(parsed.description.bin_url).await;
-
-    if plugin.is_err() {
+    let plugin = reqwest::get(parsed.description.bin_url).await.unwrap_or_else(|_| {
         logger.error(
             "Error while making the request! Either you don't have an active internet connection or the plugin is bugged. You should report this error"
         );
 
         std::process::exit(0);
-    }
+    });
 
     // Create directory for that plugin
     std::fs::create_dir_all(&plugin_dir).unwrap_or_else(|_| { 
@@ -98,7 +96,7 @@ pub async fn plug(name: String) -> Result<()> {
     });
 
     // Create a new cursor
-    let mut cursor = Cursor::new(plugin?.bytes().await?);
+    let mut cursor = Cursor::new(plugin.bytes().await?);
 
     // Download the file
     std::io::copy(&mut cursor , &mut file).unwrap_or_else(|_| {
@@ -120,7 +118,7 @@ pub async fn plug(name: String) -> Result<()> {
             std::process::exit(0);
         });
 
-        config.insert(option.to_owned() , value);
+        config.insert(option.to_string() , value);
     }
 
     let mut file = std::fs::File::create(plugin_dir.join("config.toml")).unwrap_or_else(|_| {
@@ -134,11 +132,12 @@ pub async fn plug(name: String) -> Result<()> {
         toml::to_string(&config)
             .unwrap()
             .as_bytes()
-    ).unwrap_or_else(|_| {
+    )
+    .unwrap_or_else(|_| {
         logger.error("Error while writing to file!")
     });
 
-    logger.success( format!("Successfully installed the plugin! You can now use it by running `takoyaki use {}`" , parsed.description.name).as_ref());
+    logger.success(format!("Successfully installed the plugin! You can now use it by running `takoyaki use {}`" , parsed.description.name).as_ref());
 
     Ok(())
 }

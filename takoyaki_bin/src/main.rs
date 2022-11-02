@@ -2,15 +2,6 @@
 mod utils;
 mod commands;
 
-// mod refresh;
-// mod unplug;
-// mod logger;
-// mod daemon;
-// mod helpers;
-// mod metadata;
-// mod use_plugin;
-// mod plug;
-
 // Deps
 use crate::utils::Command;
 use std::rc::Rc;
@@ -25,13 +16,11 @@ async fn main() {
             name: "init", 
             description: "Initializes a new instance of takoyaki", 
             requires_arg: false,
-            callback: Rc::new(|_| { commands::initialize_instance(); })
         },
         CommandInfo { 
             name: "plug", 
             description: "Install a new plugin", 
             requires_arg: true,
-            callback: Rc::new(|plug: Option<&String>| {  })
         },
         // CommandInfo { 
         //     name: "run", 

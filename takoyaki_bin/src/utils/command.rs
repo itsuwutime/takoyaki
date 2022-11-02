@@ -1,13 +1,11 @@
 use colored::*;
-use std::rc::Rc;
-use anyhow::Result;
+use std::{rc::Rc, future::Future};
 
 #[derive(Clone)]
 pub struct CommandInfo<'a> {
     pub name: &'a str,
     pub requires_arg: bool,
     pub description: &'a str,
-    pub callback: Rc<dyn Fn(Option<&String>)>
 }
 
 pub struct Command<'a> {
@@ -58,8 +56,8 @@ impl<'a> Command<'a> {
         }
     }
 
-    fn get_command_with_name(&'a self , subcommand: &String) -> Option<CommandInfo> {
-        let matches: Vec<CommandInfo<'a>> = self.commands.clone().into_iter().filter(|x| { 
+    fn get_command_with_name(&'a self , subcommand: &String) -> Option<&CommandInfo> {
+        let matches: Vec<&CommandInfo<'a>> = self.commands.iter().filter(|x| { 
             x.name == subcommand
         }).collect();
 
@@ -84,9 +82,6 @@ impl<'a> Command<'a> {
 
         // Get the command 
         let command = self.get_command_with_name(subcommand).unwrap();
-
-        // Run the callback
-        command.callback.as_ref()(args.iter().nth(2));
     }
 
     pub fn parse(&'a self) {

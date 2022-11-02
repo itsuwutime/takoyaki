@@ -1,99 +1,73 @@
 // Modules
-mod initer;
-mod refresh;
-mod unplug;
-mod logger;
-mod daemon;
-mod helpers;
-mod metadata;
-mod use_plugin;
-mod plug;
+mod utils;
+mod commands;
 
 // Deps
-use clap::{Command, Arg, ArgAction};
-use anyhow::Result;
+use crate::utils::Command;
+use utils::CommandInfo;
 
 #[tokio::main]
-async fn main() -> Result<()> {
-    let command = Command::new("takoyaki")
-        .arg_required_else_help(true)
-        .about("takoyaki - Get your git contribution graph in your terminal")
-        .version(option_env!("CARGO_PKG_VERSION").unwrap_or("unknown"))
-        .subcommand(
-            Command::new("init")
-                .about("Initialize an instance of takoyaki")
-        )
-        .subcommand(
-            Command::new("plug")
-                .about("Installs a new plugin")
-                .arg(
-                    Arg::new("name")
-                        .required(true)
-                        .action(ArgAction::Set)
-                        .help("Name of the plugin to install")
-                )
-                .arg_required_else_help(true)
-        )
-        .subcommand(
-            Command::new("use")
-                .about("Uses a plugin")
-                .arg(
-                    Arg::new("plugin")
-                        .required(true)
-                        .action(ArgAction::Set)
-                        .help("The name of the plugin to use")
-                )
-                .arg_required_else_help(true)
-        )
-        .subcommand(
-            Command::new("unplug")
-                .about("Uninstalls a plugin")
-                .arg(
-                    Arg::new("plugin")
-                        .required(true)
-                        .action(ArgAction::Set)
-                        .help("The name of the plugin to uninstall")
-                )
-                .arg_required_else_help(true)
-        )
-        .subcommand(
-            Command::new("refresh")
-                .about("Updates the cache to get the latest information")
-        )
-        .subcommand(
-            Command::new("daemon")
-                .about("Starts a daemon that updates the cache every hour to get updated graph")
-        )
-    ;
+async fn main() {
+    let command = Box::leak(Box::new(Command::<'static>::new()));
 
-    let matches = command.get_matches();
+    command.add_commands(vec![
+        CommandInfo { 
+            name: "init", 
+            description: "Initializes a new instance of takoyaki", 
+        },
+        CommandInfo { 
+            name: "plug", 
+            description: "Install a new plugin", 
+        },
+        CommandInfo { 
+            name: "run", 
+            description: "Execute a specific plugin", 
+        },
+        CommandInfo { 
+            name: "refresh", 
+            description: "Refreshes the cache for the plugins", 
+        },
+        CommandInfo { 
+            name: "unplug", 
+            description: "Uninstalls a plugin", 
+        },
+        CommandInfo { 
+            name: "daemon", 
+            description: "Runs the daemon that updates the cache every hour", 
+        },
+        CommandInfo { 
+            name: "help", 
+            description: "Display this help message", 
+        }
+    ]);
 
-    match matches.subcommand() {
+    let parsed = command.parse();
+
+    match parsed {
         Some(("init" , _)) => {
-            initer::initialize_instance().await?
+            commands::initialize_instance();
         },
-        Some(("plug" , sub_matches)) => {
-            plug::plug(
-                sub_matches.get_one::<String>("name").unwrap().to_owned()  
-            ).await?
+        Some(("plug" , name)) => {
+            commands::plug(name.unwrap()).await;
         },
-        Some(("use" , sub_matches)) => {
-            use_plugin::use_plugin(sub_matches.get_one::<String>("plugin").unwrap())?;
-        },
-        Some(("unplug" , sub_matches)) => {
-            unplug::unplug(sub_matches.get_one::<String>("plugin").unwrap())?;
+        Some(("run" , name)) => {
+            commands::run(&name.unwrap() , false);
         },
         Some(("refresh" , _)) => {
-            refresh::refresh_plugins()?;
+            commands::refresh();
+        },
+        Some(("unplug" , name)) => {
+            commands::unplug(&name.unwrap());
         },
         Some(("daemon" , _)) => {
-            daemon::start_daemon()?;
+            commands::start_daemon();
+        },
+        Some(("help" , _)) => {
+            command.render();
         },
         _ => {
 
         }
     }
-
-    Ok(())
 }
 

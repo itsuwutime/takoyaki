@@ -35,7 +35,7 @@ fn plugin_not_found(name: String , logger: &Logger) -> ! {
     std::process::exit(0)
 }
 
-pub async fn plug(name: String) -> Result<()> {
+pub async fn plug(name: String) {
     let logger = Logger::new();
 
     logger.success("Fetching metadata for the plugin...");
@@ -58,7 +58,7 @@ pub async fn plug(name: String) -> Result<()> {
     logger.success("Parsing metadata...");
 
     // Parse 
-    let parsed = toml::from_str::<PlugConfig>(content.text().await?.as_ref()).unwrap(); // Since the config will be reviewed by me, there is relatively low chance of plugin's config bugged.
+    let parsed = toml::from_str::<PlugConfig>(content.text().await.unwrap().as_ref()).unwrap(); // Since the config will be reviewed by me, there is relatively low chance of plugin's config bugged.
 
     // Notify users about downloading the plugin
     logger.success("Downloading the plugin... (it may take a while)");
@@ -96,7 +96,7 @@ pub async fn plug(name: String) -> Result<()> {
     });
 
     // Create a new cursor
-    let mut cursor = Cursor::new(plugin.bytes().await?);
+    let mut cursor = Cursor::new(plugin.bytes().await.unwrap());
 
     // Download the file
     std::io::copy(&mut cursor , &mut file).unwrap_or_else(|_| {
@@ -138,7 +138,5 @@ pub async fn plug(name: String) -> Result<()> {
     });
 
     logger.success(format!("Successfully installed the plugin! You can now use it by running `takoyaki use {}`" , parsed.description.name).as_ref());
-
-    Ok(())
 }
 

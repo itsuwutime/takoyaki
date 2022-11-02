@@ -4,7 +4,6 @@ mod commands;
 
 // Deps
 use crate::utils::Command;
-use std::rc::Rc;
 use utils::CommandInfo;
 
 #[tokio::main]
@@ -54,6 +53,18 @@ async fn main() {
         // }
     ]);
 
-    command.parse();
+    let parsed = command.parse();
+
+    match parsed {
+        Some(("init" , _)) => {
+            commands::initialize_instance();
+        },
+        Some(("plug" , name)) => {
+            commands::plug(name.unwrap()).await;
+        },
+        _ => {
+
+        }
+    }
 }
 

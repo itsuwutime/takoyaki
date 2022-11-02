@@ -70,7 +70,7 @@ impl<'a> Command<'a> {
         command.is_some()
     }
 
-    pub fn send_calls(&'a self , args: Vec<String>) {
+    pub fn send_calls(&'a self , args: Vec<String>) -> (&str , Option<String>) {
         let subcommand = args.iter().nth(1).unwrap(); // It is sure that it is gonna contain something at 1st position
 
         if !self.exists(subcommand) {
@@ -82,17 +82,21 @@ impl<'a> Command<'a> {
 
         // Get the command 
         let command = self.get_command_with_name(subcommand).unwrap();
+
+        return (command.name , args.clone().into_iter().nth(2))
     }
 
-    pub fn parse(&'a self) {
+    pub fn parse(&'a self) -> Option<(&str , Option<String>)> {
         let args: Vec<String> = std::env::args().collect();
 
         match args.len() {
             1 => { // 0 is just impossible
                 self.render();
+
+                return None
             },
             _ => {
-                self.send_calls(args)
+                Some(self.send_calls(args))
             }
         }
     }

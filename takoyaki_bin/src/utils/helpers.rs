@@ -22,7 +22,7 @@ pub fn get_config_directory() -> PathBuf {
             });
 
             // Build endpoint
-            let config_directory = home.join(".config");  // It is safe to unwrap here!
+            let config_directory = home.join(".config");
 
             // Create directory if not available
             create_dir_all(&config_directory).unwrap_or_else(|_| {

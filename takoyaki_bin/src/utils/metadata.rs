@@ -12,7 +12,7 @@ pub struct Metadata {
     pub config_url: String
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize , Clone)]
 pub struct Response {
     plugins: Vec<Metadata>
 }
@@ -20,11 +20,7 @@ pub struct Response {
 pub async fn get_metadata(name: &str) -> Result<Option<Metadata>> {
     let plugins: Response = reqwest::get("https://raw.githubusercontent.com/kyeboard/takoyaki/main/plugins/plugins.json").await?.json().await?;
 
-    for plugin in plugins.plugins.iter() {
-        if plugin.name.to_lowercase() == *name {
-            return Ok(Some(plugin.clone()))
-        }
-    };
-
-    Ok(None)
+    Ok(plugins.plugins.into_iter().find(|plugin| {
+        plugin.name.to_lowercase() == *name
+    }))
 }

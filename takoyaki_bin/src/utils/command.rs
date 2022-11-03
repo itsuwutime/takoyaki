@@ -22,7 +22,7 @@ impl<'a> Command<'a> {
         let len = original.len();
 
         // Get the extra number of characters if needs
-        let req = size - len - 4; // 2 is mandatory space on left side
+        let req = size - len - 4; // 4 is mandatory space on left side
 
         // Get the new string
         format!("    {}{}" , original , " ".repeat(req))

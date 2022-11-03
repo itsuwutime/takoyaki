@@ -136,6 +136,6 @@ pub async fn plug(name: String) {
         logger.error("Error while writing to file!")
     });
 
-    logger.success(format!("Successfully installed the plugin! You can now use it by running `takoyaki use {}`" , parsed.description.name).as_ref());
+    logger.success(format!("Successfully installed the plugin! You can now use it by running `takoyaki run {}`" , parsed.description.name).as_ref());
 }
 

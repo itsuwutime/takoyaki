@@ -73,12 +73,12 @@ impl<'a> Command<'a> {
 
         if !self.exists(subcommand) {
             println!("{}: Found argument '{}' which wasn't expected, or is not valid in this context" , "error".red().bold() , subcommand.yellow());
-            println!("\nFor more information try {}" , "--help".green());
+            println!("\nFor more information try {}" , "takoyaki help".green());
 
             std::process::exit(1)
         }
 
-        // Get the command 
+        // Get the command
         let command = self.get_command_with_name(subcommand).unwrap();
 
         return (command.name , args.clone().into_iter().nth(2))

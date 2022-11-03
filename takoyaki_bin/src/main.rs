@@ -12,12 +12,20 @@ async fn main() {
 
     command.add_commands(vec![
         CommandInfo { 
+            name: "help", 
+            description: "Display this help message", 
+        },
+        CommandInfo { 
             name: "init", 
             description: "Initializes a new instance of takoyaki", 
         },
         CommandInfo { 
             name: "plug", 
             description: "Install a new plugin", 
+        },
+        CommandInfo { 
+            name: "unplug", 
+            description: "Uninstalls a plugin", 
         },
         CommandInfo { 
             name: "run", 
@@ -28,17 +36,9 @@ async fn main() {
             description: "Refreshes the cache for the plugins", 
         },
         CommandInfo { 
-            name: "unplug", 
-            description: "Uninstalls a plugin", 
-        },
-        CommandInfo { 
             name: "daemon", 
             description: "Runs the daemon that updates the cache every hour", 
         },
-        CommandInfo { 
-            name: "help", 
-            description: "Display this help message", 
-        }
     ]);
 
     let parsed = command.parse();

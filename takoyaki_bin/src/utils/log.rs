@@ -11,20 +11,16 @@ impl Logger {
         }
     }
 
-    fn render(&self , text: ColoredString) {
-        println!("{} {}" , self.prefix_character.white() , text)
-    }
-
     pub fn error(&self , msg: &str) {
-        self.render(msg.red())
+        eprintln!("{} {}" , self.prefix_character , msg.red())
     }
 
     pub fn success(&self , msg: &str) {
-        self.render(msg.green())
+        println!("{} {}" , self.prefix_character , msg.green())
     } 
 
     pub fn warning(&self , msg: &str) {
-        self.render(msg.yellow())
+        println!("{} {}" , self.prefix_character , msg.green())
     }
 }
 

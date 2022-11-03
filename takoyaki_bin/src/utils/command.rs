@@ -25,7 +25,7 @@ impl<'a> Command<'a> {
         let req = size - len - 4; // 2 is mandatory space on left side
 
         // Get the new string
-        return format!("    {}{}" , original , " ".repeat(req));
+        format!("    {}{}" , original , " ".repeat(req))
     }
 
     pub fn add_commands(&mut self , commands: Vec<CommandInfo<'a>>) {
@@ -39,11 +39,11 @@ impl<'a> Command<'a> {
         println!("{} {}" , "takoyaki".green() , option_env!("CARGO_PKG_VERSION").unwrap_or("unknown"));
 
         // Print the description
-        println!("{}" , "Blazingly fast git contribution graph in your terminal");
+        println!("Blazingly fast git contribution graph in your terminal");
 
         // Print the usage
         println!("\n{}" , "USAGE:".yellow());
-        println!("{}{}" , tab , "takoyaki [SUBCOMMAND]");
+        println!("{} takoyaki [SUBCOMMAND]" , tab);
 
         // Print all the subcommands
         println!("\n{}" , "SUBCOMMANDS:".yellow());
@@ -55,11 +55,9 @@ impl<'a> Command<'a> {
     }
 
     fn get_command_with_name(&'a self , subcommand: &String) -> Option<&CommandInfo> {
-        let matches: Vec<&CommandInfo<'a>> = self.commands.iter().filter(|x| { 
+        self.commands.iter().find(|x| { 
             x.name == subcommand
-        }).collect();
-
-        matches.into_iter().nth(0)
+        })
     }
 
     fn exists(&'a self , subcommand: &String) -> bool {
@@ -69,7 +67,7 @@ impl<'a> Command<'a> {
     }
 
     pub fn send_calls(&'a self , args: Vec<String>) -> (&str , Option<String>) {
-        let subcommand = args.iter().nth(1).unwrap(); // It is sure that it is gonna contain something at 1st position
+        let subcommand = args.get(1).unwrap(); // It is sure that it is gonna contain something at 1st position
 
         if !self.exists(subcommand) {
             println!("{}: Found argument '{}' which wasn't expected, or is not valid in this context" , "error".red().bold() , subcommand.yellow());
@@ -81,7 +79,7 @@ impl<'a> Command<'a> {
         // Get the command
         let command = self.get_command_with_name(subcommand).unwrap();
 
-        return (command.name , args.clone().into_iter().nth(2))
+        (command.name , args.clone().into_iter().nth(2))
     }
 
     pub fn parse(&'a self) -> Option<(&str , Option<String>)> {
@@ -91,7 +89,7 @@ impl<'a> Command<'a> {
             1 => { // 0 is just impossible
                 self.render();
 
-                return None
+                None
             },
             _ => {
                 Some(self.send_calls(args))

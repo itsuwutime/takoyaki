@@ -3,10 +3,7 @@ use crate::utils::{Logger , get_config_directory , download_file};
 pub fn initialize_instance() {
     // Create new instance of logger and get the config dir
     let logger = Logger::new();
-    let config = get_config_directory();
-
-    // Create config path
-    let config_path = config.join("config.toml");
+    let config_path = get_config_directory().join("config.toml");
 
     // A bit of success messages
     logger.success("Initializing a new instance of takoyaki...");

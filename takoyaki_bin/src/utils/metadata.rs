@@ -24,3 +24,4 @@ pub async fn get_metadata(name: &str) -> Result<Option<Metadata>> {
         plugin.name.to_lowercase() == *name
     }))
 }
+

@@ -1,9 +1,13 @@
-use std::{io::{Cursor, Write}, fs::Permissions, os::unix::prelude::PermissionsExt, collections::HashMap};
-
+use std::{
+    io::{Cursor, Write}, 
+    fs::Permissions, 
+    os::unix::prelude::PermissionsExt, 
+    collections::HashMap
+};
 use inquire::Text;
 use reqwest::StatusCode;
 use serde::Deserialize;
-use crate::utils::{Logger , get_config_directory};
+use crate::utils::{Logger , get_config_directory, no_internet_connection, plugin_not_found};
 
 #[derive(Deserialize , Debug)]
 pub struct PlugConfigData {
@@ -15,23 +19,6 @@ pub struct PlugConfigData {
 #[derive(Deserialize , Debug)]
 pub struct PlugConfig {
     pub description: PlugConfigData
-}
-
-fn no_internet_connection(logger: &Logger) -> ! {
-    logger.error("You don't have an active internet connection! Try connecting to a network.");
-
-    std::process::exit(0)
-}
-
-fn plugin_not_found(name: String , logger: &Logger) -> ! {
-    logger.error(
-        format!(
-            "No plugin named {} found! If you think this is an error, please report it here - https://www.github.com/kyeboard/takoyaki/issues/new",
-            name
-        ).as_ref()
-    );
-
-    std::process::exit(0)
 }
 
 pub async fn plug(name: String) {
@@ -46,12 +33,13 @@ pub async fn plug(name: String) {
     ;
 
     // Make request
-    let content = reqwest::get(&metadata.config_url).await.unwrap_or_else(|_| no_internet_connection(&logger));
+    let content = reqwest::get(&metadata.config_url).await
+        .unwrap_or_else(|_| { no_internet_connection(&logger) } );
 
     // Check if the response succeeded
     if content.status() != StatusCode::OK {
         // Notify users that they have either provide wrong args or the plugin is bugged
-        no_internet_connection(&logger)
+        logger.error("You don't have an active internet connection! Try connecting to a network.")
     }
 
     logger.success("Parsing metadata...");
@@ -73,15 +61,11 @@ pub async fn plug(name: String) {
         logger.error(
             "Error while making the request! Either you don't have an active internet connection or the plugin is bugged. You should report this error"
         );
-
-        std::process::exit(0);
     });
 
     // Create directory for that plugin
     std::fs::create_dir_all(&plugin_dir).unwrap_or_else(|_| { 
         logger.error(format!("Error while creating a directory at {}" , plugin_dir.display()).as_ref());
-
-        std::process::exit(1)
     });
 
     // Create a new file for the executable
@@ -90,8 +74,6 @@ pub async fn plug(name: String) {
     // Set executable permissions
     file.set_permissions(Permissions::from_mode(0o711)).unwrap_or_else(|_| {
         logger.error("Error while setting up executable permissions for the binary!");
-
-        std::process::exit(0)
     });
 
     // Create a new cursor
@@ -100,8 +82,6 @@ pub async fn plug(name: String) {
     // Download the file
     std::io::copy(&mut cursor , &mut file).unwrap_or_else(|_| {
         logger.error("Error while downloading the binary!");
-
-        std::process::exit(1)
     });
 
     logger.success("Successfully downloaded the binary!");
@@ -113,8 +93,6 @@ pub async fn plug(name: String) {
     for option in parsed.description.requires.iter() {
         let value = Text::new(format!("Enter {}:" , option).as_ref()).prompt().unwrap_or_else(|_| {
             logger.error("Exiting...");
-
-            std::process::exit(0);
         });
 
         config.insert(option.to_string() , value);
@@ -122,8 +100,6 @@ pub async fn plug(name: String) {
 
     let mut file = std::fs::File::create(plugin_dir.join("config.toml")).unwrap_or_else(|_| {
         logger.error("Error while creating a new file!");
-
-        std::process::exit(1)
     });
 
 

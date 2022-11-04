@@ -11,8 +11,10 @@ impl Logger {
         }
     }
 
-    pub fn error(&self , msg: &str) {
-        eprintln!("{} {}" , self.prefix_character , msg.red())
+    pub fn error(&self , msg: &str) -> ! {
+        eprintln!("{} {}" , self.prefix_character , msg.red());
+
+        std::process::exit(1)
     }
 
     pub fn success(&self , msg: &str) {

@@ -8,7 +8,7 @@ use utils::CommandInfo;
 
 #[tokio::main]
 async fn main() {
-    let command = Box::leak(Box::new(Command::<'static>::new()));
+    let mut command = Command::new();
 
     command.add_commands(vec![
         CommandInfo { 

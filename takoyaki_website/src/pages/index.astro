@@ -1,8 +1,45 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import NavBar from "../components/NavBar.astro";
+import Plus from "../components/Plus.astro";
 ---
 
-<div class="w-screen h-screen bg-base">
+<div class="w-screen h-screen bg-base px-20 flex items-center justify-center">
     <NavBar />
+    <div class="text mr-auto"></div>
+    <div class="banner w-5/12 relative">
+        <img src="/banner.png" class="w-full" />
+        <div class="flex text-surface2 gap-x-1.5 absolute top-[-16%] left-[-8%]">
+            <div class="flex flex-col justify-end w-fit gap-y-1.5">
+                <Plus />
+                <Plus />
+            </div>
+            <div class="flex flex-col gap-y-1.5">
+                <Plus />
+                <Plus />
+                <Plus />
+                <Plus />
+            </div>
+            <div class="flex flex-col gap-y-1.5">
+                <Plus />
+                <Plus />
+            </div>
+        </div>
+        <div class="flex text-surface2 gap-x-1.5 absolute top-[89%] left-[97.5%]">
+            <div class="flex flex-col justify-end w-fit gap-y-1.5">
+                <Plus />
+                <Plus />
+            </div>
+            <div class="flex flex-col gap-y-1.5">
+                <Plus />
+                <Plus />
+                <Plus />
+                <Plus />
+            </div>
+            <div class="flex flex-col gap-y-1.5">
+                <Plus />
+                <Plus />
+            </div>
+        </div>
+    </div>
 </div>

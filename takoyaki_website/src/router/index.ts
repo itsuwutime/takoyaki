@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import New from "../views/New.vue"
 import HomeView from "../views/HomeView.vue";
 import MarketPlace from "../views/Marketplace.vue";
 
@@ -15,6 +16,12 @@ const router = createRouter({
             name: "Marketplace",
             component: MarketPlace,
         },
+        {
+            path: "/new",
+            name: "New",
+            component: New,
+        },
+
     ],
 });
 

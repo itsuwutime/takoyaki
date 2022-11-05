@@ -63,7 +63,10 @@
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
             <img
-                :src="current_user.photoURL || 'https://www.gravatar.com/avatar/00000000000000000000000000000000'"
+                :src="
+                    current_user.photoURL ||
+                    'https://www.gravatar.com/avatar/00000000000000000000000000000000'
+                "
                 alt="User profile"
                 class="h-10 rounded-full ml-16"
             />
@@ -85,7 +88,7 @@ import {
     signInWithPopup,
     onAuthStateChanged,
 } from "firebase/auth";
-import type { User } from "firebase/auth"
+import type { User } from "firebase/auth";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 

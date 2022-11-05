@@ -25,9 +25,9 @@ import Feature from "../components/Feature.vue";
             </div>
             <a href="/install">
                 <button
-                    class="mt-10 bg-surface0/40 p-4 px-14 rounded-lg text-overlay3 font-semibold"
+                    class="mt-10 bg-surface0/40 p-4 px-10 rounded-lg text-overlay3 font-semibold"
                 >
-                    Behold the power
+                    Behold the power of takoyaki
                 </button>
             </a>
         </div>

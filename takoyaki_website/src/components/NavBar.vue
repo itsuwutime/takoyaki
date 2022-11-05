@@ -9,30 +9,28 @@
         <div class="mx-auto text-overlay2 links flex gap-x-14">
             <a href="/">Home</a>
             <a href="/installation">Installation</a>
-            <a href="/">Documentation</a>
-            <a href="/">Marketplace</a>
+            <a href="/documentation">Documentation</a>
+            <a href="/marketplace">Marketplace</a>
         </div>
-        <div class="current-user flex items-center justify-center hidden">
+        <div
+            class="current-user flex items-center justify-center"
+            v-if="current_user != null"
+        >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="18"
                 height="18"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#cdd6f4"
-                stroke-width="2"
+                stroke="currentColor"
+                stroke-width="2.4"
                 stroke-linecap="round"
                 stroke-linejoin="round"
+                class="feather feather-log-out"
             >
-                <line x1="4" y1="21" x2="4" y2="14"></line>
-                <line x1="4" y1="10" x2="4" y2="3"></line>
-                <line x1="12" y1="21" x2="12" y2="12"></line>
-                <line x1="12" y1="8" x2="12" y2="3"></line>
-                <line x1="20" y1="21" x2="20" y2="16"></line>
-                <line x1="20" y1="12" x2="20" y2="3"></line>
-                <line x1="1" y1="14" x2="7" y2="14"></line>
-                <line x1="9" y1="8" x2="15" y2="8"></line>
-                <line x1="17" y1="16" x2="23" y2="16"></line>
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
             </svg>
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -65,12 +63,50 @@
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
             <img
-                src="https://avatars.githubusercontent.com/u/115910279?v=4"
+                :src="current_user.photoURL"
+                alt="User profile"
                 class="h-10 rounded-full ml-16"
             />
         </div>
-        <button class="login bg-surface0/40 text-text p-3 px-10 rounded-lg">
+        <button
+            class="login bg-surface0/40 text-text p-3 px-10 rounded-lg"
+            @click="oauth_with_github()"
+            v-else
+        >
             Login
         </button>
     </div>
 </template>
+
+<script setup lang="ts">
+import {
+    GithubAuthProvider,
+    getAuth,
+    signInWithPopup,
+    onAuthStateChanged,
+    User,
+} from "firebase/auth";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+
+const provider = new GithubAuthProvider();
+const auth = getAuth();
+const current_user = ref<User | null>(null);
+const router = useRouter();
+
+provider.addScope("repo");
+
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        current_user.value = user;
+    }
+
+    console.log(user);
+});
+
+const oauth_with_github = async () => {
+    const res = await signInWithPopup(auth, provider);
+
+    router.push({ path: "/user/" + res.user.displayName });
+};
+</script>

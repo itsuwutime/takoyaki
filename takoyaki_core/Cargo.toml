@@ -7,4 +7,5 @@ edition = "2021"
 
 [dependencies]
 dirs = "4.0.0"
+snafu = "0.7.3"
 

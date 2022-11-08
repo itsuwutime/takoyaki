@@ -1,12 +1,13 @@
-use std::fmt::{Display, Formatter, Result};
-use snafu::prelude::*;
-
-#[derive(Debug , Snafu)]
+#[derive(Debug)]
 pub enum Errors {
-    #[snafu(display("No ready function found! Add a new ready function by calling the `.set_ready()` function"))]
     NoStartFunctionFound,
-
-    #[snafu(display("No ready function found! Add a new ready function by calling the `.set_ready()` function"))]
-    NoExecuteFunctionFound
+    NoExecuteFunctionFound,
+    ConfigDirNotFound,
+    CannotCreateDirectory,
+    NoConfigFound,
+    ReadError,
+    BuggedConfig,
+    StateUnset,
+    ReqwestError(reqwest::Error),
+    SerializeJSONError(serde_json::Error),
 }
-

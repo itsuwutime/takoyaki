@@ -1,4 +1,6 @@
 mod utils;
+mod state;
+mod config;
 mod test_utils;
 mod takoyaki;
 mod errors;
@@ -8,6 +10,8 @@ pub use utils::*;
 pub use takoyaki::*;
 pub use test_utils::*;
 pub use errors::*;
+pub use config::*;
+pub use state::*;
 
 #[cfg(test)]
 mod tests {
@@ -39,35 +43,46 @@ mod tests {
         assert_eq!(cache.exists() , false);
     }
 
-    #[test]
-    fn no_ready_function() {
+    #[tokio::test]
+    async fn no_ready_function() {
         let takoyaki = Takoyaki::new("new_plug");
         let response = takoyaki.start();
 
-        assert!(matches!(response.unwrap_err() , Errors::NoStartFunctionFound));
+        assert!(matches!(response.await.unwrap_err() , Errors::NoStartFunctionFound));
     }
 
-    #[test]
-    fn no_execute_function() {
+    #[tokio::test]
+    async fn no_execute_function() {
         let mut takoyaki = Takoyaki::new("new_plug");
 
-        takoyaki.set_ready(Box::new(|| {  }));
+        takoyaki.set_ready(Box::new(|_ , _| { ReadyState::from_cache(Cache::new(cache_dir())) }));
 
         let response = takoyaki.start();
 
-        assert!(matches!(response.unwrap_err() , Errors::NoExecuteFunctionFound));
+        assert!(matches!(response.await.unwrap_err() , Errors::NoExecuteFunctionFound));
     }
 
-    #[test]
-    fn should_be_ok() {
+    #[tokio::test]
+    async fn should_be_ok() {
+        let mut takoyaki = Takoyaki::new("new_plug");
+        takoyaki.set_ready(Box::new(|_ , _| { ReadyState::from_cache(Cache::new(cache_dir())) }));
+        takoyaki.set_execute(Box::new(|| {  }));
+
+        let response = takoyaki.start();
+    }
+
+    #[tokio::test]
+    async fn should_error_without_state() {
         let mut takoyaki = Takoyaki::new("new_plug");
 
-        takoyaki.set_ready(Box::new(|| {  }));
+        takoyaki.set_ready(Box::new(|config , cache| { 
+            ReadyState::empty()
+        }));
         takoyaki.set_execute(Box::new(|| {  }));
 
         let response = takoyaki.start();
 
-        assert!(response.is_ok());
+        assert!(matches!(response.await.unwrap_err() , Errors::StateUnset));
     }
 }
 

@@ -1,5 +1,10 @@
 use std::path::PathBuf;
 
+use serde::Deserialize;
+
+use crate::Errors;
+
+#[derive(Debug)]
 pub struct Cache {
     cache_dir: PathBuf
 }
@@ -18,5 +23,14 @@ impl<'a> Cache {
     pub fn create(&'a self) -> Result<() , std::io::Error> {
         std::fs::create_dir_all(&self.cache_dir)
     } 
+
+    pub fn retrieve<T>(&self) -> Result<T , Errors> 
+    where
+        T: for<'de> Deserialize<'de>
+    {
+        let raw = std::fs::read_to_string(&self.cache_dir).map_err(|_| Errors::ReadError)?;
+
+        serde_json::from_str(&raw).map_err(|e| Errors::SerializeJSONError(e))
+    }
 }
 

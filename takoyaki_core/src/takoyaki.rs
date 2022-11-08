@@ -4,13 +4,18 @@ use std::fmt::Debug;
 
 use crate::{Error, Cache , build_path , Config, ReadyState, PrintableGrid};
 
+
+// Type alias
+type ReadyFunction = Box<dyn Fn(Cache , Config) -> ReadyState>;
+type ExecuteFunction<T> = Box<dyn Fn(T) -> PrintableGrid>;
+
 pub struct Takoyaki<'a , T>
 where
     T: for<'de> Deserialize<'de> + Debug
 {
     name: &'a str,
-    ready: Option<Box<dyn Fn(Cache , Config) -> ReadyState >>,
-    execute: Option<Box<dyn Fn(T) -> PrintableGrid>>,
+    ready: Option<ReadyFunction>,
+    execute: Option<ExecuteFunction<T>>,
 }
 
 impl<'a , T> Takoyaki<'a , T>
@@ -25,11 +30,11 @@ where
         }
     }
 
-    pub fn set_ready(&mut self , handler: Box<dyn Fn(Cache , Config) -> ReadyState>) {
+    pub fn set_ready(&mut self , handler: ReadyFunction) {
         self.ready = Some(handler)
     }
 
-    pub fn set_execute(&mut self , handler: Box<dyn Fn(T) -> PrintableGrid>) {
+    pub fn set_execute(&mut self , handler: ExecuteFunction<T>) {
         self.execute = Some(handler)
     }
 

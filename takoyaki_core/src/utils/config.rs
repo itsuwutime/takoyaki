@@ -35,7 +35,7 @@ impl Config {
         let raw = std::fs::read_to_string(&self.path).map_err(|_| Error::ReadError)?;
 
         // Convert to the `T` type
-        toml::from_str(raw.as_ref()).map_err(|_| Error::BuggedConfig)
+        toml::from_str(&raw).map_err(|_| Error::BuggedConfig)
     }
 }
 

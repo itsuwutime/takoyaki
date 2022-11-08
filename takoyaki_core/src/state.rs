@@ -53,6 +53,7 @@ impl ReadyState {
                 builder
                     .try_clone()
                     .unwrap()
+                    .header("User-Agent", "takoyaki")
                     .send()
                     .await
                     .map_err(|e| Errors::ReqwestError(e))?

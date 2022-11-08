@@ -1,14 +1,22 @@
 use std::path::PathBuf;
+use serde::Deserialize;
+use std::fmt::Debug;
 
-use crate::{Errors, Cache , build_path , Config, ReadyState};
+use crate::{Errors, Cache , build_path , Config, ReadyState, PrintableGrid};
 
-pub struct Takoyaki<'a> {
+pub struct Takoyaki<'a , T>
+where
+    T: for<'de> Deserialize<'de> + Debug
+{
     name: &'a str,
     ready: Option<Box<dyn Fn(Cache , Config) -> ReadyState >>,
-    execute: Option<Box<dyn Fn()>>,
+    execute: Option<Box<dyn Fn(T) -> PrintableGrid<'a>>>,
 }
 
-impl<'a> Takoyaki<'a> {
+impl<'a , T> Takoyaki<'a , T>
+where
+    T: for<'de> Deserialize<'de> + Debug
+{
     pub fn new(name: &'a str) -> Self {
         Self {
             name,
@@ -21,7 +29,7 @@ impl<'a> Takoyaki<'a> {
         self.ready = Some(handler)
     }
 
-    pub fn set_execute(&mut self , handler: Box<dyn Fn()>) {
+    pub fn set_execute(&mut self , handler: Box<dyn Fn(T) -> PrintableGrid<'a>>) {
         self.execute = Some(handler)
     }
 
@@ -54,7 +62,10 @@ impl<'a> Takoyaki<'a> {
         let config = Config::new(self.name)?;
 
         // Call the ready function
-        let res = self.ready.as_ref().unwrap()(cache , config).resolve().await?;
+        let res = self.ready.as_ref().unwrap()(cache , config).resolve::<T>().await?;
+
+        // Graphify the response
+        let printable = self.execute.as_ref().unwrap()(res);
 
         Ok(())
     }

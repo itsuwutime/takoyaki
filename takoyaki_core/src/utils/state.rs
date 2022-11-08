@@ -1,6 +1,6 @@
 use reqwest::RequestBuilder;
 use serde::Deserialize;
-use crate::{Cache, Errors};
+use crate::{Cache, Error};
 
 #[derive(Debug)]
 pub enum Pending {
@@ -41,13 +41,13 @@ impl ReadyState {
         self.state = Pending::Cache(cache)
     }
 
-    pub async fn resolve<T>(&self) -> Result<T , Errors> 
+    pub async fn resolve<T>(&self) -> Result<T , Error> 
     where
         T: for<'de> Deserialize<'de>
     {
         match &self.state {
             Pending::Unset => {
-                Err(Errors::StateUnset)
+                Err(Error::StateUnset)
             },
             Pending::Reqwest(builder) => {
                 builder
@@ -56,10 +56,10 @@ impl ReadyState {
                     .header("User-Agent", "takoyaki")
                     .send()
                     .await
-                    .map_err(Errors::ReqwestError)?
+                    .map_err(Error::ReqwestError)?
                     .json::<T>()
                     .await
-                    .map_err(Errors::ReqwestError)
+                    .map_err(Error::ReqwestError)
             },
             Pending::Cache(cache) => {
                 cache

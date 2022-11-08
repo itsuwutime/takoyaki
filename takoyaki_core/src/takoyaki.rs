@@ -2,7 +2,7 @@ use std::path::PathBuf;
 use serde::Deserialize;
 use std::fmt::Debug;
 
-use crate::{Errors, Cache , build_path , Config, ReadyState, PrintableGrid};
+use crate::{Error, Cache , build_path , Config, ReadyState, PrintableGrid};
 
 pub struct Takoyaki<'a , T>
 where
@@ -44,18 +44,18 @@ where
         Ok(cache)
     }
 
-    pub async fn start(&self) -> Result<() , Errors> {
+    pub async fn start(&self) -> Result<() , Error> {
         // Prechecks
         if self.ready.is_none() {
-            return Err(Errors::NoStartFunctionFound)
+            return Err(Error::NoStartFunctionFound)
         }
 
         if self.execute.is_none() {
-            return Err(Errors::NoExecuteFunctionFound)
+            return Err(Error::NoExecuteFunctionFound)
         }
 
         // Get path
-        let cache_path = self.build_path_for_cache().map_err(|_| Errors::ConfigDirNotFound)?;
+        let cache_path = self.build_path_for_cache().map_err(|_| Error::ConfigDirNotFound)?;
 
         // Get cache
         let cache = Cache::new(cache_path);

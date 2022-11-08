@@ -1,24 +1,18 @@
 mod utils;
-mod state;
-mod config;
-mod test_utils;
 mod takoyaki;
-mod errors;
+mod test_util;
 
 // Reexport 
 pub use utils::*;
 pub use takoyaki::*;
-pub use test_utils::*;
-pub use errors::*;
-pub use config::*;
-pub use state::*;
+pub use test_util::*;
 
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
 
     use super::*;
-    use super::test_utils::test_utils::*;
+    use super::test_util::test_utils::test_utils::*;
 
     // #[test]
     // fn cache_path_does_not_exit() {
@@ -135,8 +129,7 @@ mod tests {
             printable
         }));
 
-        let response = takoyaki.start().await;
-
+        takoyaki.start().await;
         // assert!(matches!(response.await.unwrap_err() , Errors::StateUnset));
     }
 }

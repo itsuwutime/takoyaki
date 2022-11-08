@@ -1,85 +1,41 @@
-// Import dependencies
-use colored::*;
+use std::path::PathBuf;
 use serde::Deserialize;
-use toml::Value;
-use crate::get_config_directory;
-use anyhow::Result;
 
-// Unicode config
-#[derive(Deserialize)]
-pub struct Unicode {
-    pub unicode: String,
-    pub paint: String
-}
+use crate::{build_path, errors::Errors};
 
-// Main config type
-#[derive(Deserialize)]
-pub struct ConfigType {
-    pub unicode: Unicode,
-    pub colors: Value
-}
-
-// main config struct
-#[derive(Default)]
 pub struct Config {
-    config: Option<ConfigType>
+    path: PathBuf
 }
 
-// Functions
 impl Config {
-    // Loads in app config (main)
-    pub fn load(&mut self) -> Result<()> {
-        // Read the content
-        let content = std::fs::read_to_string(
-            get_config_directory()?
-                .join("config.toml")
-        );
+    pub fn new(name: &str) -> Result<Self , Errors> {
+        let mut takoyaki_path = build_path().map_err(|_| Errors::ConfigDirNotFound)?;
 
-        // Check if it is not a bomb
-        if content.is_err() {
-            panic!("{}" , "No config found! Make sure you have ran `takoyaki init`".red())
-        }
+        takoyaki_path.extend(["plugins" , name , "config.toml"]);
 
-        // It is safe to unwrap `content` from here!
-        self.config = Some(toml::from_str(&content?)?);
-
-        // OK!
-        Ok(())
+        Ok(Self {
+            path: takoyaki_path
+        })
     }
 
-    // Get config for a specific plugin
-    pub fn parse_from_name<T>(name: &str) -> Result<T> 
-    where
-        T: for <'de> Deserialize<'de>
+    pub fn exists(&self) -> bool {
+        self.path.exists()
+    }
+
+    pub fn get<T>(&self) -> Result<T , Errors>
+    where 
+        T: for<'de> Deserialize<'de>
     {
-        // Get config dir
-        let mut config = get_config_directory()?;
-
-        // Beautifulllll
-        config.extend(&["plugins" , name , "config.toml"]);
-
-        // Get the file content
-        let content = std::fs::read_to_string(
-            config
-        );
-
-        // Check if it is not a bomb
-        if content.is_err() {
-            panic!("{}" , "No config found! Make sure you have the plugin installed".red());
+        // Check if the config exists
+        if !self.exists() {
+            return Err(Errors::NoConfigFound)
         }
 
-        // It is safe to unwrap `content` from here!
-        Ok(toml::from_str(&content?)?)
-    }
+        // Read the config as a raw string
+        let raw = std::fs::read_to_string(&self.path).map_err(|_| Errors::ReadError)?;
 
-    pub fn get(&self) -> &ConfigType {
-        match &self.config {
-            Some(config) => {
-                config
-            },
-            None => {
-                panic!("Must load the config before accessing it! Call `load()` method to load the config")
-            }
-        }
+        // Convert to the `T` type
+        toml::from_str(raw.as_ref()).map_err(|_| Errors::BuggedConfig)
     }
 }
+

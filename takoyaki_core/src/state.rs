@@ -4,7 +4,7 @@ use crate::{Cache, Errors};
 
 #[derive(Debug)]
 pub enum Pending {
-    Reqwest(RequestBuilder),
+    Reqwest(Box<RequestBuilder>),
     Cache(Cache),
     Unset
 }
@@ -23,7 +23,7 @@ impl ReadyState {
 
     pub fn from_reqwest(builder: RequestBuilder) -> Self {
         Self {
-            state: Pending::Reqwest(builder)
+            state: Pending::Reqwest(Box::new(builder))
         }
     }
 
@@ -34,7 +34,7 @@ impl ReadyState {
     }
 
     pub fn set_reqwest(&mut self , builder: RequestBuilder) {
-        self.state = Pending::Reqwest(builder)
+        self.state = Pending::Reqwest(Box::new(builder))
     }
 
     pub fn set_cache(&mut self , cache: Cache) {
@@ -47,7 +47,7 @@ impl ReadyState {
     {
         match &self.state {
             Pending::Unset => {
-                return Err(Errors::StateUnset)
+                Err(Errors::StateUnset)
             },
             Pending::Reqwest(builder) => {
                 builder
@@ -56,13 +56,13 @@ impl ReadyState {
                     .header("User-Agent", "takoyaki")
                     .send()
                     .await
-                    .map_err(|e| Errors::ReqwestError(e))?
+                    .map_err(Errors::ReqwestError)?
                     .json::<T>()
                     .await
-                    .map_err(|e| Errors::ReqwestError(e))
+                    .map_err(Errors::ReqwestError)
             },
             Pending::Cache(cache) => {
-                return cache
+                cache
                     .retrieve()
             }
         }

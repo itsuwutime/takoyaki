@@ -30,7 +30,7 @@ impl PrintableGrid {
         self.grid[x].insert(y, item);
     }
 
-    pub fn convert_to_rgb(&self , color: &String) -> Rgb {
+    pub fn convert_to_rgb(&self , color: &str) -> Rgb {
         colorsys::Rgb::from_hex_str(color).unwrap()
     }
 

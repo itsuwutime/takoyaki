@@ -41,7 +41,7 @@ where
         cache.extend(["cache" , self.name]);
 
         // Return path
-        return Ok(cache)
+        Ok(cache)
     }
 
     pub async fn start(&self) -> Result<() , Errors> {

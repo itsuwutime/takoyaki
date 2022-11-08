@@ -5,7 +5,6 @@ mod test_utils;
 mod takoyaki;
 mod errors;
 
-use serde::Deserialize;
 // Reexport 
 pub use utils::*;
 pub use takoyaki::*;
@@ -17,7 +16,6 @@ pub use state::*;
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
-    use std::path::PathBuf;
 
     use super::*;
     use super::test_utils::test_utils::*;

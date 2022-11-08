@@ -30,7 +30,7 @@ impl<'a> Cache {
     {
         let raw = std::fs::read_to_string(&self.cache_dir).map_err(|_| Errors::ReadError)?;
 
-        serde_json::from_str(&raw).map_err(|e| Errors::SerializeJSONError(e))
+        serde_json::from_str(&raw).map_err(Errors::SerializeJSONError)
     }
 }
 

@@ -7,7 +7,7 @@ pub fn build_path() -> Result<PathBuf , std::io::Error> {
     // Match 
     match config_dir {
         Some(config) => {
-            return Ok(config.join("takoyaki"))
+            Ok(config.join("takoyaki"))
         },
         None => {
             // Get home directory
@@ -18,7 +18,7 @@ pub fn build_path() -> Result<PathBuf , std::io::Error> {
             // Just to make sure not to hit edge cases
             create_dir_all(&home)?;
 
-            return Ok(home)
+            Ok(home)
         }
     }
 }

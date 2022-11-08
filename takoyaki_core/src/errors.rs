@@ -8,6 +8,7 @@ pub enum Errors {
     ReadError,
     BuggedConfig,
     StateUnset,
+    InvalidHexColorCode,
     ReqwestError(reqwest::Error),
     SerializeJSONError(serde_json::Error),
 }

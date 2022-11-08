@@ -33,7 +33,7 @@ pub mod test_utils {
     #[serde(rename_all = "camelCase")]
     pub struct ContributionCalendar {
         pub colors: Vec<String>,
-        pub total_contributions: i64,
+        pub total_contributions: usize,
         pub weeks: Vec<Week>,
     }
 
@@ -48,7 +48,7 @@ pub mod test_utils {
     #[serde(rename_all = "camelCase")]
     pub struct ContributionDay {
         pub color: String,
-        pub contribution_count: i64,
+        pub contribution_count: usize,
         pub date: String,
         pub weekday: i64,
     }

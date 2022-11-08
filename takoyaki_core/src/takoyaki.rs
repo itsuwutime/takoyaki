@@ -10,7 +10,7 @@ where
 {
     name: &'a str,
     ready: Option<Box<dyn Fn(Cache , Config) -> ReadyState >>,
-    execute: Option<Box<dyn Fn(T) -> PrintableGrid<'a>>>,
+    execute: Option<Box<dyn Fn(T) -> PrintableGrid>>,
 }
 
 impl<'a , T> Takoyaki<'a , T>
@@ -29,7 +29,7 @@ where
         self.ready = Some(handler)
     }
 
-    pub fn set_execute(&mut self , handler: Box<dyn Fn(T) -> PrintableGrid<'a>>) {
+    pub fn set_execute(&mut self , handler: Box<dyn Fn(T) -> PrintableGrid>) {
         self.execute = Some(handler)
     }
 
@@ -66,6 +66,8 @@ where
 
         // Graphify the response
         let printable = self.execute.as_ref().unwrap()(res);
+
+        printable.pretty_print();
 
         Ok(())
     }

@@ -112,16 +112,27 @@ mod tests {
                 client
                     .post("https://api.github.com/graphql")
                     .body(serde_json::to_string(&body).unwrap())
-                    .header("Authorization" , "Bearer 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")
+                    .header("Authorization" , "Bearer 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")
             );
         }));
 
         takoyaki.set_execute(Box::new(|res: Root| -> PrintableGrid { 
             let mut printable = PrintableGrid::new();
+            let mut x = 0;
+            let mut y = 0;
 
-            printable.insert(1, 1, Printable { color: "#88C0d0" , contribution_count: 10 });
+            println!("Res");
 
-            println!("{}" , serde_json::to_string_pretty(&printable).unwrap());
+            for week in res.data.user.contributions_collection.contribution_calendar.weeks {
+                for day in week.contribution_days {
+                    printable.insert(x , y, Printable { color: day.color , contribution_count: day.contribution_count });
+
+                    x += 1;
+                }
+
+                x = 0;
+                y += 1;
+            }
 
             printable
         }));

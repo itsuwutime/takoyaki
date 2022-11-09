@@ -68,8 +68,11 @@ mod tests {
     #[tokio::test]
     async fn should_error_without_state() {
         let mut takoyaki = Takoyaki::new("new_plug");
+        let takoyaki_config = TConfig::new().unwrap();
 
-        takoyaki.set_ready(Box::new(|cache , config| -> ReadyState { 
+        println!("{:?}" , takoyaki_config.config);
+
+        takoyaki.set_ready(Box::new(|cache , _| -> ReadyState { 
             if cache.exists() {
                 return ReadyState::from_cache(cache)
             }
@@ -104,7 +107,7 @@ mod tests {
                 client
                     .post("https://api.github.com/graphql")
                     .body(serde_json::to_string(&body).unwrap())
-                    .header("Authorization" , "Bearer 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")
+                    .header("Authorization" , "Bearer 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")
             );
         }));
 
@@ -112,8 +115,6 @@ mod tests {
             let mut printable = PrintableGrid::new();
             let mut x = 0;
             let mut y = 0;
-
-            println!("Res");
 
             for week in res.data.user.contributions_collection.contribution_calendar.weeks {
                 for day in week.contribution_days {
@@ -129,8 +130,7 @@ mod tests {
             printable
         }));
 
-        takoyaki.start().await;
-        // assert!(matches!(response.await.unwrap_err() , Errors::StateUnset));
+        assert!(takoyaki.start().await.is_ok());
     }
 }
 

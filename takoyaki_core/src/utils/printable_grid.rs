@@ -1,11 +1,9 @@
-use std::collections::HashMap;
-
 use colorsys::Rgb;
 use serde::Serialize;
 use colored::*;
-use toml::Value;
+use toml::{Value , value::Map};
 
-use crate::{TConfig, TakoyakiConfig , Error};
+use crate::{TConfig, TakoyakiConfig , Error , Unicode};
 
 #[derive(Debug , Default , Clone , Serialize , PartialEq)]
 pub struct Printable {
@@ -52,7 +50,7 @@ impl<'a> PrintableGrid {
 
     pub fn hint_color(&'a self , config: &'a TakoyakiConfig , count: usize , fallback: &'a str) -> Option<String> {
         // Get all the color
-        let colors = config.colors.clone();
+        let colors = config.colors.clone().unwrap_or(Map::new());
 
         // Get the specified color for the contribution count 
         let pref = colors.get(&format!("{}_contribution" , count));
@@ -87,8 +85,10 @@ impl<'a> PrintableGrid {
                     self.hint_color(&user_prefs , col.contribution_count , &col.color)
                 ).map_err(|_| Error::HexColorParseError(None))?;
 
+                let unicode_prefs = user_prefs.unicode.clone().unwrap_or(Unicode::default());
+
                 // Check if the user wants to paint bg or fg
-                if user_prefs.unicode.paint == "bg" {
+                if unicode_prefs.paint == Some("bg".to_string()) {
                     // Create a printable variable
                     let mut printable = "ඞ ".on_truecolor(
                         color.red() as u8, 
@@ -97,10 +97,10 @@ impl<'a> PrintableGrid {
                     );
 
                     // Chek if user wants to paint fg as well
-                    if user_prefs.unicode.fg_on_bg.clone().is_some() {
+                    if unicode_prefs.fg_on_bg.is_some() {
                         // Get the rgb combination for the fg
                         let fg = self.convert_to_rgb(
-                            Some(user_prefs.unicode.fg_on_bg.as_ref().unwrap().to_string())
+                            Some(unicode_prefs.fg_on_bg.unwrap().to_string())
                         )?;
 
                         // Add text color

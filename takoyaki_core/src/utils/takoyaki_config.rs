@@ -4,17 +4,27 @@ use toml::map::Map;
 use crate::{Error , build_path};
 
 
-#[derive(Deserialize , Debug , Default)]
+#[derive(Deserialize , Debug , Default , Clone)]
 pub struct TakoyakiConfig {
-    pub unicode: Unicode,
-    pub colors: Map<String , Value>
+    pub unicode: Option<Unicode>,
+    pub colors: Option<Map<String , Value>>
 }
 
-#[derive(Deserialize , Debug , Default)]
+#[derive(Deserialize , Debug , Clone)]
 pub struct Unicode {
-    pub unicode: String,
-    pub paint: String,
+    pub unicode: Option<String>,
+    pub paint: Option<String>,
     pub fg_on_bg: Option<String>
+}
+
+impl Default for Unicode {
+    fn default() -> Self {
+        Self {
+            unicode: Some("ඞ ".to_string()),
+            paint: Some("fg".to_string()),
+            fg_on_bg: None
+        }
+    }
 }
 
 pub struct TConfig {
@@ -29,10 +39,16 @@ impl TConfig {
                 .join("config.toml")
         ).map_err(|_| Error::ReadError)?;
 
-        let parsed: TakoyakiConfig = toml::from_str(&raw).unwrap();
+        let parsed: TakoyakiConfig = toml::from_str(&raw).map_err(Error::SerializeTOMLError)?;
 
         Ok(Self {
             config: parsed
+        })
+    }
+
+    pub fn from_str(raw: &str) -> Result<Self , Error> {
+        Ok(Self {
+            config: toml::from_str(raw).map_err(Error::SerializeTOMLError)?
         })
     }
 }

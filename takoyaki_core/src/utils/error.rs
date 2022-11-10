@@ -11,6 +11,9 @@ pub enum Error {
     InvalidHexColorCode,
     ReqwestError(reqwest::Error),
     SerializeJSONError(serde_json::Error),
+    SerializeTOMLError(toml::de::Error),
     HexColorParseError(Option<colorsys::ParseError>),
+    CacheNotCreated(std::io::Error),
+    WriteError(std::io::Error),
     InvalidHexColorConfig(colorsys::ParseError),
 }

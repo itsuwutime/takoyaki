@@ -71,8 +71,9 @@ where
         // Graphify the response
         let printable = self.execute.as_ref().unwrap()(res);
 
-        printable.pretty_print();
+        printable.pretty_print()?;
 
         Ok(())
     }
 }
+

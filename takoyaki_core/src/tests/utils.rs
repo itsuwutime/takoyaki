@@ -1,7 +1,5 @@
 #[cfg(test)]
 pub mod test_utils {
-    use std::path::PathBuf;
-
     use serde::{Serialize , Deserialize};
 
     #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -54,8 +52,8 @@ pub mod test_utils {
     }
 
 
-    pub fn cache_dir() -> PathBuf {
-        dirs::cache_dir().unwrap().join("takoyaki")
-    } 
+    // pub fn cache_dir() -> PathBuf {
+    //     dirs::cache_dir().unwrap().join("takoyaki")
+    // } 
 }
 

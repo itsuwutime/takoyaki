@@ -4,7 +4,6 @@ use std::fmt::Debug;
 
 use crate::{Error, Cache , build_path , Config, ReadyState, PrintableGrid};
 
-
 // Type alias
 type ReadyFunction = Box<dyn Fn(Cache , Config) -> ReadyState>;
 type ExecuteFunction<T> = Box<dyn Fn(T) -> PrintableGrid>;

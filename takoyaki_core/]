@@ -4,7 +4,7 @@ use toml::map::Map;
 use crate::{Error , build_path};
 
 
-#[derive(Deserialize , Debug , Default)]
+#[derive(Deserialize , Debug)]
 pub struct TakoyakiConfig {
     pub unicode: Unicode,
     pub colors: Map<String , Value>
@@ -19,6 +19,15 @@ pub struct Unicode {
 
 pub struct TConfig {
     pub config: TakoyakiConfig
+}
+
+impl Default for TakoyakiConfig {
+    fn default() -> Self {
+        Self {
+            colors: Value::from("{}"),
+            unicode: Unicode::default()
+        }
+    }
 }
 
 impl TConfig {

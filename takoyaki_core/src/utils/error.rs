@@ -11,4 +11,6 @@ pub enum Error {
     InvalidHexColorCode,
     ReqwestError(reqwest::Error),
     SerializeJSONError(serde_json::Error),
+    HexColorParseError(Option<colorsys::ParseError>),
+    InvalidHexColorConfig(colorsys::ParseError),
 }

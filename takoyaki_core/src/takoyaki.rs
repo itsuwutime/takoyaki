@@ -58,11 +58,8 @@ where
             return Err(Error::NoExecuteFunctionFound)
         }
 
-        // Get path
-        let cache_path = self.build_path_for_cache().map_err(|_| Error::ConfigDirNotFound)?;
-
         // Get cache
-        let cache = Cache::new(cache_path);
+        let cache = Cache::from_name(self.name);
         let config = Config::new(self.name)?;
 
         // Call the ready function

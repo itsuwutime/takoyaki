@@ -134,21 +134,21 @@ mod tests {
     // # # # # # # # # # # # # # # # #
     #[test]
     fn cache_should_not_exist() {
-        let cache = Cache::new(PathBuf::from("/some/random/path/uwu"));
+        let cache = Cache::from_path(PathBuf::from("/some/random/path/uwu"));
 
         assert_eq!(cache.exists() , false)
     }
 
     #[test]
     fn cache_create_should_fail() {
-        let cache = Cache::new(PathBuf::from("/some/random/path/uwu"));
+        let cache = Cache::from_path(PathBuf::from("/some/random/path/uwu"));
 
         assert!(cache.create().is_err())
     }
 
     #[test]
     fn cache_create_should_create_new_dir() {
-        let cache = Cache::new(PathBuf::from(".temp").join("cache.json"));
+        let cache = Cache::from_path(PathBuf::from(".temp").join("cache.json"));
 
         assert!(cache.create().is_ok());
         assert!(cache.exists());
@@ -156,14 +156,14 @@ mod tests {
 
     #[test]
     fn cache_should_not_be_retrievable() {
-        let cache = Cache::new(PathBuf::from("/some/random/path/uwu"));
+        let cache = Cache::from_path(PathBuf::from("/some/random/path/uwu"));
 
         assert!(cache.retrieve::<Value>().is_err())
     }
 
     #[test]
     fn cache_should_be_writable() {
-        let cache = Cache::new(PathBuf::from(".temp").join("cache.json"));
+        let cache = Cache::from_path(PathBuf::from(".temp").join("cache.json"));
 
         assert!(cache.create().is_ok());
 
@@ -184,7 +184,7 @@ mod tests {
 
     #[tokio::test]
     async fn state_from_cache() {
-        let cache = Cache::new(PathBuf::from(".temp").join("cache.json"));
+        let cache = Cache::from_path(PathBuf::from(".temp").join("cache.json"));
 
         #[derive(Deserialize)]
         struct Response {

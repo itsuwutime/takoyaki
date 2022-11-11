@@ -1,20 +1,20 @@
 use reqwest::RequestBuilder;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use crate::{Cache, Error};
 
 #[derive(Debug)]
-pub enum Pending {
+pub enum Pending<'a> {
     Reqwest(Box<RequestBuilder>),
-    Cache(Cache),
+    Cache(&'a Cache),
     Unset
 }
 
 #[derive(Debug)]
-pub struct ReadyState {
-    state: Pending
+pub struct ReadyState<'a> {
+    state: Pending<'a>
 }
 
-impl ReadyState {
+impl<'a> ReadyState<'a> {
     pub fn empty() -> Self {
         Self {
             state: Pending::Unset
@@ -27,7 +27,7 @@ impl ReadyState {
         }
     }
 
-    pub fn from_cache(cache: Cache) -> Self {
+    pub fn from_cache(cache: &'a Cache) -> Self {
         Self {
             state: Pending::Cache(cache)
         }
@@ -37,20 +37,20 @@ impl ReadyState {
         self.state = Pending::Reqwest(Box::new(builder))
     }
 
-    pub fn set_cache(&mut self , cache: Cache) {
+    pub fn set_cache(&mut self , cache: &'a Cache) {
         self.state = Pending::Cache(cache)
     }
 
-    pub async fn resolve<T>(&self) -> Result<T , Error> 
+    pub async fn resolve<T>(&self , cache: &'a Cache) -> Result<T , Error> 
     where
-        T: for<'de> Deserialize<'de>
+        T: for<'de> Deserialize<'de> + Serialize
     {
         match &self.state {
             Pending::Unset => {
                 Err(Error::StateUnset)
             },
             Pending::Reqwest(builder) => {
-                builder
+                let resp = builder
                     .try_clone()
                     .unwrap()
                     .header("User-Agent", "takoyaki")
@@ -59,7 +59,11 @@ impl ReadyState {
                     .map_err(Error::ReqwestError)?
                     .json::<T>()
                     .await
-                    .map_err(Error::ReqwestError)
+                    .map_err(Error::ReqwestError);
+
+                cache.populate_as_str(&serde_json::to_string(&resp).unwrap());
+
+                resp
             },
             Pending::Cache(cache) => {
                 cache

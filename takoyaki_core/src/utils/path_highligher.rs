@@ -17,10 +17,10 @@ pub fn hint_cache_path(name: &str) -> PathBuf {
         }
     };
 
-    path.extend(["takoyaki" , name]);
+    path.extend(["takoyaki" , name, "cache.json"]);
 
     // Just to make sure that the directory is present
-    std::fs::create_dir_all(&path);
+    std::fs::create_dir_all(&path.parent().unwrap());
 
     path
 }

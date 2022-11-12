@@ -1,4 +1,5 @@
 mod cache;
+mod config;
 mod hinter;
 mod result;
 
@@ -6,4 +7,5 @@ mod result;
 pub use cache::*;
 pub use hinter::*;
 pub use result::*;
+pub use config::*;
 

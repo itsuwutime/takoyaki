@@ -138,7 +138,7 @@ mod tests {
         let mut cache_path = PathBuf::new();
 
         // Extend to the temp folder
-        cache_path.extend([".temp" , "cache.json"]);
+        cache_path.extend([".temp" , "valid_cache.json"]);
 
         // Build Cache from path
         let cache = Cache::from_path(cache_path.clone());

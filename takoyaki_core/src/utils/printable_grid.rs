@@ -202,3 +202,4 @@ mod tests {
         assert!(grid.pretty_print(None).is_ok());
     }
 }
+

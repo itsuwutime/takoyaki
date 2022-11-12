@@ -7,8 +7,13 @@ pub enum Error {
     SerializationError,
     SerializationTOMLError,
     CannotReadFile,
+    StartFunctionNotSet,
+    ExecuteFunctionNotSet,
     ConfigNotFound,
+    ReqwestError,
+    BuilderCloneError,
     CacheIsNotAFile,
+    StateIsUnset,
     InvalidHexColorCode,
     PathWithNoParent
 }

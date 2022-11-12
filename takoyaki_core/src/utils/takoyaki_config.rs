@@ -1,55 +1,31 @@
 use serde::Deserialize;
 use toml::Value;
-use toml::map::Map;
-use crate::{Error , build_path};
+use crate::{Result, hint_takoyaki_config_path, Error};
 
-
-#[derive(Deserialize , Debug , Default , Clone)]
-pub struct TakoyakiConfig {
-    pub unicode: Option<Unicode>,
-    pub colors: Option<Map<String , Value>>
-}
-
-#[derive(Deserialize , Debug , Clone)]
+#[derive(Deserialize)]
 pub struct Unicode {
     pub unicode: Option<String>,
-    pub paint: Option<String>,
+    pub bg: Option<String>,
     pub fg_on_bg: Option<String>
 }
 
-impl Default for Unicode {
-    fn default() -> Self {
-        Self {
-            unicode: Some("ඞ ".to_string()),
-            paint: Some("fg".to_string()),
-            fg_on_bg: None
-        }
-    }
+#[derive(Deserialize)]
+pub struct TakoyakiConfig {
+    pub unicode: Option<Unicode>,
+    pub colors: Option<Value>
 }
 
-pub struct TConfig {
-    pub config: TakoyakiConfig
-}
+impl TakoyakiConfig {
+    pub fn get() -> Result<Self> {
+        let config_path = hint_takoyaki_config_path()?;
 
-impl TConfig {
-    pub fn new() -> Result<Self , Error> {
-        let raw = std::fs::read_to_string(
-            build_path()
-                .map_err(|_| Error::ConfigDirNotFound)?
-                .join("config.toml")
-        ).map_err(|_| Error::ReadError)?;
+        let raw = std::fs::read_to_string(&config_path).map_err(|_| Error::ConfigNotFound)?;
 
-        let parsed: TakoyakiConfig = toml::from_str(&raw).map_err(Error::SerializeTOMLError)?;
-
-        Ok(Self {
-            config: parsed
-        })
+        toml::from_str(&raw).map_err(|_| Error::SerializationTOMLError)
     }
 
-    pub fn from_str(raw: &str) -> Result<Self , Error> {
-        Ok(Self {
-            config: toml::from_str(raw).map_err(Error::SerializeTOMLError)?
-        })
+    pub fn from_raw(raw: &str) -> Result<Self> {
+        toml::from_str(raw).map_err(|_| Error::SerializationTOMLError)
     }
 }
 

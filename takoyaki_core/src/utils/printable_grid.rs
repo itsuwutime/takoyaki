@@ -1,131 +1,205 @@
-use colorsys::Rgb;
-use serde::Serialize;
+use toml::{Value, value::Map};
 use colored::*;
-use toml::{Value , value::Map};
 
-use crate::{TConfig, TakoyakiConfig , Error , Unicode};
+use crate::{TakoyakiConfig, Result, Error};
 
-#[derive(Debug , Default , Clone , Serialize , PartialEq)]
+#[derive(Default , Clone , PartialEq , Debug , Eq)]
 pub struct Printable {
     pub color: String,
-    pub contribution_count: usize
+    pub contributions: usize
 }
 
-#[derive(Debug , Default , Serialize , PartialEq)]
+#[derive(Default , Clone , PartialEq , Debug , Eq)]
 pub struct PrintableGrid {
     pub grid: Vec<Vec<Printable>>
 }
 
-impl<'a> PrintableGrid {
+#[derive(Default , Debug)]
+pub struct Hex {
+    pub r: u8,
+    pub g: u8,
+    pub b: u8,
+}
+
+impl PrintableGrid {
     pub fn new() -> Self {
         Self::default()
     }
 
-    pub fn insert(&mut self , x: usize , y: usize , item: Printable) {
-        // Extend the grid on the x axis
+    pub fn insert_at(&mut self , x: usize , y: usize , item: Printable) {
+        // Resize the grid on the x axis with vec![] as a default fill value
         if self.grid.len() <= x {
             self.grid.resize(x + 1, vec![])
         }
 
-        // Extend the grid on the y axis
+        // Resize the grid on the y axis with PrintableGrid::default() as a default fill value
         if self.grid[x].len() <= y {
             self.grid[x].resize(y , Printable::default())
         }
 
-        // Insert the item at the position
-        self.grid[x].insert(y, item);
+        // Insert at the specific location
+        self.grid[x].insert(y , item);
     }
 
-    pub fn convert_to_rgb(&self , color: Option<String>) -> Result<Rgb , Error> {
-        // Use colorsys to convert hex to rgb
-        match color {
-            Some(color) => {
-                colorsys::Rgb::from_hex_str(&color).map_err(|e| Error::HexColorParseError(Some(e)))
-            },
-            None => {
-                Err(Error::InvalidHexColorCode)
-            }
+    pub fn hex_to_rgb(&self , hex: &str) -> Result<Hex> {
+        if hex.len() != 7 || !hex.starts_with('#') {
+            return Err(Error::InvalidHexColorCode)
         }
+
+        let r = u8::from_str_radix(&hex[1..3] , 16).map_err(|_| Error::InvalidHexColorCode)?;
+        let g = u8::from_str_radix(&hex[3..5] , 16).map_err(|_| Error::InvalidHexColorCode)?;
+        let b = u8::from_str_radix(&hex[5..7] , 16).map_err(|_| Error::InvalidHexColorCode)?;
+
+        Ok(Hex {
+            r,
+            g,
+            b
+        })
     }
 
-    pub fn hint_color(&'a self , config: &'a TakoyakiConfig , count: usize , fallback: &'a str) -> Option<String> {
-        // Get all the color
-        let colors = config.colors.clone().unwrap_or(Map::new());
+    pub fn hint_color(&self , color_scheme: &Map<String , Value> , count: usize , fallback: String) -> String {
+        let preffered_color = color_scheme.get(&format!("{}_contribution" , count));
 
-        // Get the specified color for the contribution count 
-        let pref = colors.get(&format!("{}_contribution" , count));
-
-        // Match pref
-        match pref {
+        match preffered_color {
             Some(color) => {
-                // Return the color
-                Some(color.as_str().unwrap().to_string())
+                color.as_str().unwrap().to_string()
             },
             None => {
-                Some(colors.get("x_contribution") // Get global color config
-                    .unwrap_or(&Value::String(fallback.to_owned())) // Fallback to original color if not available
+                color_scheme.get("x_contribution")
+                    .unwrap_or(&Value::String(fallback))
                     .as_str()
                     .unwrap()
                     .to_string()
-                )
             }
         }
-    } 
+    }
 
-    pub fn pretty_print(&self) -> Result<() , Error> {
-        // Get user configs
-        let user_prefs = TConfig::new().unwrap().config;
+    pub fn pretty_print(&self , config: Option<TakoyakiConfig>) -> Result<()> {
+        // Get the config
+        let tconfig = config.unwrap_or(TakoyakiConfig::get()?);
 
-        // Iterate through all the rows available
+        // Get all the color prefs
+        let raw_colors = tconfig.colors.unwrap_or_else(|| Value::Table(Map::new()));
+
+        let colors = raw_colors.as_table().unwrap();
+
         for row in &self.grid {
-            // Iterate through all the cols present
             for col in row {
-                // Convert the color to rgb
-                let color = self.convert_to_rgb(
-                    self.hint_color(&user_prefs , col.contribution_count , &col.color)
-                ).map_err(|_| Error::HexColorParseError(None))?;
+                let color = self.hex_to_rgb(&self.hint_color(colors, col.contributions, col.color.to_string()))?;
 
-                let unicode_prefs = user_prefs.unicode.clone().unwrap_or(Unicode::default());
-
-                // Check if the user wants to paint bg or fg
-                if unicode_prefs.paint == Some("bg".to_string()) {
-                    // Create a printable variable
-                    let mut printable = "ඞ ".on_truecolor(
-                        color.red() as u8, 
-                        color.green() as u8, 
-                        color.blue() as u8
-                    );
-
-                    // Chek if user wants to paint fg as well
-                    if unicode_prefs.fg_on_bg.is_some() {
-                        // Get the rgb combination for the fg
-                        let fg = self.convert_to_rgb(
-                            Some(unicode_prefs.fg_on_bg.unwrap().to_string())
-                        )?;
-
-                        // Add text color
-                        printable = printable.truecolor(
-                            fg.red() as u8, 
-                            fg.blue() as u8, 
-                            fg.blue() as u8
-                        );
-                    }
-
-                    // Print the printable
-                    print!("{}" , printable);
-                } else {
-                    print!("{}" , "ඞ ".truecolor(
-                        color.red() as u8,
-                        color.green() as u8,
-                        color.blue() as u8)
-                    );
-                }
-
+                print!("{}" , "ඞ ".truecolor(color.r , color.g , color.b));
             }
-            println!();
+
+            println!()
         }
 
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn insert_test() {
+        let mut grid = PrintableGrid::new();
+
+        let p_1 = Printable::default();
+        let p_2 = Printable::default();
+        let p_3 = Printable::default();
+
+        // Insert items
+        grid.insert_at(0, 0, p_1.clone());
+        grid.insert_at(1, 1, p_2.clone());
+        grid.insert_at(1, 2, p_3.clone());
+
+        assert_eq!(grid.grid[0][0] , p_1);
+        assert_eq!(grid.grid[1][1] , p_2);
+        assert_eq!(grid.grid[1][2] , p_3);
+    }
+
+    #[test]
+    fn invalid_hex_len() {
+        let grid = PrintableGrid::new();
+
+        assert_eq!(grid.hex_to_rgb("#invalid_hex").unwrap_err() , Error::InvalidHexColorCode);
+    }
+
+    #[test]
+    fn invalid_hex_but_perfect_len() {
+        let grid = PrintableGrid::new();
+
+        assert_eq!(grid.hex_to_rgb("#hahaha").unwrap_err() , Error::InvalidHexColorCode);
+    }
+
+    #[test]
+    fn valid_hex() {
+        let grid = PrintableGrid::new();
+
+        let rgb = grid.hex_to_rgb("#88C0D0").unwrap();
+
+        assert_eq!(rgb.r , 136);
+        assert_eq!(rgb.g , 192);
+        assert_eq!(rgb.b , 208);
+    }
+
+    #[test]
+    fn hint_color_should_use_fallback_color() {
+        let grid = PrintableGrid::new();
+        let config = TakoyakiConfig::from_raw(r#""#).unwrap();
+
+        assert_eq!(grid.hint_color(
+            config.colors.unwrap_or(Value::Table(Map::new())).as_table().unwrap(),
+            10,
+            "#88C0D0".to_string()
+        ) , "#88C0D0");
+    }
+
+    #[test]
+    fn hint_color_should_use_x_contribution_color() {
+        let grid = PrintableGrid::new();
+        let config = TakoyakiConfig::from_raw(r#"
+            [colors]
+            x_contribution = '#88C0D0'
+        "#).unwrap();
+
+        assert_eq!(grid.hint_color(
+            config.colors.unwrap_or(Value::Table(Map::new())).as_table().unwrap(),
+            10,
+            "#2E3440".to_string()
+        ) , "#88C0D0");
+    }
+
+    #[test]
+    fn hint_color_should_use_count_contribution_color() {
+        let grid = PrintableGrid::new();
+        let config = TakoyakiConfig::from_raw(r#"
+            [colors]
+            6_contribution = '#88C0D0'
+        "#).unwrap();
+
+        assert_eq!(grid.hint_color(
+            config.colors.unwrap_or(Value::Table(Map::new())).as_table().unwrap(),
+            6,
+            "#2E3440".to_string()
+        ) , "#88C0D0");
+    }
+
+    #[test]
+    fn pretty_print_should_exit_nicely() {
+        let mut grid = PrintableGrid::new();
+
+        let p_1 = Printable::default();
+        let p_2 = Printable::default();
+        let p_3 = Printable::default();
+
+        // Insert items
+        grid.insert_at(0, 0, p_1.clone());
+        grid.insert_at(1, 1, p_2.clone());
+        grid.insert_at(1, 2, p_3.clone());
+
+        assert!(grid.pretty_print(None).is_ok());
     }
 }
 

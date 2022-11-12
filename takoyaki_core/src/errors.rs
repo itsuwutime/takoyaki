@@ -5,6 +5,8 @@ pub enum Error {
     CannotCreateFile,
     CannotWriteToFile,
     SerializationError,
+    SerializationTOMLError,
+    CannotReadFile,
     CacheIsNotAFile,
     PathWithNoParent
 }

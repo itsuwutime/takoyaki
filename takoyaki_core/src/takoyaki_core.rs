@@ -29,7 +29,7 @@ where
         self.execute = Some(handler)
     }
 
-    pub async fn execute(&self) -> Result<()> {
+    pub async fn start(&self) -> Result<()> {
         // Get all the handlers
         let start = self.ready.as_ref().ok_or(Error::StartFunctionNotSet)?;
         let execute = self.execute.as_ref().ok_or(Error::ExecuteFunctionNotSet)?;
@@ -50,3 +50,62 @@ where
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    pub async fn start_without_start_function() {
+        let takoyaki = Takoyaki::<serde_json::Value>::new();
+
+        assert_eq!(takoyaki.start().await.unwrap_err() , Error::StartFunctionNotSet);
+    }
+
+    #[tokio::test]
+    pub async fn start_without_execute_function() {
+        let mut takoyaki = Takoyaki::<serde_json::Value>::new();
+
+        takoyaki.set_ready(Box::new(|| {
+            ReadyState::new()
+        }));
+
+        assert_eq!(takoyaki.start().await.unwrap_err() , Error::ExecuteFunctionNotSet);
+    }
+
+    #[tokio::test]
+    pub async fn state_is_unset() {
+        let mut takoyaki = Takoyaki::<serde_json::Value>::new();
+
+        takoyaki.set_ready(Box::new(|| {
+            ReadyState::new()
+        }));
+
+        takoyaki.set_execute(Box::new(|_| {
+            PrintableGrid::new()
+        }));
+
+        assert_eq!(takoyaki.start().await.unwrap_err() , Error::StateIsUnset);
+    }
+
+    #[tokio::test]
+    pub async fn state_from_reqwest() {
+        let mut takoyaki = Takoyaki::<serde_json::Value>::new();
+
+        takoyaki.set_ready(Box::new(|| {
+            ReadyState::from_reqwest(
+                reqwest::Client::new()
+                    .get("https://jsonplaceholder.typicode.com/todos/1")
+            )
+        }));
+
+        takoyaki.set_execute(Box::new(|data| {
+            assert_eq!(data.as_object().unwrap().get("id").unwrap().as_u64().unwrap() , 1);
+
+            PrintableGrid::new()
+        }));
+
+        assert!(takoyaki.start().await.is_ok());
+    }
+}
+

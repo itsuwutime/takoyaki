@@ -1,5 +1,11 @@
-#[derive(Debug)]
+#[derive(Debug , PartialEq)]
 pub enum Error {
-    HomeDirectoryNotFound
+    HomeDirectoryNotFound,
+    CannotCreateDirectory,
+    CannotCreateFile,
+    CannotWriteToFile,
+    SerializationError,
+    CacheIsNotAFile,
+    PathWithNoParent
 }
 

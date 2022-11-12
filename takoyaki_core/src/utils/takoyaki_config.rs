@@ -10,17 +10,12 @@ pub struct Unicode {
 }
 
 #[derive(Deserialize)]
-pub struct TakyakiConfigType {
+pub struct TakoyakiConfig {
     pub unicode: Option<Unicode>,
     pub colors: Option<Value>
 }
 
-#[derive(Deserialize)]
-pub struct TakoyakiConfig {
-    pub config: TakyakiConfigType
-}
-
-impl TakyakiConfigType {
+impl TakoyakiConfig {
     pub fn get() -> Result<Self> {
         let config_path = hint_takoyaki_config_path()?;
 
@@ -28,13 +23,9 @@ impl TakyakiConfigType {
 
         toml::from_str(&raw).map_err(|_| Error::SerializationTOMLError)
     }
-}
 
-impl TakoyakiConfig {
-    fn new() -> Result<Self> {
-        Ok(Self {
-            config: TakyakiConfigType::get()?
-        })
+    pub fn from_str(raw: &str) -> Result<Self> {
+        toml::from_str(&raw).map_err(|_| Error::SerializationTOMLError)
     }
 }
 

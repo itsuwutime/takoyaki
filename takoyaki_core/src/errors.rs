@@ -9,6 +9,7 @@ pub enum Error {
     CannotReadFile,
     ConfigNotFound,
     CacheIsNotAFile,
+    InvalidHexColorCode,
     PathWithNoParent
 }
 

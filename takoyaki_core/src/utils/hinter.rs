@@ -28,6 +28,33 @@ pub fn hint_cache_path(name: &str) -> Result<PathBuf> {
     Ok(cache_dir)
 }
 
+pub fn hint_takoyaki_config_path() -> Result<PathBuf> {
+    // Get the configured cache directory
+    let assumed_config_dir = dirs::config_dir();
+
+    // Check if the cache directory is set
+    let mut config_dir = match assumed_config_dir {
+        Some(config_dir) => {
+            // If there is some, return it 
+            config_dir
+        },
+        None => {
+            // if not, we are gonna redirect to $HOME/.cache
+            let mut home_dir = dirs::home_dir().ok_or(Error::HomeDirectoryNotFound)?;
+
+            // Extend till the $HOME/.cache
+            home_dir.extend([".config"]);
+
+            home_dir
+        }
+    };
+
+    // Extend till the cache path for the plugin
+    config_dir.extend(["takoyaki", "config.toml"]);
+
+    Ok(config_dir)
+}
+
 pub fn hint_config_path(name: &str) -> Result<PathBuf> {
     // Get the configured cache directory
     let assumed_config_dir = dirs::config_dir();

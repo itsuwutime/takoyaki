@@ -7,6 +7,7 @@ pub enum Error {
     SerializationError,
     SerializationTOMLError,
     CannotReadFile,
+    ConfigNotFound,
     CacheIsNotAFile,
     PathWithNoParent
 }

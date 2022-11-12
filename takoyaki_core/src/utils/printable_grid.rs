@@ -3,13 +3,13 @@ use colored::*;
 
 use crate::{TakoyakiConfig, Result, Error};
 
-#[derive(Default , Clone , PartialEq , Debug)]
+#[derive(Default , Clone , PartialEq , Debug , Eq)]
 pub struct Printable {
     pub color: String,
     pub contributions: usize
 }
 
-#[derive(Default , Clone , PartialEq , Debug)]
+#[derive(Default , Clone , PartialEq , Debug , Eq)]
 pub struct PrintableGrid {
     pub grid: Vec<Vec<Printable>>
 }
@@ -42,7 +42,7 @@ impl PrintableGrid {
     }
 
     pub fn hex_to_rgb(&self , hex: &str) -> Result<Hex> {
-        if hex.len() != 7 || !hex.starts_with("#") {
+        if hex.len() != 7 || !hex.starts_with('#') {
             return Err(Error::InvalidHexColorCode)
         }
 
@@ -79,13 +79,13 @@ impl PrintableGrid {
         let tconfig = config.unwrap_or(TakoyakiConfig::get()?);
 
         // Get all the color prefs
-        let raw_colors = tconfig.colors.unwrap_or(Value::Table(Map::new()));
+        let raw_colors = tconfig.colors.unwrap_or_else(|| Value::Table(Map::new()));
 
         let colors = raw_colors.as_table().unwrap();
 
         for row in &self.grid {
             for col in row {
-                let color = self.hex_to_rgb(&self.hint_color(&colors, col.contributions, col.color.to_string()))?;
+                let color = self.hex_to_rgb(&self.hint_color(colors, col.contributions, col.color.to_string()))?;
 
                 print!("{}" , "ඞ ".truecolor(color.r , color.g , color.b));
             }
@@ -147,7 +147,7 @@ mod tests {
     #[test]
     fn hint_color_should_use_fallback_color() {
         let grid = PrintableGrid::new();
-        let config = TakoyakiConfig::from_str(r#""#).unwrap();
+        let config = TakoyakiConfig::from_raw(r#""#).unwrap();
 
         assert_eq!(grid.hint_color(
             config.colors.unwrap_or(Value::Table(Map::new())).as_table().unwrap(),
@@ -159,7 +159,7 @@ mod tests {
     #[test]
     fn hint_color_should_use_x_contribution_color() {
         let grid = PrintableGrid::new();
-        let config = TakoyakiConfig::from_str(r#"
+        let config = TakoyakiConfig::from_raw(r#"
             [colors]
             x_contribution = '#88C0D0'
         "#).unwrap();
@@ -174,7 +174,7 @@ mod tests {
     #[test]
     fn hint_color_should_use_count_contribution_color() {
         let grid = PrintableGrid::new();
-        let config = TakoyakiConfig::from_str(r#"
+        let config = TakoyakiConfig::from_raw(r#"
             [colors]
             6_contribution = '#88C0D0'
         "#).unwrap();

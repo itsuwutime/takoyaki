@@ -3,7 +3,7 @@ use serde::Deserialize;
 use crate::{Cache, Result, Error};
 
 pub enum Pending {
-    Reqwest(reqwest::RequestBuilder),
+    Reqwest(Box<reqwest::RequestBuilder>),
     Cache(Cache),
     Unset
 }
@@ -27,7 +27,7 @@ impl ReadyState {
 
     pub fn from_reqwest(client: reqwest::RequestBuilder) -> Self {
         Self {
-            pending: Pending::Reqwest(client)
+            pending: Pending::Reqwest(Box::new(client))
         }
     }
 
@@ -52,9 +52,15 @@ impl ReadyState {
                 cache.retrieve::<T>()
             },
             Pending::Unset => {
-                return Err(Error::StateIsUnset)
+                Err(Error::StateIsUnset)
             }
         }
+    }
+}
+
+impl Default for ReadyState {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

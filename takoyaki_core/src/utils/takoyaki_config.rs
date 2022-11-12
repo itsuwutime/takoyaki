@@ -24,8 +24,8 @@ impl TakoyakiConfig {
         toml::from_str(&raw).map_err(|_| Error::SerializationTOMLError)
     }
 
-    pub fn from_str(raw: &str) -> Result<Self> {
-        toml::from_str(&raw).map_err(|_| Error::SerializationTOMLError)
+    pub fn from_raw(raw: &str) -> Result<Self> {
+        toml::from_str(raw).map_err(|_| Error::SerializationTOMLError)
     }
 }
 

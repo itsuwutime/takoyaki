@@ -2,6 +2,7 @@ use std::{path::PathBuf, io::Write, fs::File};
 use crate::{hint_cache_path , Result , Error};
 use serde::Deserialize;
 
+#[derive(Clone)]
 pub struct Cache {
     cache_file: PathBuf
 }

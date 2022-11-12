@@ -4,14 +4,14 @@ use colored::*;
 use crate::{TakoyakiConfig, Result, Error};
 
 #[derive(Default , Clone , PartialEq , Debug)]
-pub struct Printable<'a> {
-    pub color: &'a str,
+pub struct Printable {
+    pub color: String,
     pub contributions: usize
 }
 
 #[derive(Default , Clone , PartialEq , Debug)]
-pub struct PrintableGrid<'a> {
-    pub grid: Vec<Vec<Printable<'a>>>
+pub struct PrintableGrid {
+    pub grid: Vec<Vec<Printable>>
 }
 
 #[derive(Default , Debug)]
@@ -21,12 +21,12 @@ pub struct Hex {
     pub b: u8,
 }
 
-impl<'a> PrintableGrid<'a> {
+impl PrintableGrid {
     pub fn new() -> Self {
         Self::default()
     }
 
-    pub fn insert_at(&mut self , x: usize , y: usize , item: Printable<'a>) {
+    pub fn insert_at(&mut self , x: usize , y: usize , item: Printable) {
         // Resize the grid on the x axis with vec![] as a default fill value
         if self.grid.len() <= x {
             self.grid.resize(x + 1, vec![])

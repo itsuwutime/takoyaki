@@ -1,35 +1,41 @@
 use serde::Deserialize;
 
-use crate::{ReadyState, PrintableGrid, Result, Error};
+use crate::{ReadyState, PrintableGrid, Result, Error , Cache};
 
-pub struct Takoyaki<'a , T> 
+pub struct Takoyaki<T> 
 where
-    T: for<'de> Deserialize<'de>
+    T: for<'de> Deserialize<'de> + Clone
 {
     ready: Option<Box<dyn Fn() -> ReadyState>>,
-    execute: Option<Box<dyn Fn(T) -> PrintableGrid<'a>>>
+    execute: Option<Box<dyn Fn(T) -> PrintableGrid>>,
+    cache: Cache
 }
 
-impl<'a , T> Takoyaki<'a , T> 
+impl<T> Takoyaki<T> 
 where
-    T: for<'de> Deserialize<'de>
+    T: for<'de> Deserialize<'de> + Clone
 {
-    pub fn new() -> Self {
+    pub fn new(name: &str) -> Self {
         Self {
             ready: None,
-            execute: None
+            execute: None,
+            cache: Cache::new(name).unwrap()
         }
+    }
+
+    pub fn get_cache(&mut self) -> Cache {
+        self.cache.clone()
     }
 
     pub fn set_ready(&mut self , handler: Box<dyn Fn() -> ReadyState>) {
         self.ready = Some(handler);
     }
 
-    pub fn set_execute(&mut self , handler: Box<dyn Fn(T) -> PrintableGrid<'a>>) {
+    pub fn set_execute(&mut self , handler: Box<dyn Fn(T) -> PrintableGrid>) {
         self.execute = Some(handler)
     }
 
-    pub async fn start(&self) -> Result<()> {
+    pub async fn start(&mut self) -> Result<()> {
         // Get all the handlers
         let start = self.ready.as_ref().ok_or(Error::StartFunctionNotSet)?;
         let execute = self.execute.as_ref().ok_or(Error::ExecuteFunctionNotSet)?;
@@ -57,14 +63,14 @@ mod tests {
 
     #[tokio::test]
     pub async fn start_without_start_function() {
-        let takoyaki = Takoyaki::<serde_json::Value>::new();
+        let mut takoyaki = Takoyaki::<serde_json::Value>::new("anyplug");
 
         assert_eq!(takoyaki.start().await.unwrap_err() , Error::StartFunctionNotSet);
     }
 
     #[tokio::test]
     pub async fn start_without_execute_function() {
-        let mut takoyaki = Takoyaki::<serde_json::Value>::new();
+        let mut takoyaki = Takoyaki::<serde_json::Value>::new("anyplug");
 
         takoyaki.set_ready(Box::new(|| {
             ReadyState::new()
@@ -75,7 +81,7 @@ mod tests {
 
     #[tokio::test]
     pub async fn state_is_unset() {
-        let mut takoyaki = Takoyaki::<serde_json::Value>::new();
+        let mut takoyaki = Takoyaki::<serde_json::Value>::new("anyplug");
 
         takoyaki.set_ready(Box::new(|| {
             ReadyState::new()
@@ -90,7 +96,7 @@ mod tests {
 
     #[tokio::test]
     pub async fn state_from_reqwest() {
-        let mut takoyaki = Takoyaki::<serde_json::Value>::new();
+        let mut takoyaki = Takoyaki::<serde_json::Value>::new("anyplug");
 
         takoyaki.set_ready(Box::new(|| {
             ReadyState::from_reqwest(

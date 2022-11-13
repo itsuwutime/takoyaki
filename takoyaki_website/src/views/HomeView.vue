@@ -34,37 +34,37 @@ import Feature from "../components/Feature.vue";
         <div class="banner w-5/12 relative ml-10">
             <img src="/banner.png" class="w-full" />
             <div
-                class="flex text-surface2 gap-x-1.5 absolute top-[-16%] left-[-7.2%]"
+                class="flex text-surface2 gap-x-2 absolute top-[-18%] left-[-8%]"
             >
-                <div class="flex flex-col justify-end w-fit gap-y-2">
+                <div class="flex flex-col justify-end w-fit gap-y-3">
                     <Plus />
                     <Plus />
                 </div>
-                <div class="flex flex-col gap-y-2">
+                <div class="flex flex-col gap-y-3">
                     <Plus />
                     <Plus />
                     <Plus />
                     <Plus />
                 </div>
-                <div class="flex flex-col gap-y-2">
+                <div class="flex flex-col gap-y-3">
                     <Plus />
                     <Plus />
                 </div>
             </div>
             <div
-                class="flex text-surface2 gap-x-1.5 absolute top-[89%] left-[97.5%]"
+                class="flex text-surface2 gap-x-2 absolute top-[86.5%] left-[97.7%]"
             >
-                <div class="flex flex-col justify-end w-fit gap-y-2">
+                <div class="flex flex-col justify-end w-fit gap-y-3">
                     <Plus />
                     <Plus />
                 </div>
-                <div class="flex flex-col gap-y-2">
+                <div class="flex flex-col gap-y-3">
                     <Plus />
                     <Plus />
                     <Plus />
                     <Plus />
                 </div>
-                <div class="flex flex-col gap-y-2">
+                <div class="flex flex-col gap-y-3">
                     <Plus />
                     <Plus />
                 </div>
@@ -72,3 +72,4 @@ import Feature from "../components/Feature.vue";
         </div>
     </div>
 </template>
+

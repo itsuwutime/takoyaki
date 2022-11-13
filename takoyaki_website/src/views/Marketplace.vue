@@ -21,7 +21,7 @@
                 </div>
             </div>
             <a href="/new">
-                <button class="bg-gradient-to-r from-[#eecda3] to-[#ef629f] w-72 ml-6 rounded-lg font-semibold h-full">New plugin</button>
+                <button class="bg-blue w-52 ml-6 text-base rounded-lg font-semibold h-full">New plugin</button>
             </a>
         </div>
     </div>

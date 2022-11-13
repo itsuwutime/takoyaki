@@ -17,6 +17,7 @@ specifiers:
   eslint-plugin-cypress: ^2.12.1
   eslint-plugin-prettier: ^4.2.1
   eslint-plugin-vue: ^9.0.0
+  feather-icons: '4'
   firebase: ^9.13.0
   jsdom: ^20.0.0
   npm-run-all: ^4.1.5
@@ -29,12 +30,15 @@ specifiers:
   vite: ^3.0.1
   vitest: ^0.18.1
   vue: ^3.2.37
+  vue-feather: '2'
   vue-router: ^4.1.2
   vue-tsc: ^0.38.8
 
 dependencies:
+  feather-icons: 4.29.0
   firebase: 9.13.0
   vue: 3.2.41
+  vue-feather: 2.0.0_rc4brm7xcb5v24sddtzxnqmk5u
   vue-router: 4.1.6_vue@3.2.41
 
 devDependencies:
@@ -1503,6 +1507,10 @@ packages:
     resolution: {integrity: sha512-yH4RezKOGlOhxkmhbeNuC4eYZKAUsEaGtBuBzDDP1eFUKiccDWzBABxBfOx31IDwDIXMTxWuwAxUGModvkbuVw==}
     dev: true
 
+  /classnames/2.3.2:
+    resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==}
+    dev: false
+
   /clean-stack/2.2.0:
     resolution: {integrity: sha512-4diC9HaTE+KRAMWhDhrGOECgWZxoevMc5TlkObMqNSsVU62PYzXZ/SMTjzyGAFF1YusgxGcSWTEXBhp0CPwQ1A==}
     engines: {node: '>=6'}
@@ -1582,6 +1590,11 @@ packages:
 
   /concat-map/0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
+
+  /core-js/3.26.0:
+    resolution: {integrity: sha512-+DkDrhoR4Y0PxDz6rurahuB+I45OsEUv8E1maPTB6OuHRohMMcznBq9TMpdpDMm/hUPob/mJJS3PqgbHpMTQgw==}
+    requiresBuild: true
+    dev: false
 
   /core-util-is/1.0.2:
     resolution: {integrity: sha512-3lqz5YjWTYnW6dlDa5TLaTCcShfar1e40rmcJVwCBJC6mWlFuj0eCHIElmG1g5kyuJ/GD+8Wn4FFCcz4gJPfaQ==}
@@ -2443,6 +2456,13 @@ packages:
     dependencies:
       pend: 1.2.0
     dev: true
+
+  /feather-icons/4.29.0:
+    resolution: {integrity: sha512-Y7VqN9FYb8KdaSF0qD1081HCkm0v4Eq/fpfQYQnubpqi0hXx14k+gF9iqtRys1SIcTEi97xDi/fmsPFZ8xo0GQ==}
+    dependencies:
+      classnames: 2.3.2
+      core-js: 3.26.0
+    dev: false
 
   /figures/3.2.0:
     resolution: {integrity: sha512-yaduQFRKLXYOGgEn6AZau90j3ggSOyiqXU0F9JZfeXYhNa+Jk4X+s45A2zg5jns87GAFa34BBm2kXw4XpNcbdg==}
@@ -4541,6 +4561,16 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /vue-feather/2.0.0_rc4brm7xcb5v24sddtzxnqmk5u:
+    resolution: {integrity: sha512-GBvxJWu2ycGTpB8duYWnc5S/TwWPPb2G5Ft2NbkwK1vZkUDUOTYqIb4Nh1HOL6A37Isfrd0Guun0lesS97PfxA==}
+    peerDependencies:
+      feather-icons: ^4.28.0
+      vue: ^3.0.0
+    dependencies:
+      feather-icons: 4.29.0
+      vue: 3.2.41
+    dev: false
 
   /vue-router/4.1.6_vue@3.2.41:
     resolution: {integrity: sha512-DYWYwsG6xNPmLq/FmZn8Ip+qrhFEzA14EI12MsMgVxvHFDYvlr4NXpVF5hrRH1wVcDP8fGi5F4rxuJSl8/r+EQ==}

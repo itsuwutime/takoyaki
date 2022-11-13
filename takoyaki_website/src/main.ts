@@ -1,4 +1,5 @@
 import { createApp } from "vue";
+import VueFeather from 'vue-feather';
 import App from "./App.vue";
 import router from "./router";
 import { initializeApp } from "firebase/app";
@@ -21,5 +22,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 app.provide("firebase", initializeApp(firebaseConfig));
+
+app.component(VueFeather.name, VueFeather);
 
 app.mount("#app");

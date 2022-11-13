@@ -3,7 +3,7 @@
     <div class="text-4xl font-bold">Deploy a new plugin</div>
     <div class="text-overlay1 mt-3">Thanks for taking time to create a plugin! Just select your GitHub repo that contains your source code for the plugin and the rest will be handled by takoyaki (building for production)</div>
     <div class="repos mt-8 flex gap-x-8 flex-wrap gap-y-8 w-fit">
-        <a class="repo bg-surface0/20 rounded-lg w-[450px] p-6 px-8 h-auto flex flex-col" v-for="repo in repos" :key="repo.id" href="/deploy">
+        <a class="repo bg-surface0/20 rounded-lg w-[450px] p-6 px-8 h-auto flex flex-col" v-for="repo in repos" :key="repo.id" :href="'/deploy/' + repo.full_name">
             <div class="state flex items-start gap-x-2 text-overlay1 font-semibold">
                 <vue-feather type="lock" size="14" /><div class="text-sm">{{ repo.private ? "Private" : "Public" }}</div>
             </div>

@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{ReadyState, PrintableGrid, Result, Error , Cache};
 
@@ -8,18 +8,20 @@ where
 {
     ready: Option<Box<dyn Fn() -> ReadyState>>,
     execute: Option<Box<dyn Fn(T) -> PrintableGrid>>,
-    cache: Cache
+    cache: Cache,
+    name: String
 }
 
 impl<T> Takoyaki<T> 
 where
-    T: for<'de> Deserialize<'de> + Clone
+    T: for<'de> Deserialize<'de> + Clone + Serialize
 {
     pub fn new(name: &str) -> Self {
         Self {
             ready: None,
             execute: None,
-            cache: Cache::new(name).unwrap()
+            cache: Cache::new(name).unwrap(),
+            name: name.to_string()
         }
     }
 
@@ -42,9 +44,10 @@ where
 
         // Get the state of the plugin
         let state = start();
+        let cache = Cache::new(&self.name).unwrap();
 
         // Resolve the state to get the data
-        let data = state.resolve::<T>().await?;
+        let data = state.resolve::<T>(cache).await?;
 
         // Send it to execute function to get a printable grid
         let printable = execute(data);

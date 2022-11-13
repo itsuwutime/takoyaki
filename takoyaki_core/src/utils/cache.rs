@@ -35,9 +35,6 @@ impl Cache {
     }
 
     pub fn create(&self) -> Result<()> {
-        // Create parent folder
-        self.create_parent_folder()?;
-
         // Write some empty string to create that file
         self.write_as_str("")?;
 
@@ -45,6 +42,9 @@ impl Cache {
     }
 
     pub fn write_as_str(&self , data: &str) -> Result<()> {
+        // Just in case
+        self.create_parent_folder()?;
+
         // Create file file
         let mut file = File::create(&self.cache_file).map_err(|_| Error::CannotCreateFile)?;
 

@@ -13,6 +13,7 @@ pub enum Error {
     ReqwestError,
     BuilderCloneError,
     CacheIsNotAFile,
+    CacheDoesNotExist,
     StateIsUnset,
     InvalidHexColorCode,
     PathWithNoParent

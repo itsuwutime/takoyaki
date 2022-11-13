@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize , Serialize};
 
 use crate::{Cache, Result, Error};
 
@@ -31,13 +31,13 @@ impl ReadyState {
         }
     }
 
-    pub async fn resolve<T>(&self) -> Result<T> 
+    pub async fn resolve<T>(&self , cache: Cache) -> Result<T> 
     where 
-        T: for<'de> Deserialize<'de>
+        T: for<'de> Deserialize<'de> + Serialize
     {
         match &self.pending {
             Pending::Reqwest(client) => {
-                client
+                let resp = client
                     .try_clone()
                     .ok_or(Error::BuilderCloneError)?
                     .header("User-Agent" , "takoyaki")
@@ -46,10 +46,18 @@ impl ReadyState {
                     .map_err(|_| Error::ReqwestError)?
                     .json()
                     .await
-                    .map_err(|_| Error::SerializationError)
+                    .map_err(|_| Error::SerializationError)?;
+
+                cache.write_as_str(&serde_json::to_string(&resp).unwrap())?;
+
+                Ok(resp)
             },
             Pending::Cache(cache) => {
-                cache.retrieve::<T>()
+                if !cache.exists() {
+                    Err(Error::CacheDoesNotExist)
+                } else {
+                    cache.retrieve::<T>()
+                }
             },
             Pending::Unset => {
                 Err(Error::StateIsUnset)
@@ -72,6 +80,6 @@ mod tests {
     pub async fn ready_state_without_pending() {
         let state = ReadyState::new();
 
-        assert_eq!(state.resolve::<serde_json::Value>().await.unwrap_err() , Error::StateIsUnset);
+        assert_eq!(state.resolve::<serde_json::Value>(Cache::new("anyplug").unwrap()).await.unwrap_err() , Error::StateIsUnset);
     }
 }

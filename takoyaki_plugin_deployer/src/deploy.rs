@@ -1,9 +1,17 @@
 use crate::utils::Deployer;
+use rocket::serde::{json::Json, Deserialize};
 
-#[post("/deploy")]
-pub fn create_new_deployment() -> String {
-    let deployer = Deployer::create_new_deployment();
-
-    serde_json::to_string_pretty(&deployer.identifier).unwrap()
+// Request format
+#[derive(Deserialize, Debug)]
+#[serde(crate = "rocket::serde")]
+pub struct Plugin {
+    pub name: String,
+    pub github_url: String,
+    pub branch: String,
+    pub path: String,
 }
 
+#[post("/deploy", format = "application/json", data = "<plugin>")]
+pub async fn create_new_deployment(plugin: Json<Plugin>) -> String {
+    String::new()
+}

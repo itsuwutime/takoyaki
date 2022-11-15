@@ -43,7 +43,7 @@ impl Server {
     pub async fn start(&'static self , _allowed_list: Vec<&str>) {
         let socket = TcpListener::bind("127.0.0.1:8000").await.expect("Failed to bind");
 
-        while let Ok((stream , addr)) = socket.accept().await {
+        while let Ok((stream , _addr)) = socket.accept().await {
             tokio::spawn(self.handle_client(stream));
         }
     }

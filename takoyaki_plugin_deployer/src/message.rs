@@ -1,9 +1,11 @@
 use sha2::{Sha512, Digest};
+use uuid::Uuid;
 
 #[derive(Debug)]
 pub enum MessageType {
     Auth,
-    Undefined
+    Undefined,
+    Launch
 }
 
 #[derive(Debug)]
@@ -24,6 +26,12 @@ impl<'a> Message<'a> {
                     args
                 }
             },
+            "/launch" => {
+                Self {
+                    message_type: MessageType::Launch,
+                    args
+                }
+            },
             &_ => {
                 Self {
                     message_type: MessageType::Undefined,
@@ -41,8 +49,8 @@ impl<'a> Message<'a> {
         base64::encode(encrypter.finalize())
     }
 
-    pub fn authenticate(&self , args: &Vec<&'a str>) -> String {
-        let password = self.encrypt(format!("512{}512" , args.into_iter().nth(0).unwrap()));
+    pub fn authenticate(&self , args: &[&'a str]) -> String {
+        let password = self.encrypt(format!("512{}512" , args.iter().next().unwrap()));
         let passphrase = self.encrypt("512512".to_string());
 
         if password == passphrase {
@@ -52,8 +60,12 @@ impl<'a> Message<'a> {
         }
     }
 
-    pub fn undefined(&self , args: &Vec<&'a str>) -> String {
-        return String::from("Invalid command!")
+    pub fn launch(&self) -> String {
+        Uuid::new_v4().to_string()
+    }
+
+    pub fn undefined(&self) -> String {
+        String::from("Invalid command!")
     }
 
     pub fn respond(&self) -> String {
@@ -61,8 +73,11 @@ impl<'a> Message<'a> {
             MessageType::Auth => {
                 self.authenticate(&self.args)
             },
+            MessageType::Launch => {
+                self.launch()
+            },
             MessageType::Undefined => {
-                self.undefined(&self.args)
+                self.undefined()
             }
         }
     }

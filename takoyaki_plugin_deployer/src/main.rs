@@ -1,4 +1,5 @@
 mod server;
+mod message;
 
 #[tokio::main]
 async fn main() {

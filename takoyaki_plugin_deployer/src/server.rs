@@ -1,15 +1,9 @@
-use std::{
-    collections::HashMap,
-    env,
-    io::Error as IoError,
-    net::SocketAddr,
-    sync::{Arc, Mutex},
-};
-
-use futures_channel::mpsc::{unbounded, UnboundedSender};
+use futures_channel::mpsc::unbounded;
 use futures_util::{future, pin_mut, stream::TryStreamExt, StreamExt};
 
 use tokio::net::{TcpListener, TcpStream};
+
+use crate::message::Message;
 
 pub struct Server {
 
@@ -32,6 +26,11 @@ impl Server {
         let (outgoing , incoming) = ws_stream.split();
 
         let broadcast_incoming = incoming.try_for_each(|msg| {
+            let message = msg.into_text().unwrap();
+            let message = Message::new(&message);
+
+            tx.unbounded_send(tungstenite::Message::Text(message.respond())).unwrap();
+
             future::ok(())
         });
 
@@ -41,7 +40,7 @@ impl Server {
         future::select(broadcast_incoming, receive_from_others).await;
     }
 
-    pub async fn start(&'static self , allowed_list: Vec<&str>) {
+    pub async fn start(&'static self , _allowed_list: Vec<&str>) {
         let socket = TcpListener::bind("127.0.0.1:8000").await.expect("Failed to bind");
 
         while let Ok((stream , addr)) = socket.accept().await {

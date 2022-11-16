@@ -3,7 +3,7 @@ use futures_util::{future, pin_mut, stream::TryStreamExt, StreamExt};
 
 use tokio::net::{TcpListener, TcpStream};
 
-use crate::message::Message;
+use crate::{message::Message, logger::Logger};
 
 pub struct Server {
 
@@ -41,9 +41,14 @@ impl Server {
     }
 
     pub async fn start(&'static self , _allowed_list: Vec<&str>) {
+        let logger = Logger::new();
         let socket = TcpListener::bind("127.0.0.1:8000").await.expect("Failed to bind");
 
-        while let Ok((stream , _addr)) = socket.accept().await {
+        logger.success("Server is up and running. Waiting for incoming connections...");
+
+        while let Ok((stream , addr)) = socket.accept().await {
+            logger.info(&format!("Incoming request from address {}" , addr));
+
             tokio::spawn(self.handle_client(stream));
         }
     }

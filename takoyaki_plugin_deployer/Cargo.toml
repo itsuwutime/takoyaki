@@ -13,6 +13,8 @@ futures-util = "0.3.25"
 tungstenite = "0.17.3"
 sha2 = "0.10.6"
 base64 = "0.13.1"
+chrono = "0.4.23"
+colored = "2"
 
 [dependencies.uuid]
 version = "1.2.2"

@@ -4,7 +4,7 @@ use std::fs::File;
 
 use crate::logger::Logger;
 
-pub async fn create_new_deployment(uuid: String , github_url: String , branch: String , path: String) {
+pub async fn create_new_deployment(uuid: String , github_url: String , branch: String , path: String , name: String) {
     let logger = Logger::new();
     let out = File::create("out.txt").unwrap();
     let out2 = File::create("out.txt").unwrap();
@@ -13,7 +13,7 @@ pub async fn create_new_deployment(uuid: String , github_url: String , branch: S
     let stdout2 = Stdio::from(out2);
 
     let command = Command::new("faketty")
-        .args(["git" , "clone" , "https://github.com/worldhellosdj/sfdfdfd.git"])
+        .args(["git" , "clone" , "https://www.github.com/rust-lang/rust"])
         .stdout(stdout)
         .stderr(stdout2)
         .spawn()
@@ -23,3 +23,4 @@ pub async fn create_new_deployment(uuid: String , github_url: String , branch: S
 
     logger.access(&format!("Deployment with uuid of {} was successful" , uuid));
 }
+

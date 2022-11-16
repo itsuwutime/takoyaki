@@ -1,3 +1,5 @@
+use std::net::SocketAddr;
+
 use futures_channel::mpsc::unbounded;
 use futures_util::{future, pin_mut, stream::TryStreamExt, StreamExt};
 
@@ -16,7 +18,7 @@ impl Server {
         }
     }
 
-    pub async fn handle_client(&'static self , stream: TcpStream) {
+    pub async fn handle_client(&'static self , stream: TcpStream, incoming_addr: SocketAddr) {
         let ws_stream = tokio_tungstenite::accept_async(stream)
             .await
             .expect("Error during the websocket handshake")
@@ -27,7 +29,7 @@ impl Server {
 
         let broadcast_incoming = incoming.try_for_each(|msg| {
             let message = msg.into_text().unwrap();
-            let message = Message::new(&message);
+            let message = Message::new(&message , incoming_addr);
 
             tx.unbounded_send(tungstenite::Message::Text(message.respond())).unwrap();
 
@@ -49,7 +51,7 @@ impl Server {
         while let Ok((stream , addr)) = socket.accept().await {
             logger.info(&format!("Incoming request from address {}" , addr));
 
-            tokio::spawn(self.handle_client(stream));
+            tokio::spawn(self.handle_client(stream , addr));
         }
     }
 }

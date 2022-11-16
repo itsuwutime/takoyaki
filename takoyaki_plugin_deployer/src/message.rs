@@ -1,7 +1,7 @@
+use std::net::SocketAddr;
 use sha2::{Sha512, Digest};
 use uuid::Uuid;
-
-use crate::{logger::Logger, builder::create_new_deployment};
+use crate::{Logger, create_new_deployment, STATE};
 
 #[derive(Debug)]
 pub enum MessageType {
@@ -13,11 +13,12 @@ pub enum MessageType {
 #[derive(Debug)]
 pub struct Message {
     pub message_type: MessageType,
-    pub args: Vec<String>
+    pub args: Vec<String>,
+    pub incoming_addr: SocketAddr
 }
 
 impl Message {
-    pub fn new(raw: &str) -> Self {
+    pub fn new(raw: &str, incoming_addr: SocketAddr) -> Self {
         let raw = raw.trim_end().trim_start();
         let mut args = raw.split_whitespace().map(String::from).collect::<Vec<String>>();
 
@@ -25,19 +26,22 @@ impl Message {
             "/auth" => {
                 Self {
                     message_type: MessageType::Auth,
-                    args
+                    args,
+                    incoming_addr,
                 }
             },
             "/launch" => {
                 Self {
                     message_type: MessageType::Launch,
-                    args
+                    args,
+                    incoming_addr,
                 }
             },
             &_ => {
                 Self {
                     message_type: MessageType::Undefined,
-                    args
+                    args,
+                    incoming_addr,
                 }
             }
         }
@@ -55,10 +59,12 @@ impl Message {
         let logger = Logger::new();
 
         let password = self.encrypt(format!("512{}512" , args.iter().next().unwrap()));
-        let passphrase = self.encrypt("512512".to_string());
+        let passphrase = self.encrypt("512somerandompinfordev512".to_string());
 
         if password == passphrase {
             logger.access("Successfully authorized a client.");
+
+            STATE.lock().allow_ip(self.incoming_addr);
 
             String::from("Successfully authorized!")
         } else {
@@ -69,6 +75,13 @@ impl Message {
     }
 
     pub fn launch(&self , args: &[String]) -> String {
+        let logger = Logger::new();
+
+        if !STATE.lock().is_allowed(self.incoming_addr) {
+            logger.fail("Plugin deployment was rejected (ip_not_authorized)");
+
+            return String::from("Plugin deployment was rejected (ip_not_authorized)")
+        }
         let logger = Logger::new();
         let uuid = Uuid::new_v4().to_string();
 

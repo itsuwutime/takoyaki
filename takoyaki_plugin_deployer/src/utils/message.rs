@@ -1,20 +1,24 @@
+use std::net::SocketAddr;
+
 use sha2::{Sha256 , Digest};
 
-use crate::LOGGER;
+use crate::{LOGGER, STATE};
 
 pub struct Message<'a> {
     pub command: &'a str,
-    pub args: Vec<&'a str>
+    pub args: Vec<&'a str>,
+    pub incoming_addr: SocketAddr
 }
 
 impl<'a> Message<'a> {
-    pub fn from_raw(raw: &'a str) -> Self {
+    pub fn from_raw(raw: &'a str , incoming_addr: SocketAddr) -> Self {
         let mut args: Vec<&str> = raw.split_whitespace().collect();
         let command = args.remove(0);
 
         Self {
             command,
-            args
+            args,
+            incoming_addr
         }
     }
 
@@ -22,6 +26,9 @@ impl<'a> Message<'a> {
         match self.command {
             "/auth" => {
                 self.authenticate()
+            },
+            "/launch" => {
+                self.launch()
             },
             _ => {
                 self.undefined()
@@ -56,11 +63,13 @@ impl<'a> Message<'a> {
         let passphrase = self.encrypt_with_salt(self.args[0] , "512");
 
         if master_key == passphrase {
-            LOGGER.warning("A client has been successfully authorized");
+            LOGGER.success("A client has been successfully authorized");
+
+            STATE.lock().authorize_ip(self.incoming_addr);
 
             "Successfully authorized"
         } else {
-            LOGGER.warning("A client authentication request was rejected (invalid_passphrase)");
+            LOGGER.error("A client authentication request was rejected (invalid_passphrase)");
 
             "Invalid passphrase"
         }
@@ -71,7 +80,9 @@ impl<'a> Message<'a> {
             return "Must provide atleast three arguments. To know more about this command, visit - https://takoyaki.kyeboard.me/docs/websockets/commands#launch"
         }
 
-
+        if !STATE.lock().is_authorized(&self.incoming_addr) {
+            return "Your ip address has not been authorized still. Use the /auth command to authorize. For more information, visit: https://takoyaki.kyeboard.me/docs/websocket/command#auth"
+        }
 
         ""
     }

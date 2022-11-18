@@ -39,7 +39,7 @@ impl Server {
         let broadcast_incoming = incoming.try_for_each(|msg| {
             let message_raw = msg.into_text().map_err(|_| Error::CannotParseRecievedData).unwrap();
 
-            let message = Message::from_raw(&message_raw);
+            let message = Message::from_raw(&message_raw , incoming_addr);
 
             tx.unbounded_send(tungstenite::Message::Text(message.respond().to_string())).unwrap();
 

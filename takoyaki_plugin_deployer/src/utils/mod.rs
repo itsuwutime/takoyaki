@@ -1,6 +1,7 @@
 mod error;
 mod logger;
 mod message;
+mod execute;
 mod setup;
 mod deploy;
 
@@ -10,4 +11,4 @@ pub use logger::*;
 pub use message::*;
 pub use setup::*;
 pub use deploy::*;
-
+pub use execute::*;

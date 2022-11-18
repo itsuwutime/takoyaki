@@ -21,7 +21,7 @@ async fn main() {
 
     let uuid = uuid::Uuid::new_v4().to_string();
 
-    create_deployment("https://github.com/worldhellosdj/ddfdfdf.git", "main", "/", "new-plugin" , &uuid);
+    create_deployment("https://github.com/worldhellosdj/sfdfdfd.git", "main", "/", "new-plugin" , &uuid);
 
     // let server = Box::leak(Box::new(Server::new(3000)));
     //

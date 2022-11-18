@@ -27,7 +27,14 @@ pub fn setup_workspace() {
     // Create the directory 
     create_dir_all(&deployments_dir).unwrap();
 
-    // Success message showing the path that will be used
-    LOGGER.render(format!("Creating builds at: {}" , deployments_dir.display()).magenta().bold());
-}
+    LOGGER.render(format!("Creating deployment logs at: {}" , deployments_dir.display()).magenta().bold());
 
+    // Setup deployment dirs
+    let built_plugins_dir = takoyaki_root.clone().join("plugins");
+
+    // Create the directory 
+    create_dir_all(&built_plugins_dir).unwrap();
+
+    // Success message showing the path that will be used
+    LOGGER.render(format!("Saving built plugins at: {}" , built_plugins_dir.display()).magenta().bold());
+}

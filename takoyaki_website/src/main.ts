@@ -2,6 +2,7 @@ import { createApp } from "vue";
 import VueFeather from 'vue-feather';
 import App from "./App.vue";
 import router from "./router";
+import { createMetaManager } from 'vue-meta'
 import { initializeApp } from "firebase/app";
 
 import "./assets/main.sass";
@@ -11,18 +12,22 @@ const app = createApp(App);
 app.use(router);
 
 const firebaseConfig = {
-    apiKey: "AIzaSyC1o08v2I0zytj-2Bq638Di4CHpfo_8ocg",
-    authDomain: "kyeboard-takoyaki.firebaseapp.com",
-    projectId: "kyeboard-takoyaki",
-    storageBucket: "kyeboard-takoyaki.appspot.com",
-    messagingSenderId: "974109853641",
-    appId: "1:974109853641:web:3cfa4f7ed15d4bd2f08a18",
-    measurementId: "G-9H7G7WM4RG",
+    apiKey: "AIzaSyDV8RkplTsJa9NXueaUUunH7_OjxfIydEc",
+    authDomain: "kyeboard-takoyaki-ae3b1.firebaseapp.com",
+    databaseURL: "https://kyeboard-takoyaki-ae3b1-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "kyeboard-takoyaki-ae3b1",
+    storageBucket: "kyeboard-takoyaki-ae3b1.appspot.com",
+    messagingSenderId: "738243958501",
+    appId: "1:738243958501:web:9847e04f15b6d60a61660c",
+    measurementId: "G-PSB588WN8M"
 };
 
 // Initialize Firebase
 app.provide("firebase", initializeApp(firebaseConfig));
 
+// Vue components
 app.component(VueFeather.name, VueFeather);
+app.use(createMetaManager())
 
+// Mount
 app.mount("#app");

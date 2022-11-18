@@ -31,6 +31,7 @@ specifiers:
   vitest: ^0.18.1
   vue: ^3.2.37
   vue-feather: '2'
+  vue-meta: 3.0.0-alpha.10
   vue-router: ^4.1.2
   vue-tsc: ^0.38.8
 
@@ -39,6 +40,7 @@ dependencies:
   firebase: 9.13.0
   vue: 3.2.41
   vue-feather: 2.0.0_rc4brm7xcb5v24sddtzxnqmk5u
+  vue-meta: 3.0.0-alpha.10_vue@3.2.41
   vue-router: 4.1.6_vue@3.2.41
 
 devDependencies:
@@ -4569,6 +4571,14 @@ packages:
       vue: ^3.0.0
     dependencies:
       feather-icons: 4.29.0
+      vue: 3.2.41
+    dev: false
+
+  /vue-meta/3.0.0-alpha.10_vue@3.2.41:
+    resolution: {integrity: sha512-rYeIGkhm1gKBcReEkPHiV6LV2Y6BZTMGTkGw1mQIZTxfFcVJL0srLZsL1zAmLeTGxMrlDYylMQEVSYRkDnwz3A==}
+    peerDependencies:
+      vue: ^3.0.0
+    dependencies:
       vue: 3.2.41
     dev: false
 

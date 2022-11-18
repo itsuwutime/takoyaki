@@ -1,36 +1,30 @@
-#[macro_use]
-extern crate lazy_static;
-
 mod server;
-mod logger;
-mod builder;
-mod message;
-mod state;
+mod utils;
+
+// Reexport
+#[macro_use] extern crate lazy_static;
 
 use parking_lot::Mutex;
-// Reimport
 pub use server::*;
-pub use logger::*;
-pub use builder::*;
-pub use message::*;
-pub use state::*;
+pub use utils::*;
 
-// Lazy load state
+// Result type
+pub type Result<T> = std::result::Result<T , Error>;
+
+// Lazy load
 lazy_static! {
+    static ref LOGGER: Logger = Logger::new();
     static ref STATE: Mutex<State> = Mutex::new(State::new());
 }
 
 #[tokio::main]
 async fn main() {
-    let server = Box::leak(Box::new(Server::new()));
-    let port = option_env!("PORT").unwrap_or("3000");
+    setup_workspace();
 
-    let logger = Logger::new();
+    let uuid = uuid::Uuid::new_v4().to_string();
 
-    logger.success(&format!("Starting server on port {}..." , port));
-
-    server.start(
-        vec!["HAHHAHAHA"]
-    ).await;
+    let server = Box::leak(Box::new(Server::new(3000)));
+    
+    server.listen().await;
 }
 

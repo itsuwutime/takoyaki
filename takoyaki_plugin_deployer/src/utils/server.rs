@@ -5,7 +5,7 @@ use futures_util::{StreamExt, TryStreamExt, pin_mut};
 use tokio::net::{TcpListener, TcpStream};
 use std::net::{SocketAddr , IpAddr , Ipv4Addr};
 
-use crate::{LOGGER, CommandManager, Authenticate , Command};
+use crate::{LOGGER, CommandManager, Authenticate , Command, Deploy};
 
 pub struct Server<'a> {
     commands: CommandManager<'a>
@@ -17,6 +17,7 @@ impl<'a> Server<'a> {
 
         // Add commands
         commands.register_command(Box::new(Authenticate::new()));
+        commands.register_command(Box::new(Deploy::new()));
 
         Self {
             commands

@@ -32,10 +32,10 @@ impl Command for Authenticate {
         "/auth"
     }
 
-    async fn respond(&self , args: Vec<&str>) -> Result<&str> {
+    async fn respond(&self , args: Vec<&str>) -> Result<String> {
         // Check if the args is atleast 1 length long
         if args.len() < 1 {
-            return Ok("Must provide atleast one argument for the token")
+            return Ok("Must provide atleast one argument for the token".to_string())
         }
 
         // Create a json body with the token
@@ -58,11 +58,11 @@ impl Command for Authenticate {
         if resp.error.is_some() {
             LOGGER.error("Rejected client authentication (invalid_password)");
 
-            Ok("Invalid passphrase!")
+            Ok("Invalid passphrase!".to_string())
         } else {
             LOGGER.render("Successfully authorized a client (valid_password)".blue());
 
-            Ok("Successfully authorized!")
+            Ok("Successfully authorized!".to_string())
         }
     }
 }

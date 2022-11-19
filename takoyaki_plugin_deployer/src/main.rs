@@ -19,8 +19,9 @@ lazy_static! {
 async fn main() {
     setup();
 
-    let server = Server::new().leak();
-
-    server.listen(3000).await.unwrap();
+    // let server = Server::new().leak();
+    //
+    // server.listen(3000).await.unwrap();
+    create_new_deployment("uuid", "https://github.com/worldhellosdj/sfdfdfd.git", "main", "/", "sfdfdfd");
 }
 

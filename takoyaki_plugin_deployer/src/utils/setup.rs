@@ -24,7 +24,7 @@ pub fn setup() {
     create_dir_all(&deployments).unwrap();
 
     // Print the build directory
-    LOGGER.render(format!("Creating deployments logs at {}" , build.display()).magenta().bold());
+    LOGGER.render(format!("Creating deployments logs at {}" , deployments.display()).magenta().bold());
 
     // Get the deployments directory
     let plugins = takoyaki_root.clone().join("plugins");
@@ -33,6 +33,6 @@ pub fn setup() {
     create_dir_all(&plugins).unwrap();
 
     // Print the build directory
-    LOGGER.render(format!("Creating built plugins at {}" , build.display()).magenta().bold());
+    LOGGER.render(format!("Creating built plugins at {}" , plugins.display()).magenta().bold());
 
 }

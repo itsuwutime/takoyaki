@@ -5,10 +5,11 @@ use futures_util::{StreamExt, TryStreamExt, pin_mut};
 use tokio::net::{TcpListener, TcpStream};
 use std::net::{SocketAddr , IpAddr , Ipv4Addr};
 
-use crate::{LOGGER, CommandManager, Authenticate , Command, Deploy};
+use crate::{LOGGER, CommandManager, Authenticate , Command, Deploy, middleware::{MiddleWareManager, AuthCheck , Middleware}};
 
 pub struct Server<'a> {
-    commands: CommandManager<'a>
+    commands: CommandManager<'a>,
+    middlewares: MiddleWareManager
 }
 
 impl<'a> Server<'a> {
@@ -19,8 +20,15 @@ impl<'a> Server<'a> {
         commands.register_command(Box::new(Authenticate::new()));
         commands.register_command(Box::new(Deploy::new()));
 
+        // Create middleware
+        let mut middlewares = MiddleWareManager::new();
+
+        // Add middlewares
+        middlewares.add_middleware(Box::new(AuthCheck::new()));
+
         Self {
-            commands
+            commands,
+            middlewares
         }
     }
 
@@ -37,9 +45,17 @@ impl<'a> Server<'a> {
 
         // Listen for incoming messages
         let broadcase_incoming = incoming.try_for_each(|msg| async {
-            let message = self.commands.parse_from_raw(&msg.into_text().unwrap()).await;
+            let raw_message = msg.into_text().unwrap();
 
-            tx.unbounded_send(tungstenite::Message::Text(message.to_string())).unwrap();
+            if self.middlewares.passes(raw_message.clone(), addr) {
+                let message = self.commands.parse_from_raw(&raw_message).await;
+
+                tx.unbounded_send(tungstenite::Message::Text(message.to_string())).unwrap();
+            } else {
+                LOGGER.error("Middleware checks failed (auth_check)");
+
+                tx.unbounded_send(tungstenite::Message::Text("Your ip is not authorized to perform this task".to_string())).unwrap();
+            }
 
             Ok(())
         });

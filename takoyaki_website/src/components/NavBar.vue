@@ -109,6 +109,8 @@ provider.addScope("repo");
 onAuthStateChanged(auth, (user) => {
     if (user) {
         current_user.value = user;
+
+        console.log(user)
     }
 });
 

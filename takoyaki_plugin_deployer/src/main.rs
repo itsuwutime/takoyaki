@@ -22,6 +22,6 @@ async fn main() {
     // let server = Server::new().leak();
     //
     // server.listen(3000).await.unwrap();
-    create_new_deployment("uuid", "https://github.com/worldhellosdj/sfdfdfd.git", "main", "/", "sfdfdfd");
+    create_new_deployment("uuid", "https://github.com/worldhellosdj/sfdfdfd.git", "main", "inside/", "sfdfdfd_main");
 }
 

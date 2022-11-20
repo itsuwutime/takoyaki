@@ -18,16 +18,16 @@ pub fn create_new_deployment(uuid: &str, git_url: &str, branch: &str , path: &st
 
     executor.execute(
         build_dir.clone(),
-        vec!["git" , "clone" , git_url , name]
+        vec!["git" , "clone" , "-b" , branch , git_url , name]
     );
 
     executor.execute(
-        build_dir.join(name),
+        build_dir.join(name).join(path),
         vec!["cargo" , "build" , "--release"]
     );
 
     executor.execute(
-        build_dir.join(name).join("target").join("release"),
+        build_dir.join(name).join(path).join("target").join("release"),
         vec!["mv" , name , plugin_dir.to_str().unwrap()]
     );
 }

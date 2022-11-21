@@ -1,9 +1,0 @@
-HTTP/1.1 400 Bad Request
-content-type: text/html; charset=utf-8
-server: Rocket
-x-frame-options: SAMEORIGIN
-x-content-type-options: nosniff
-permissions-policy: interest-cohort=()
-content-length: 419
-date: Mon, 21 Nov 2022 14:08:33 GMT
-

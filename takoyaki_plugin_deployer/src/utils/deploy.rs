@@ -15,7 +15,7 @@ pub fn execute(out_file: File, command: &Vec<&str>, cwd: &PathBuf) {
     ;
 }
 
-pub async fn create_deployment(uuid: String, name: String, github_url: String, branch: String, path: String) {
+pub async fn create_deployment(username: String, uuid: String, name: String, github_url: String, branch: String, path: String) {
     // Get a new setup instance
     let setup = Setup::new();
 
@@ -31,16 +31,17 @@ pub async fn create_deployment(uuid: String, name: String, github_url: String, b
 
     // Vector of paths that are going to be changed to according to the command priority
     let directories = vec![
-        setup.build_dir.clone(),
-        setup.build_dir.join(&name).join(&path),
-        setup.build_dir.join(&name).join(&path)
+        setup.build_dir.clone().join(&username),
+        setup.build_dir.join(&username).join(&name).join(&path),
+        setup.build_dir.join(&username).join(&name).join(&path)
     ];
 
     // Create deployments dir
-    create_dir_all(setup.deployments_dir.clone().join(&name)).unwrap();
+    create_dir_all(setup.deployments_dir.clone().join(&username).join(&name)).unwrap();
+    create_dir_all(setup.build_dir.clone().join(&username)).unwrap();
 
     // Get stdout and stderr
-    let out_file = File::create(setup.deployments_dir.clone().join(&name).join(format!("{}.txt" , uuid))).unwrap();
+    let out_file = File::create(setup.deployments_dir.clone().join(&username).join(&name).join(format!("{}.txt" , uuid))).unwrap();
 
     for (command, cwd) in commands.iter().zip(directories.iter()) {
         execute(

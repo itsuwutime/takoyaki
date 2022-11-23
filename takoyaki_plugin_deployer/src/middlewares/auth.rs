@@ -1,20 +1,27 @@
-use std::{collections::HashMap, marker::PhantomData};
+use std::collections::HashMap;
 use reqwest::Result;
 
 use rocket::{request::{FromRequest , Request, Outcome}, http::Status};
 use serde::{Serialize, Deserialize};
 
-#[derive(Serialize , Deserialize)]
+#[derive(Serialize , Deserialize, Debug)]
+pub struct User {
+    error: Option<ErrorResponse>,
+    users: Option<Vec<UserType>>
+}
+
+#[derive(Serialize , Deserialize, Debug)]
+pub struct UserType {
+    #[serde(rename = "screenName")]
+    screen_name: String
+}
+
+#[derive(Serialize , Deserialize, Debug)]
 pub struct ErrorResponse {
-    error: Option<ErrorType>
-}
-
-#[derive(Serialize , Deserialize)]
-pub struct ErrorType {
 
 }
 
-async fn is_valid_token(token: &str) -> Result<bool> {
+async fn get_user(token: &str) -> Result<User> {
     // Create a new client
     let client = reqwest::Client::new();
 
@@ -26,7 +33,7 @@ async fn is_valid_token(token: &str) -> Result<bool> {
     body.insert("idToken", token);
 
     // Create a post request
-    let resp: ErrorResponse = client
+    let resp: User = client
         .post("https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDV8RkplTsJa9NXueaUUunH7_OjxfIydEc")
         .header("Content-Type" , "application/json")
         .json(&body)
@@ -36,12 +43,12 @@ async fn is_valid_token(token: &str) -> Result<bool> {
         .await?
     ;
 
-    Ok(resp.error.is_none())
+    Ok(resp)
 }
 
 #[derive(Default, Debug)]
 pub struct AuthGuard {
-
+    pub username: String
 }
 
 #[derive(Debug)]
@@ -65,10 +72,15 @@ impl<'r> FromRequest<'r> for AuthGuard {
             return Outcome::Failure((Status::Unauthorized , Error::InvalidAuthorizationHeader))
         }
 
-        if !is_valid_token(raw_token.next().unwrap_or(&"")).await.unwrap() {
+        // Try to get the current user
+        let user = get_user(raw_token.next().unwrap_or(&"")).await.unwrap();
+
+        if user.error.is_some() {
             return Outcome::Failure((Status::Unauthorized, Error::InvalidToken))
         }
 
-        Outcome::Success(Self::default())
+        Outcome::Success(Self {
+            username: user.users.unwrap().into_iter().next().unwrap().screen_name
+        })
     }
 }

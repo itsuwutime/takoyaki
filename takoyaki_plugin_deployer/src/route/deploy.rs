@@ -63,6 +63,7 @@ pub fn create_new_deployment<'a>(data: Json<DeployData>, auth_guard: Result<Auth
 
     tokio::spawn(
         create_deployment(
+            auth_guard.unwrap().username,
             uuid.clone(), 
             data.name.clone(),
             data.github_url.clone(), 

@@ -10,6 +10,8 @@ rocket = { version = "0.5.0-rc.2", features = ["json"] }
 serde = { version = "1.0", features = ["derive"] }
 dirs = "4.0.0"
 tokio = { version = "1.22.0", features = ["full"] }
+reqwest = { version = "0.11", features = ["json"] }
+either = { version = "1.8.0", features = ["serde"] }
 
 [dependencies.uuid]
 version = "1.2.2"

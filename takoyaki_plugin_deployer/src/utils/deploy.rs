@@ -2,6 +2,8 @@ use crate::utils::Setup;
 use std::{fs::{File, create_dir_all}, process::{Stdio, Command}, path::PathBuf};
 
 pub fn execute(out_file: File, command: &Vec<&str>, cwd: &PathBuf) {
+    println!("RUNNING: {}" , command.join(" "));
+    println!("RUNNING at: {}" , cwd.display());
     let stdout = Stdio::from(out_file.try_clone().unwrap());
     let stderr = Stdio::from(out_file);
 

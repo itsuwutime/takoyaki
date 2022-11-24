@@ -1,8 +1,13 @@
 #[macro_use] extern crate rocket;
-use rocket_cors::{AllowedHeaders, AllowedOrigins};
 mod middlewares;
 mod route;
 mod utils;
+
+// Get CORS fairing triggered
+#[options("/<_..>")]
+fn all_options() {
+    /* Intentionally left empty */
+}
 
 #[launch]
 fn rocket() -> _ {
@@ -13,5 +18,6 @@ fn rocket() -> _ {
     setup.setup().unwrap();
 
     rocket::build()
-        .mount("/" , routes![route::create_new_deployment , route::poll_logs])
+        .attach(utils::Cors)
+        .mount("/" , routes![route::create_new_deployment , route::poll_logs, all_options])
 }

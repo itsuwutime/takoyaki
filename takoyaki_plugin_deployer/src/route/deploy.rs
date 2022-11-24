@@ -1,22 +1,22 @@
-use rocket::serde::{json::Json, Serialize, Deserialize};
-use either::Either;
 use crate::middlewares::{AuthGuard, Error};
 use crate::utils::create_deployment;
+use either::Either;
+use rocket::serde::{json::Json, Deserialize, Serialize};
 
-#[derive(Deserialize , Debug)]
+#[derive(Deserialize, Debug)]
 #[serde(crate = "rocket::serde")]
 pub struct DeployData {
     pub name: String,
     pub github_url: String,
     pub branch: String,
-    pub path: String
+    pub path: String,
 }
 
 // Successful response type
 #[derive(Serialize)]
 #[serde(crate = "rocket::serde")]
 pub struct SuccessResponse {
-    pub deployment_uuid: String
+    pub deployment_uuid: String,
 }
 
 // Error response
@@ -24,7 +24,7 @@ pub struct SuccessResponse {
 #[serde(crate = "rocket::serde")]
 pub struct ErrorResponse<'a> {
     pub help: &'a str,
-    pub message: &'a str
+    pub message: &'a str,
 }
 
 // Binded response
@@ -33,11 +33,14 @@ pub struct ErrorResponse<'a> {
 #[serde(transparent)]
 pub struct Response<'a> {
     #[serde(with = "either::serde_untagged")]
-    inner: Either<SuccessResponse, ErrorResponse<'a>>
+    inner: Either<SuccessResponse, ErrorResponse<'a>>,
 }
 
-#[post("/deploy" , format="application/json" , data="<data>")]
-pub fn create_new_deployment<'a>(data: Json<DeployData>, auth_guard: Result<AuthGuard , Error>) -> Json<Response<'a>> {
+#[post("/deploy", format = "application/json", data = "<data>")]
+pub fn create_new_deployment<'a>(
+    data: Json<DeployData>,
+    auth_guard: Result<AuthGuard, Error>,
+) -> Json<Response<'a>> {
     if auth_guard.is_err() {
         return match auth_guard.unwrap_err() {
             Error::InvalidToken => {
@@ -56,26 +59,23 @@ pub fn create_new_deployment<'a>(data: Json<DeployData>, auth_guard: Result<Auth
                     })
                 })
             }
-        }
+        };
     };
 
     let uuid = uuid::Uuid::new_v4().to_string();
 
-    tokio::spawn(
-        create_deployment(
-            auth_guard.unwrap().username,
-            uuid.clone(), 
-            data.name.clone(),
-            data.github_url.clone(), 
-            data.branch.clone(), 
-            data.path.clone()
-        )
-    );
+    tokio::spawn(create_deployment(
+        auth_guard.unwrap().username,
+        uuid.clone(),
+        data.name.clone(),
+        data.github_url.clone(),
+        data.branch.clone(),
+        data.path.clone(),
+    ));
 
     Json(Response {
         inner: Either::Left(SuccessResponse {
-            deployment_uuid: uuid
-        })
+            deployment_uuid: uuid,
+        }),
     })
 }
-

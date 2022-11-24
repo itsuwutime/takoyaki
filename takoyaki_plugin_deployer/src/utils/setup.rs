@@ -1,10 +1,10 @@
-use std::{path::PathBuf, io::Result, fs::create_dir_all};
+use std::{fs::create_dir_all, io::Result, path::PathBuf};
 
 // This is more like kind of a constant paths for the takoyaki plugin builder
 pub struct Setup {
     pub deployments_dir: PathBuf,
     pub plugins_dir: PathBuf,
-    pub build_dir: PathBuf
+    pub build_dir: PathBuf,
 }
 
 impl Setup {
@@ -14,7 +14,7 @@ impl Setup {
         Self {
             deployments_dir: takoyaki_root.clone().join("deployments"),
             plugins_dir: takoyaki_root.clone().join("plugins"),
-            build_dir: takoyaki_root.clone().join("build")
+            build_dir: takoyaki_root.clone().join("build"),
         }
     }
 

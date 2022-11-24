@@ -1,4 +1,5 @@
-#[macro_use] extern crate rocket;
+#[macro_use]
+extern crate rocket;
 mod middlewares;
 mod route;
 mod utils;
@@ -17,7 +18,8 @@ fn rocket() -> _ {
     // Setup directories
     setup.setup().unwrap();
 
-    rocket::build()
-        .attach(utils::Cors)
-        .mount("/" , routes![route::create_new_deployment , route::poll_logs, all_options])
+    rocket::build().attach(utils::Cors).mount(
+        "/",
+        routes![route::create_new_deployment, route::poll_logs, all_options],
+    )
 }

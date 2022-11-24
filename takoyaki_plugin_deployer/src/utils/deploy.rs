@@ -1,9 +1,11 @@
 use crate::utils::Setup;
-use std::{fs::{File, create_dir_all}, process::{Stdio, Command}, path::PathBuf};
+use std::{
+    fs::{create_dir_all, File},
+    path::PathBuf,
+    process::{Command, Stdio},
+};
 
 pub fn execute(out_file: File, command: &Vec<&str>, cwd: &PathBuf) {
-    println!("RUNNING: {}" , command.join(" "));
-    println!("RUNNING at: {}" , cwd.display());
     let stdout = Stdio::from(out_file.try_clone().unwrap());
     let stderr = Stdio::from(out_file);
 
@@ -12,12 +14,20 @@ pub fn execute(out_file: File, command: &Vec<&str>, cwd: &PathBuf) {
         .stderr(stderr)
         .current_dir(cwd)
         .args(command)
-        .spawn().unwrap()
-        .wait().unwrap()
-    ;
+        .spawn()
+        .unwrap()
+        .wait()
+        .unwrap();
 }
 
-pub async fn create_deployment(username: String, uuid: String, name: String, github_url: String, branch: String, path: String) {
+pub async fn create_deployment(
+    username: String,
+    uuid: String,
+    name: String,
+    github_url: String,
+    branch: String,
+    path: String,
+) {
     // Get a new setup instance
     let setup = Setup::new();
 
@@ -26,16 +36,20 @@ pub async fn create_deployment(username: String, uuid: String, name: String, git
 
     // Vector of commands that is going to be ran
     let commands = vec![
-        vec!["git" , "clone" , "-b" , &branch , &github_url , &name], // Clone the github repository
-        vec!["cargo" , "build" , "--release"], // Build for production
-        vec!["mv" , binary_path.to_str().unwrap() , setup.plugins_dir.to_str().unwrap()], // Build for production
+        vec!["git", "clone", "-b", &branch, &github_url, &name], // Clone the github repository
+        vec!["cargo", "build", "--release"],                     // Build for production
+        vec![
+            "mv",
+            binary_path.to_str().unwrap(),
+            setup.plugins_dir.to_str().unwrap(),
+        ], // Build for production
     ];
 
     // Vector of paths that are going to be changed to according to the command priority
     let directories = vec![
         setup.build_dir.clone().join(&username),
         setup.build_dir.join(&username).join(&name).join(&path),
-        setup.build_dir.join(&username).join(&name).join(&path)
+        setup.build_dir.join(&username).join(&name).join(&path),
     ];
 
     // Create deployments dir
@@ -43,13 +57,17 @@ pub async fn create_deployment(username: String, uuid: String, name: String, git
     create_dir_all(setup.build_dir.clone().join(&username)).unwrap();
 
     // Get stdout and stderr
-    let out_file = File::create(setup.deployments_dir.clone().join(&username).join(&name).join(format!("{}.txt" , uuid))).unwrap();
+    let out_file = File::create(
+        setup
+            .deployments_dir
+            .clone()
+            .join(&username)
+            .join(&name)
+            .join(format!("{}.txt", uuid)),
+    )
+    .unwrap();
 
     for (command, cwd) in commands.iter().zip(directories.iter()) {
-        execute(
-            out_file.try_clone().unwrap(),
-            command, 
-            cwd
-        )
+        execute(out_file.try_clone().unwrap(), command, cwd)
     }
 }

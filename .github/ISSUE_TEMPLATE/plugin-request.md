@@ -2,7 +2,7 @@
 name: Plugin Request
 about: 'Request a new plugin '
 title: "[REQ]"
-labels: enhancement, in triage
+labels: enhancement, in triage, plugin request
 assignees: ''
 
 ---

@@ -10,6 +10,6 @@ fn rocket() -> _ {
     setup.setup().unwrap();
 
     rocket::build()
-        .mount("/" , routes![route::create_new_deployment])
+        .mount("/" , routes![route::create_new_deployment , route::poll_logs])
 }
 

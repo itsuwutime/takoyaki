@@ -1,5 +1,9 @@
+// Import dependencies
 #[macro_use]
 extern crate rocket;
+
+use std::error::Error;
+
 mod middlewares;
 mod route;
 mod utils;
@@ -10,16 +14,21 @@ fn all_options() {
     /* Intentionally left empty */
 }
 
-#[launch]
-fn rocket() -> _ {
+#[rocket::main]
+async fn main() -> Result<(), Box<dyn Error>> {
     // Create a new setup
-    let setup = utils::Setup::new();
+    let setup = utils::Setup::instance();
 
     // Setup directories
-    setup.setup().unwrap();
+    setup.setup()?;
 
-    rocket::build().attach(utils::Cors).mount(
-        "/",
-        routes![route::create_new_deployment, route::poll_logs, all_options],
-    )
+    // New Rocket!
+    let _ = rocket::build()
+        .attach(utils::Cors)
+        .mount("/", routes![route::create_new_deployment, route::poll_logs, all_options])
+        .launch()
+        .await?;
+
+    // Ok!
+    Ok(())
 }

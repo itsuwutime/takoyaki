@@ -8,13 +8,13 @@ pub struct Setup {
 }
 
 impl Setup {
-    pub fn new() -> Self {
+    pub fn instance() -> Self {
         let takoyaki_root = dirs::home_dir().unwrap().join(".takoyaki");
 
         Self {
-            deployments_dir: takoyaki_root.clone().join("deployments"),
-            plugins_dir: takoyaki_root.clone().join("plugins"),
-            build_dir: takoyaki_root.clone().join("build"),
+            deployments_dir: takoyaki_root.join("deployments"),
+            plugins_dir: takoyaki_root.join("plugins"),
+            build_dir: takoyaki_root.join("build"),
         }
     }
 

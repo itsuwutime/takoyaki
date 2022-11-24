@@ -1,23 +1,29 @@
+// Import dependencies
 use crate::utils::Setup;
 use std::{
     fs::{create_dir_all, File},
     path::PathBuf,
+    io::Result,
     process::{Command, Stdio},
 };
 
-pub fn execute(out_file: File, command: &Vec<&str>, cwd: &PathBuf) {
+// Create a new execute function that executes and pushes the output to the file
+pub fn execute(out_file: File, command: &Vec<&str>, cwd: &PathBuf) -> Result<()> {
+    // Get the stdout and stderr
     let stdout = Stdio::from(out_file.try_clone().unwrap());
     let stderr = Stdio::from(out_file);
 
+    // Create a new command and execute it
     Command::new("faketty")
         .stdout(stdout)
         .stderr(stderr)
         .current_dir(cwd)
         .args(command)
-        .spawn()
-        .unwrap()
-        .wait()
-        .unwrap();
+        .spawn()?
+        .wait()?;
+
+    // Ok!
+    Ok(())
 }
 
 pub async fn create_deployment(
@@ -27,12 +33,12 @@ pub async fn create_deployment(
     github_url: String,
     branch: String,
     path: String,
-) {
+) -> Result<()> {
     // Get a new setup instance
-    let setup = Setup::new();
+    let setup = Setup::instance();
 
     // Get the binary path
-    let binary_path = PathBuf::from("target").join("release").join(&name);
+    let binary_path: PathBuf = ["target" , "release", &name].iter().collect();
 
     // Vector of commands that is going to be ran
     let commands = vec![
@@ -42,7 +48,7 @@ pub async fn create_deployment(
             "mv",
             binary_path.to_str().unwrap(),
             setup.plugins_dir.to_str().unwrap(),
-        ], // Build for production
+        ], // Move the built plugin to the 
     ];
 
     // Vector of paths that are going to be changed to according to the command priority
@@ -68,6 +74,8 @@ pub async fn create_deployment(
     .unwrap();
 
     for (command, cwd) in commands.iter().zip(directories.iter()) {
-        execute(out_file.try_clone().unwrap(), command, cwd)
+        execute(out_file.try_clone().unwrap(), command, cwd)?
     }
+
+    Ok(())
 }

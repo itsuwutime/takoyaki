@@ -16,7 +16,7 @@ pub fn poll_logs<'a>(
     id: String,
     auth_guard: Result<AuthGuard, Error>,
 ) -> Either<ReaderStream![File], ErrorResponse<'a>> {
-    let setup = Setup::new();
+    let setup = Setup::instance();
 
     // if auth_guard.is_err() {
     //     return match auth_guard.unwrap_err() {

@@ -11,6 +11,10 @@ env:
 
 jobs:
     build:
+        defaults:
+            run:
+                working-directory: takoyaki_core
+                
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
